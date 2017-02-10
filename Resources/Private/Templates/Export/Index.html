@@ -1,0 +1,23 @@
+<div class="ameos_file_manager">
+	<h1><f:translate key="export.mainTitle"/></h1><br/>
+	<f:form class="exportDownloads" action="exportDownloads">
+		<p><label><f:translate key='export.from'/></label><f:form.textfield id="dateStart" size="50" name="dateStart"/></p>
+		<p><label><f:translate key='export.to'/></label><f:form.textfield id="dateEnd" size="50" name="dateEnd"/></p>
+
+		<p><f:form.submit value="<f:translate key='export.submit'/>"/></p>
+	</f:form>
+
+	<script type="text/javascript">
+		new datepickr('dateStart', {
+			dateFormat: '<f:translate key="format"/>',
+			weekdays: ['<f:translate key="sunday"/>', '<f:translate key="monday"/>', '<f:translate key="tuesday"/>', '<f:translate key="wednesday"/>', '<f:translate key="thursday"/>', '<f:translate key="friday"/>', '<f:translate key="saturday"/>'],
+			months: ['<f:translate key="january"/>', '<f:translate key="february"/>', '<f:translate key="march"/>', '<f:translate key="april"/>', '<f:translate key="may"/>', '<f:translate key="june"/>', '<f:translate key="july"/>', '<f:translate key="august"/>', '<f:translate key="september"/>', '<f:translate key="october"/>', '<f:translate key="november"/>', '<f:translate key="december"/>'],
+		});
+
+		new datepickr('dateEnd', {
+			dateFormat: '<f:translate key="format"/>',
+			weekdays: ['<f:translate key="sunday"/>', '<f:translate key="monday"/>', '<f:translate key="tuesday"/>', '<f:translate key="wednesday"/>', '<f:translate key="thursday"/>', '<f:translate key="friday"/>', '<f:translate key="saturday"/>'],
+			months: ['<f:translate key="january"/>', '<f:translate key="february"/>', '<f:translate key="march"/>', '<f:translate key="april"/>', '<f:translate key="may"/>', '<f:translate key="june"/>', '<f:translate key="july"/>', '<f:translate key="august"/>', '<f:translate key="september"/>', '<f:translate key="october"/>', '<f:translate key="november"/>', '<f:translate key="december"/>'],
+		});
+	</script>
+</div>

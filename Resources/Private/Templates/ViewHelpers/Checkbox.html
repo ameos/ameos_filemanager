@@ -1,0 +1,8 @@
+<f:if condition="{checked}">
+    <f:then>
+        <f:form.checkbox checked="1" name="{name}" value="{value}" />{label}
+    </f:then>
+    <f:else>
+        <f:form.checkbox name="{name}" value="{value}" />{label}
+    </f:else>
+</f:if>

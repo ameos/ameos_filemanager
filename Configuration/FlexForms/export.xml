@@ -1,0 +1,72 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sheetStd>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.generalSheet</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.columnsExport>
+						<TCEforms>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.columnsExport</label>
+							<config>
+								<type>select</type>
+								<multiple>false</multiple>
+								<size>12</size>
+								<minitems>1</minitems>
+								<maxitems>11</maxitems>
+								<items type="array">
+							        <numIndex index="1" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.title</numIndex>
+							            <numIndex index="1">title</numIndex>
+							        </numIndex>
+							        <numIndex index="2" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.createdAt</numIndex>
+							            <numIndex index="1">createdAt</numIndex>
+							        </numIndex>
+							        <numIndex index="3" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.updatedAt</numIndex>
+							            <numIndex index="1">updatedAt</numIndex>
+							        </numIndex>
+							        <numIndex index="4" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.description</numIndex>
+							            <numIndex index="1">description</numIndex>
+							        </numIndex>
+							        <numIndex index="5" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.owner</numIndex>
+							            <numIndex index="1">owner</numIndex>
+							        </numIndex>
+							        <numIndex index="6" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.size</numIndex>
+							            <numIndex index="1">size</numIndex>
+							        </numIndex>
+							        <numIndex index="7" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.keywords</numIndex>
+							            <numIndex index="1">keywords</numIndex>
+							        </numIndex>
+							        <numIndex index="8" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.path</numIndex>
+							            <numIndex index="1">path</numIndex>
+							        </numIndex>
+							        <numIndex index="9" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.nbDownload</numIndex>
+							            <numIndex index="1">nbDownload</numIndex>
+							        </numIndex>
+							        <numIndex index="10" type="array">
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.extension</numIndex>
+							            <numIndex index="1">extension</numIndex>
+							        </numIndex>
+					            </items>
+								<default>title,nbDownload,description,path</default>
+							</config>
+						</TCEforms>
+					</settings.columnsExport>
+				</el>
+			</ROOT>
+		</sheetStd>
+	</sheets>
+</T3DataStructure>

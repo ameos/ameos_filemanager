@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for be belonging to extension 'ameos_filemanager'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="flexform.icon">Icon</label>
+			<label index="flexform.title">Title</label>
+			<label index="flexform.categories">Cateories</label>
+			<label index="flexform.createdAt">Created at</label>
+			<label index="flexform.updatedAt">Updated at</label>
+			<label index="flexform.description">Description</label>
+			<label index="flexform.owner">Owner</label>
+			<label index="flexform.size">Size</label>
+			<label index="flexform.keywords">Keywords</label>
+			<label index="flexform.actions">Actions</label>
+			<label index="flexform.detail">Detail</label>
+			<label index="flexform.edit">Edit</label>
+			<label index="flexform.delete">Delete</label>
+			<label index="flexform.download">Download</label>
+
+			<label index="flexform.generalSheet">General configuration</label>
+			<label index="flexform.sheetAppearance">Tab display</label>
+			<label index="flexform.sheetEdition">Edit options</label>
+
+			<label index="flexform.authorizedGroup">Groups that can be selected while editing a record</label>
+			<label index="flexform.authorizedCategories">Categories that can be selected while editing a record</label>
+			<label index="flexform.stockageGroupPid">User groups folder</label>
+			<label index="flexform.storage">Storage</label>
+			<label index="flexform.startFolder">Root folder</label>
+			<label index="flexform.columnsTable">Columns that'll be in the header tab</label>
+			<label index="flexform.actionDetail">Allowed actions (if displayed in tab header)</label>
+			<label index="flexform.iconFolder">Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</label>
+			<label index="flexform.columnsExport">Information exported.</label>
+			<label index="flexform.path">Path of the file</label>
+			<label index="flexform.nbDownload">Number of downloads</label>
+			<label index="flexform.extension">File extension</label>
+
+			<label index="constant.columnsTable">Header tab:Columns that'll appear in the header tab</label>
+			<label index="constant.actionDetail">Actions:Allowed actions (if displayed in tab header)</label>
+			<label index="constant.iconFolder">Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</label>
+			<label index="constant.columnsExport">Column exported:Information that will be exported in the export script</label>
+			<label index="constant.parseFolderInFE">Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="flexform.icon">Icon</label>
+			<label index="flexform.title">Title</label>
+			<label index="flexform.categories">Catégories</label>
+			<label index="flexform.createdAt">Created at</label>
+			<label index="flexform.updatedAt">Updated at</label>
+			<label index="flexform.description">Description</label>
+			<label index="flexform.owner">Owner</label>
+			<label index="flexform.size">Size</label>
+			<label index="flexform.keywords">Keywords</label>
+			<label index="flexform.actions">Actions</label>
+			<label index="flexform.detail">Detail</label>
+			<label index="flexform.edit">Editer</label>
+			<label index="flexform.delete">Supprimer</label>
+			<label index="flexform.download">Télécharger</label>
+
+			<label index="flexform.generalSheet">Configuration générale</label>
+			<label index="flexform.sheetAppearance">Affichage tableau</label>
+			<label index="flexform.sheetAppearEdition">Options d'édition</label>
+
+			<label index="flexform.authorizedGroup">Groupes pouvant être séléctionnés lors de la modification d'une entrée</label>
+			<label index="flexform.authorizedCategories">Catégories pouvant être séléctionnés lors de la modification d'une entrée</label>
+			<label index="flexform.stockageGroupPid">Stockage des groupes utilisateurs</label>
+			<label index="flexform.storage">Storage</label>
+			<label index="flexform.startFolder">Dossier de base</label>
+			<label index="flexform.columnsTable">Colonnes affichées dans le tableau</label>
+			<label index="flexform.actionDetail">Action proposé ( si action est affiché dans le tableau)</label>
+			<label index="flexform.iconFolder">Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</label>
+			<label index="flexform.columnsExport">Informations exportées.</label>
+			<label index="flexform.path">Chemin du fichier</label>
+			<label index="flexform.nbDownload">Nombre de téléchargement</label>
+			<label index="flexform.extension">Extension du fichier</label>
+
+			<label index="constant.columnsTable">Colonnes affichées:Colonnes affichées dans le tableau</label>
+			<label index="constant.actionDetail">Actions :Action proposées dans la colonne correspondante du tableau (si action est affiché dans le tableau)</label>
+			<label index="constant.iconFolder">Dossier d'îcone : Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</label>
+			<label index="constant.columnsExport">Informations exportées.</label>
+			<label index="constant.parseFolderInFE">Balayer dossier en FE:Verifier présence de nouveaux objets dans le dossier visité en FE. (Peut réduire grandement les performances)</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="flexform.icon">Icon</label>
+			<label index="flexform.title">Titel</label>
+			<label index="flexform.categories">Kategorien</label>
+			<label index="flexform.createdAt">Erstellt am</label>
+			<label index="flexform.updatedAt">Aktualisiert am</label>
+			<label index="flexform.description">Beschreibung</label>
+			<label index="flexform.owner">Besitzer</label>
+			<label index="flexform.size">Größe</label>
+			<label index="flexform.keywords">Keywords</label>
+			<label index="flexform.actions">Aktionen</label>
+			<label index="flexform.detail">Detail</label>
+			<label index="flexform.edit">Bearbeiten</label>
+			<label index="flexform.delete">Löschen</label>
+			<label index="flexform.download">Herunterladen</label>
+
+			<label index="flexform.generalSheet">Allgemeine Konfiguration</label>
+			<label index="flexform.sheetAppearance">Tab Anzeige</label>
+			<label index="flexform.sheetEdition">Bearbeitungsoptionen</label>
+
+			<label index="flexform.authorizedGroup">Gruppen, die bei der Bearbeitung des Eintrages ausgewählt werden können</label>
+			<label index="flexform.authorizedCategories">Kategorien, die während der Bearbeitung des Eintrages ausgewählt werden können</label>
+			<label index="flexform.stockageGroupPid">Odner der Benutzer und Gruppen</label>
+			<label index="flexform.storage">Storage</label>
+			<label index="flexform.startFolder">Root Ordner</label>
+			<label index="flexform.columnsTable">Spalten, die im Tab header angezeigt werden</label>
+			<label index="flexform.actionDetail">Erlaubte Aktionen (wenn im Tab header angezeigt)</label>
+			<label index="flexform.iconFolder">Pfad zum Ordner, in dem die Icons der Extension gespeichert sind. Die Dateien MÜSSEN die gleichen Namen haben, wie die Originaldateien.</label>
+			<label index="flexform.columnsExport">Informationen wurden exportiert.</label>
+			<label index="flexform.path">Pfad zur Datei</label>
+			<label index="flexform.nbDownload">Anzahl der Downloads</label>
+			<label index="flexform.extension">Dateierweiterung</label>
+
+			<label index="constant.columnsTable">Spalten, die im Tab header angezeigt werden</label>
+			<label index="constant.actionDetail">Aktionen: Erlaubte Aktionen (wenn im Tab header angezeigt)</label>
+			<label index="constant.iconFolder">Pfad zum Ordner, in dem die Icons der Extension gespeichert sind. Die Dateien MÜSSEN die gleichen Namen haben, wie die Originaldateien.</label>
+			<label index="constant.columnsExport">Exort Spalte: Spalte, die im Export Script exportiert werden</label>
+			<label index="constant.parseFolderInFE">Ordner im FE parsen: Neue Ordner im Frontend prüfen (Performance kann leiden)</label>
+		</languageKey>
+	</data>
+</T3locallang>

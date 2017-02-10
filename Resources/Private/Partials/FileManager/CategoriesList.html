@@ -1,0 +1,19 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<ul>
+    <f:for each="{categories}" as="category">
+        <li>
+            <custom:IsInList uid="{category.uid}" list="{objet.categoriesUids}">
+                <f:then>
+                    <f:form.checkbox checked="1" name="categories[]" value="{category.uid}" />{category.title}
+                </f:then>
+                <f:else>
+                    <f:form.checkbox name="categories[]" value="{category.uid}" />{category.title}
+                </f:else>
+            </custom:IsInList>
+
+            <f:if condition="{category.subCategories}">
+                <f:render partial="FileManager/CategoriesList" arguments="{categories: category.subCategories, objet: objet}" />
+            </f:if>
+        </li>
+    </f:for>
+</ul>

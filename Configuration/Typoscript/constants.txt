@@ -1,0 +1,14 @@
+# customsubcategory=content=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang.xml:category.content
+ 
+plugin.tx_ameosfilemanager {
+	# cat=plugin.tx_ameosfilemanager/content; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:constant.columnsTable
+	columnsTable = icon,title,updatedAt,size,actions
+	# cat=plugin.tx_ameosfilemanager/content; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:constant.actionDetail
+	actionDetail = download,detail,edit
+	# cat=plugin.tx_ameosfilemanager/file; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:constant.iconFolder
+	iconFolder = typo3conf/ext/ameos_filemanager/Resources/Public/Icons/
+	# cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:constant.columnsExport
+	columnsExport = title,nbDownload,description,path
+	# cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:constant.parseFolderInFE
+	parseFolderInFE = 0
+}

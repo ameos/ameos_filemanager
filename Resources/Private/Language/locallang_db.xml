@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'ameos_filemanager'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_ameosfilemanager">EDM</label>
+			<label index="tx_ameosfilemanager_domain_model_folder">Folders</label>
+			<label index="tx_ameosfilemanager_domain_model_filedownload">File download</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.keywords">Keywords</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.description">Description</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.category">Category</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.title">Title</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.files">Files</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.folders">SubFolder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.identifier">Identifier</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.uidParent">Parent Folder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_user_id">Owner</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_group_read">Groups allowed to read the folder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_group_write">Groups allowed to edit the folder (rename)</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_group_addfile">Groups allowed to add file in the folder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_group_addfolder">Groups allowed to add subfolder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_read_access">Only owner can read the folder</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_write_access">Only owner can edit the folder</label>
+
+			<label index="tx_ameosfilemanager_domain_model_file.fe_user_id">Propriétaire front_end</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_read">Groups allowed to read the file</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_write">Groups allowed to edit the file</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_read_access">Only owner can read the file</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_write_access">Only owner can edit the file</label>
+			<label index="tx_ameosfilemanager_domain_model_file.owner_read_only">Owner can't edit his file (read only)</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_type">Type</label>
+			<label index="tx_ameosfilemanager_domain_model_file.folder_uid">Folder</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_category">Category</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filecategory">Category</label>
+			<label index="tx_ameosfilemanager_domain_model_filecategory.title">Title</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filetype">Type</label>
+			<label index="tx_ameosfilemanager_domain_model_filetype.title">Title</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="tx_ameosfilemanager">GED</label>
+			<label index="tx_ameosfilemanager_domain_model_folder">Dossiers</label>
+			<label index="tx_ameosfilemanager_domain_model_filedownload">Fichiers téléchargés</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.keywords">Keywords</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.description">Description</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.category">Catégorie</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.title">Titre</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.files">Fichiers</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.folders">Sous-dossiers</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.identifier">Chemin</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.uidParent">Dossier Parent</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_user_id">Propriétaire front_end</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_groups_read">Groupes pouvant lire le dossier</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_groups_write">Groupes pouvant modifier le dossier</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_read_access">Seul le propriétaire peut lire le dossier</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_write_access">Seul le propriétaire peut éditer le dossier</label>
+
+			<label index="tx_ameosfilemanager_domain_model_file.fe_user_id">Propriétaire front_end</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_read">Groupes pouvant lire le fichier</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_write">Groupe pouvant éditer le fichier</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_read_access">Seul le propriétaire peut lire le fichier</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_write_access">Seul le propriétaire peut éditer le fichier</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_type">Type</label>
+			<label index="tx_ameosfilemanager_domain_model_file.folder_uid">Dossier</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_category">Categorie</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filecategory">Categorie</label>
+			<label index="tx_ameosfilemanager_domain_model_filecategory.title">Titre</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filetype">Type</label>
+			<label index="tx_ameosfilemanager_domain_model_filetype.title">Titre</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tx_ameosfilemanager">EDM</label>
+			<label index="tx_ameosfilemanager_domain_model_folder">Ordner</label>
+			<label index="tx_ameosfilemanager_domain_model_filedownload">Datei herunterladen</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.keywords">Keywords</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.description">Beschreibung</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.category">Kategorie</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.title">Titel</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.files">Dateien</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.folders">Unterordner</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.identifier">ID</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.uidParent">Übergeordneter Ordner</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_user_id">Besitzer</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_groups_read">Gruppen mit Leseberechtigung</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.fe_groups_write">Gruppen mit Bearbeitungsrechten</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_read_access">Nur der Besitzer kann den Ordner lesen</label>
+			<label index="tx_ameosfilemanager_domain_model_folder.no_write_access">Nur der Besitzer kann den Ordner bearbeiten</label>
+
+			<label index="tx_ameosfilemanager_domain_model_file.fe_user_id">Frontendbesitzer</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_read">Gruppen mit Leseberechtigung</label>
+			<label index="tx_ameosfilemanager_domain_model_file.fe_groups_write">Gruppen mit Bearbeitungsrechten</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_read_access">Nur der Besitzer kann die Datei lesen</label>
+			<label index="tx_ameosfilemanager_domain_model_file.no_write_access">Nur der Besitzer kann die Datei bearbeiten</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_type">Typ</label>
+			<label index="tx_ameosfilemanager_domain_model_file.folder_uid">Ordner</label>
+			<label index="tx_ameosfilemanager_domain_model_file.file_category">Kategorie</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filecategory">Kategorie</label>
+			<label index="tx_ameosfilemanager_domain_model_filecategory.title">Titel</label>
+
+			<label index="tx_ameosfilemanager_domain_model_filetype">Typ</label>
+			<label index="tx_ameosfilemanager_domain_model_filetype.title">Titel</label>
+		</languageKey>
+	</data>
+</T3locallang>

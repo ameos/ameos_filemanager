@@ -1,0 +1,77 @@
+.ameos_file_manager{
+	width: 100%;
+
+}
+
+.ameos_file_manager img.icone_file_manager { max-height:50px; }
+.ameos_file_manager h1{display: inline-block;}
+/*.ameos_file_manager input{display: block;}*/
+.ameos_file_manager input[type="text"], .ameos_file_manager input[type="submit"]{width: 100%;}
+.ameos_file_manager select{display: block;width: 100%;}
+.ameos_file_manager textarea{display: block;width: 100%;}
+.ameos_file_manager .error{color: red;}
+
+.ameos_file_manager table td {
+     text-align: center;
+     padding: 10px 0px;
+     border-bottom: 1px dashed black;
+}
+
+.ameos_file_manager table th {
+    background: #585762 none repeat scroll 0% 0%;
+    color: #FFF;
+	text-align: center;
+	height: 22px;
+	line-height: 22px;
+
+	white-space: pre;
+}
+
+.ameos_file_manager table {
+    border-spacing: 4px;
+    background: #FFF none repeat scroll 0% 0%;
+    font-size: 14px;
+    border-collapse: inherit;
+    width: 100%;
+}
+
+.ameos_file_manager h1 {
+	color: #1CB0F3;
+	font-weight: normal;
+	line-height: 1.2em;
+}
+
+.ameos_file_manager .grad-btn {
+    background: transparent linear-gradient(to bottom, #44CEED 0%, #2ABAF1 50%, #1EB1F3 100%) repeat scroll 0% 0%;
+    color: #FFF;
+    border: 1px solid #62CDF5;
+    border-radius: 3px;
+    padding: 4px 8px;
+}
+
+.ameos_file_manager .grad-btn-2 {
+    background: #9D3992 linear-gradient(to bottom, #B855AD, #912C86) repeat scroll 0% 0%;
+    border-radius: 7px;
+    color: #FFF;
+    padding: 5px 10px;
+    text-decoration: none;
+    border: medium none !important;
+    display: inline-block !important;
+    cursor: pointer;
+}
+
+.ameos_file_manager p {
+	margin: 15px 0px;
+}
+
+.ameos_file_manager .align-center{
+    text-align: center;
+}
+
+.ameos_file_manager .frame {
+    border: 1px solid #1CB0F3;
+    padding: 10px;
+    background: #FFF none repeat scroll 0% 0%;
+    border-radius: 15px;
+    margin-bottom: 0.5em;
+}

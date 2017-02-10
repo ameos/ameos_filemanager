@@ -1,0 +1,12 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<div class="ameos_file_manager">
+	<h1><f:translate key="searchResultFor"/> : "{value.keyword}"</h1>
+	<table cellpadding="4" cellspacing="0">
+		<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable}" />
+		<f:for each="{files}" as="fi">
+			<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
+				<f:render partial="FileManager/FileLine" arguments="{fi:fi,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable}" />
+		    </custom:checkAccess>
+		</f:for>
+	</table>
+</div>

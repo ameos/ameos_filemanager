@@ -1,0 +1,30 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sheetStd>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.generalSheet</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.filemanagerPid>
+                      <TCEforms>
+                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.filemanagerPid</label>
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>1</size>
+                                <minitems>1</minitems>
+                                <maxitems>1</maxitems>
+                            </config>
+                        </TCEforms>
+                    </settings.filemanagerPid>
+                </el>
+            </ROOT>
+        </sheetStd>
+    </sheets>
+</T3DataStructure>

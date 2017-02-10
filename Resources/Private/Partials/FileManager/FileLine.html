@@ -1,0 +1,80 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<tr>
+    <f:for each="{columns}" as="column">
+        <f:if condition="{0:column} == {0:'icon'}">
+                <td class="icone">
+                    <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                        <custom:icon type="{fi.originalResource.extension}" iconFolder="{iconFolder}"/>
+                    </f:link.action> 
+                </td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'title'}">
+                <td>
+                    <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                        {fi.title}
+                    </f:link.action> 
+                </td>
+        </f:if>    
+        <f:if condition="{0:column} == {0:'createdAt'}">
+                <td>
+                    <f:format.date format="%d/%m/%Y">@{fi.crdate}</f:format.date>
+                </td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'updatedAt'}">
+                <td>
+                    <f:format.date format="%d/%m/%Y">@{fi.tstamp}</f:format.date>
+                </td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'categories'}">
+            <td>
+                <f:for each="{fi.categories}" as="category" iteration="itemIteration">
+                    {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+                </f:for>
+            </td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'description'}">
+                <td>{fi.description}</td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'owner'}">
+                <td>
+                    {fi.ownerUsername}
+                </td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'size'}">
+                <td><custom:filesize size="{fi.originalResource.size}" /></td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'keywords'}">
+                 <td>{fi.keywords}</td>
+        </f:if>
+        <f:if condition="{0:column} == {0:'actions'}">
+            <td>
+                <f:for each="{actionDetail}" as="action">
+                    <f:if condition="{0:action} == {0:'download'}">
+                        <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                            <f:translate key="download"/>
+                        </f:link.action><br/>
+                    </f:if>
+                    <f:if condition="{0:action} == {0:'detail'}">
+                        <f:link.action action="detail" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                            <f:translate key="detail"/>
+                        </f:link.action><br/>
+                    </f:if>
+                    <f:if condition="{0:action} == {0:'edit'}">
+                        <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:folderRoot}">
+                            <f:link.action action="formFile" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{newFile: fi.uid}'}" >
+                                <f:translate key="edit"/>
+                            </f:link.action><br/>
+                        </custom:checkAccess>
+                    </f:if>
+                    <f:if condition="{0:action} == {0:'delete'}">
+                        <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:folderRoot}">
+                            <f:link.action onclick="return confirm('Are you sure?')" action="deleteFile" addQueryString="0" additionalParams="{tx_ameosfilemanager_fe_filemanager: '{file: fi.uid}'}" >
+                                <f:translate key="delete"/>
+                            </f:link.action><br/>
+                        </custom:checkAccess>
+                    </f:if>
+                </f:for>
+            </td>
+        </f:if>
+    </f:for>
+</tr>

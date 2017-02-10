@@ -1,0 +1,91 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<div class="ameos_file_manager">
+	<p>
+		<f:link.action class="grad-btn"  addQueryString="0" action="index" additionalParams="{tx_ameos_filemanager: '{folder: parentFolder}'}">
+			<f:translate key="back"/>
+		</f:link.action>
+	</p>
+	
+	<f:if condition="{file.uid}">
+		<f:link.action additionalParams="{tx_ameos_filemanager: '{file: file.uid}'}" addQueryString="0">
+			<f:translate key="downloadCurrent"/>
+		</f:link.action>
+		<f:image src="{file.uid}" alt="{file.title}" width="150" treatIdAsReference="0" />
+	</f:if>
+	<f:form action="createFile" name="newFile" enctype="multipart/form-data">
+		<p>
+			<label for="file"><f:translate key="file"/> : </label><f:if condition="{errors.file}"><span class="error">{errors.file}</span></f:if>
+			<f:form.upload id="file" name="file" />
+			<f:if condition="{file.file}">
+				<f:image src="{file.file}" alt="" width="150c" height="150" />
+			</f:if>
+		</p>
+		<p>
+			<label for="title"><f:translate key="title"/> : </label><f:if condition="{errors.title}"><span class="error">{errors.title}</span></f:if>
+			<f:form.textfield id="title" name="title" value="{properties.title}"/>
+		</p>
+		<p>
+			<label for="description"><f:translate key="description"/> : </label><f:if condition="{errors.description}"><span class="error">{errors.description}</span></f:if>
+			<f:form.textarea id="description" name="description" value="{properties.description}"/>
+		</p>
+		<p>
+			<label for="keywords"><f:translate key="keywords"/> : </label><f:if condition="{errors.keywords}"><span class="error">{errors.keywords}</span></f:if>
+			<f:form.textfield id="keywords" name="keywords" value="{properties.keywords}"/>
+		</p>
+		
+		<f:if condition="{file}">
+			<f:then>
+				<f:if condition="{file.feUser}">
+					<f:then>
+						<p>
+							<label for="noReadAccess"><f:translate key="noReadAccess"/> : </label><f:if condition="{errors.noReadAccess}"><span class="error">{errors.noReadAccess}</span></f:if>
+							<f:form.checkbox id="noReadAccess" value="1" name="noReadAccess"/>
+						</p>
+					</f:then>
+				</f:if>
+			</f:then>
+			<f:else>
+				<p>
+					<label for="noReadAccess"><f:translate key="noReadAccess"/> : </label><f:if condition="{errors.noReadAccess}"><span class="error">{errors.noReadAccess}</span></f:if>
+					<f:form.checkbox id="noReadAccess" value="1" name="noReadAccess"/>
+				</p>
+			</f:else>
+		</f:if>
+		<p>
+			<label for="feGroupRead"><f:translate key="feGroupRead">Group Access</f:translate> : </label><f:if condition="{errors.arrayFeGroupRead}"><span class="error">{errors.arrayFeGroupRead}</span></f:if>
+			<f:form.select multiple="1" id="feGroupRead" name="arrayFeGroupRead" options="{feGroup}" optionValueField="uid" optionLabelField="title" value="{properties.arrayFeGroupRead}"/>
+		</p>
+		<f:if condition="{file}">
+			<f:then>
+				<f:if condition="{file.feUser}">
+					<f:then>
+						<p>
+							<label for="noWriteAccess"><f:translate key="noWriteAccess"/> : </label><f:if condition="{errors.noWriteAccess}"><span class="error">{errors.noWriteAccess}</span></f:if>
+							<f:form.checkbox id="noWriteAccess" value="1" name="noWriteAccess"/>
+						</p>
+					</f:then>
+				</f:if>
+			</f:then>
+			<f:else>
+				<p>
+					<label for="noWriteAccess"><f:translate key="noWriteAccess"/> : </label><f:if condition="{errors.noWriteAccess}"><span class="error">{errors.noWriteAccess}</span></f:if>
+					<f:form.checkbox id="noWriteAccess" value="1" name="noWriteAccess" />
+				</p>
+			</f:else>
+		</f:if>
+		
+		<p>
+			<label for="feGroupWrite"><f:translate key="feGroupWrite"/> : </label><f:if condition="{errors.arrayFeGroupWrite}"><span class="error">{errors.arrayFeGroupWrite}</span></f:if>
+			<f:form.select multiple="1" id="feGroupWrite" name="arrayFeGroupWrite" options="{feGroup}" optionValueField="uid" optionLabelField="title" value="{properties.arrayFeGroupWrite}"/>
+		</p>
+
+		<label><f:translate key="categories"/> : </label>
+        <f:render partial="FileManager/CategoriesList" arguments="{categories: categories, objet: file}" />
+
+        <p class="align-right">
+            <f:form.submit value="<f:translate key='form.submit'/>" class="grad-btn" />
+            <f:form.hidden name="uidParent" value="{parentFolder}"/>
+            <f:form.hidden name="uidFile" value="{uidFile}"/>
+        </p>
+    </f:form>
+</div>

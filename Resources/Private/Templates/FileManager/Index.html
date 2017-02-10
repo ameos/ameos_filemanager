@@ -1,0 +1,50 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<div class="ameos_file_manager">
+	<f:if condition="{folder}">
+		<f:then>
+			<h1>{folder.title}<custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+				<f:link.action action="formFolder" addQueryString="0" title="edit" class="edit" additionalParams="{tx_ameos_filemanager: '{newFolder: folder.uid}'}" >
+	        		<i class="fa fa-pencil-square-o"></i>
+	        	</f:link.action>
+            </custom:checkAccess></h1>
+            <custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                <p><f:link.action action="formFile" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}"><f:translate key="createFile"/></f:link.action></p>
+            </custom:canAddFile>                    
+            <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                <p><f:link.action additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" action="formFolder" ><f:translate key="createFolder"/></f:link.action></p>
+            </custom:canAddFolder>
+
+			<custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}"/>
+			<table cellpadding="4" cellspacing="0">
+
+				<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable}" />
+				<f:if condition="{0:folder.uid} != {0:settings.startFolder}">
+					<f:if condition="{folder.parent}">
+						<custom:checkAccess folder="{folder.parent}" right="r" arguments="{folderRoot:settings.startFolder}">
+							<f:render partial="FileManager/FolderLine" arguments="{folder:folder.parent,columns:settings.columnsTable,iconFolder:settings.iconFolder,actionDetail:settings.actionDetail,parent:'1',returnFolder:folder.uid}" />
+					    </custom:checkAccess>
+					</f:if>
+				</f:if>
+
+				<f:for each="{folder.folders}" as="f">
+
+						<f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid}" />
+				</f:for>
+				<f:for each="{files}" as="fi">
+					<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
+						<f:render partial="FileManager/FileLine" arguments="{fi:fi,folderRoot:settings.startFolder,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable}" />
+				    </custom:checkAccess>
+				</f:for>
+			</table>
+			<custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+				<p><f:link.action action="formFile" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}"><f:translate key="createFile"/></f:link.action></p>
+			</custom:canAddFile>
+            <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                <p><f:link.action additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" action="formFolder" ><f:translate key="createFolder"/></f:link.action></p>
+            </custom:canAddFolder>
+		</f:then>
+		<f:else>
+			<f:translate key="accessDenied"/>
+		</f:else>
+	</f:if>
+</div>

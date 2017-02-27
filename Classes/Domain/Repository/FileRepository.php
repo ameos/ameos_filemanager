@@ -1,26 +1,45 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-
-	protected $defaultOrderings = array(
-		'tstamp' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
-	);
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+ 
+class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
+    /**
+     * @var array
+     */ 
+	protected $defaultOrderings = array('tstamp' => QueryInterface::ORDER_DESCENDING);
 
 	/**
 	 * Initialization
 	 */
-	public function initializeObject() {
+	public function initializeObject()
+    {
 		$querySettings = $this->createQuery()->getQuerySettings();
 		$querySettings->setRespectStoragePage(FALSE);
         $this->setDefaultQuerySettings($querySettings);
 	}
 
-	public function findFilesForFolder($folder) {
-		if(empty($folder)) {
+    /**
+     * find files for a folder
+     */ 
+	public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
+    {
+		if (empty($folder)) {
 			return $this->findAll();
 		}
 
@@ -30,7 +49,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$where = "sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = " . (int)$folder;
 
         $order = '';
-        $get = GeneralUtility::_GET('tx_ameosfilemanager_fe_filemanager');
+        $get = GeneralUtility::_GET($pluginNamespace);
         $availableSorting = [
             'sys_file.name', 'sys_file.creation_date', 'sys_file.modification_date', 'sys_file.size',
             'sys_file.tstamp', 'sys_file.crdate',
@@ -83,8 +102,9 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param array $criterias criterias
      * @param int $rootFolder
 	 */
-	public function findBySearchCriterias($criterias, $rootFolder = null) {
-		if(!is_array($criterias) || empty($criterias)) {
+	public function findBySearchCriterias($criterias, $rootFolder = null, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
+    {
+		if (!is_array($criterias) || empty($criterias)) {
 			return $this->findAll();
 		}
 
@@ -103,7 +123,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$fields = 'distinct sys_file.*'; 
 		$from = 'sys_file_metadata INNER JOIN sys_file  ON sys_file_metadata.file=sys_file.uid LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
 		$where = '1';
-		if(isset($criterias['keyword']) && $criterias['keyword'] !== '') {
+		if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
 			$arrayKeywords = explode(' ', $criterias['keyword']);
 			$arrayCondition = array();
 			$where .= " AND (sys_category_record_mm.tablenames LIKE 'sys_file_metadata' OR sys_category_record_mm.tablenames IS NULL) ";
@@ -114,13 +134,20 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			    $where .= " OR sys_file_metadata.keywords LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
 			    $where .= " OR sys_file.name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file');
 			    $where .= " OR sys_category.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_category');
+			    $where .= " OR sys_file_metadata.fe_user_id IN (SELECT uid FROM fe_users WHERE
+                    deleted = 0
+                    AND (name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
+                    OR first_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
+                    OR middle_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
+                    OR last_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "))";
 			    $where .= ") ";
 			}
 		}
+
         $where .= $additionnalWhereClause;
 
         $order = '';
-        $get = GeneralUtility::_GET('tx_ameosfilemanager_fe_filemanager');
+        $get = GeneralUtility::_GET($pluginNamespace);
         $availableSorting = [
             'sys_file.name', 'sys_file.creation_date', 'sys_file.modification_date', 'sys_file.size',
             'sys_file.tstamp', 'sys_file.crdate',
@@ -145,7 +172,8 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $query->execute();
 	}
 
-	public function findAuthorizedFiles($user, $minDatetime = 0) {
+	public function findAuthorizedFiles($user, $minDatetime = 0)
+    {
 		$query = $this->createQuery();
 
 		$fields       = 'distinct sys_file.uid, sys_file_metadata.folder_uid';
@@ -163,7 +191,8 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $query->execute();
 	}
 
-	public function findAll() {
+	public function findAll()
+    {
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'distinct sys_file.uid', 
@@ -182,14 +211,14 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $query->execute();
 	}
 
-	public function findByUid($fileUid,$writeRight=false) {
-		if(empty($fileUid)) {
+	public function findByUid($fileUid,$writeRight=false)
+    {
+		if (empty($fileUid)) {
 			return 0;
 		}
-		if($writeRight) {
+		if ($writeRight) {
 			$column = 'fe_group_write';
-		}
-		else {
+		} else {
 			$column = 'fe_group_read';	
 		}
 		$userGroups = $GLOBALS['TSFE']->gr_list;
@@ -202,11 +231,9 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			OR sys_file_metadata.".$column."='0' ";
 		foreach (explode(',', $userGroups) as $userGroup) {
 			$where .= "OR FIND_IN_SET('".$userGroup."',sys_file_metadata.".$column.") ";
-		}
-		if($GLOBALS['TSFE']->fe_user->user) {
+		} if($GLOBALS['TSFE']->fe_user->user) {
 			$where .= ') OR sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . ')';	
-		}
-		else {
+		} else {
 			$where .= '))';
 		}
 		

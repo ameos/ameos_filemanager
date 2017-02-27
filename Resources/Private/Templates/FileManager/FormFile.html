@@ -1,13 +1,13 @@
 {namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
 <div class="ameos_file_manager">
 	<p>
-		<f:link.action class="grad-btn"  addQueryString="0" action="index" additionalParams="{tx_ameos_filemanager: '{folder: parentFolder}'}">
+		<f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: parentFolder}">
 			<f:translate key="back"/>
 		</f:link.action>
 	</p>
 	
 	<f:if condition="{file.uid}">
-		<f:link.action additionalParams="{tx_ameos_filemanager: '{file: file.uid}'}" addQueryString="0">
+		<f:link.action arguments="{file: file.uid}" addQueryString="0">
 			<f:translate key="downloadCurrent"/>
 		</f:link.action>
 		<f:image src="{file.uid}" alt="{file.title}" width="150" treatIdAsReference="0" />

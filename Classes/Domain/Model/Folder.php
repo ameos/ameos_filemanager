@@ -1,10 +1,24 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Ameos\AmeosFilemanager\Tools\Tools;
 
-class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+ 
+class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
+{
 
 	/**
 	 * @var string
@@ -115,49 +129,56 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
      * @return int
      */
-	public function getCrdate() {
+	public function getCrdate()
+    {
 		return $this->crdate;
 	}
 
 	/**
      * @return int
      */
-	public function getTstamp() {
+	public function getTstamp()
+    {
 		return $this->tstamp;
 	}
 
 	/**
      * @return string
      */
-	public function getTitle() {
+	public function getTitle()
+    {
 		return $this->title;
 	}
 
 	/**
      * @return string
      */
-	public function getIdentifier() {
+	public function getIdentifier()
+    {
 		return $this->identifier;
 	}
 
 	/**
      * @return string
      */
-	public function getDescription() {
+	public function getDescription()
+    {
 		return $this->description;
 	}
 
 	/**
      * @return string
      */
-	public function getKeywords() {
+	public function getKeywords()
+    {
 		return $this->keywords;
 	}	
 
 	/**
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
 	 */
-	public function getFolders() {
+	public function getFolders()
+    {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		$folders = $folderRepository->getSubFolderFromFolder($this->getUid());
 		return $folders;
@@ -166,18 +187,19 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
 	 */
-	public function getFiles() {
+	public function getFiles()
+    {
 		return $this->files;
 	}
 
 	/**
 	 * @return \Ameos\AmeosFilemanager\Domain\Model\Folder
 	 */
-	public function getParent($rootFolderUid = null) {
-		if($this->getUid() && $rootFolderUid == $this->getUid()) {
+	public function getParent($rootFolderUid = null)
+    {
+		if ($this->getUid() && $rootFolderUid == $this->getUid()) {
 			return false;
-		}
-		else {
+		} else {
 			return $this->uidParent;	
 		}
 	}
@@ -185,9 +207,10 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
      * @return array
      */
-	public function getArrayFeGroupRead() {
+	public function getArrayFeGroupRead()
+    {
 		$res=array();
-		if($this->feGroupRead) {
+		if ($this->feGroupRead) {
 			foreach (explode(',', $this->feGroupRead) as $feGroup) {
 				$res[] = $feGroup;
 			}
@@ -198,9 +221,10 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
      * @return array
      */
-	public function getArrayFeGroupWrite() {
+	public function getArrayFeGroupWrite()
+    {
 		$res=array();
-		if($this->feGroupWrite) {
+		if ($this->feGroupWrite) {
 			foreach (explode(',',$this->feGroupWrite) as $feGroup) {
 				$res[] = $feGroup;
 			}
@@ -211,9 +235,10 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
      * @return array
      */
-	public function getArrayFeGroupAddfolder() {
+	public function getArrayFeGroupAddfolder()
+    {
 		$res=array();
-		if($this->feGroupAddfolder) {
+		if ($this->feGroupAddfolder) {
 			foreach (explode(',',$this->feGroupAddfolder) as $feGroup) {
 				$res[] = $feGroup;
 			}
@@ -224,9 +249,10 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
      * @return array
      */
-	public function getArrayFeGroupAddfile() {
+	public function getArrayFeGroupAddfile()
+    {
 		$res=array();
-		if($this->feGroupAddfile) {
+		if ($this->feGroupAddfile) {
 			foreach (explode(',',$this->feGroupAddfile) as $feGroup) {
 				$res[] = $feGroup;
 			}
@@ -237,28 +263,32 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	/**
 	 * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUser
 	 */
-	public function getCruser() {
+	public function getCruser()
+    {
 		return $this->cruserId;
 	}
 
 	/**
 	 * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 	 */
-	public function getFeUser() {
+	public function getFeUser()
+    {
         return $this->feUserId;
     }
 
     /**
 	 * @return boolean
 	 */
-	public function getNoReadAccess() {
+	public function getNoReadAccess()
+    {
 		return $this->noReadAccess;
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function getNoWriteAccess() {
+	public function getNoWriteAccess()
+    {
 		return $this->noWriteAccess;
 	}
 
@@ -266,7 +296,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
      * @return string
      */
     public function getGedPath() {
-    	if($parent = $this->getParent()) {
+    	if($parent = $this->getParent())
+        {
 			return $parent->getGedPath().'/'.$this->title;
 		}
 		return '/'.$this->title;
@@ -275,16 +306,18 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
     /**
      * @return string
      */
-    public function getOwnerUsername() {
+    public function getOwnerUsername()
+    {
         return $this->getFeUser() ? $this->getFeUser()->getUsername() : '';
     }
 
     /**
      * @return string
      */
-    public function getRecursiveSubFolders() {
-    	$res='';
-        if($folders = $this->folders) {
+    public function getRecursiveSubFolders()
+    {
+    	$res = '';
+        if ($folders = $this->folders) {
         	foreach ($folders as $folder) {
         		$res .= $folder->getRecursiveSubFolders();
         	}
@@ -297,7 +330,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
     /**
      * @return string
      */
-    public function getSubFolders() {
+    public function getSubFolders()
+    {
     	return substr($this->getRecursiveSubFolders(), 0,-1);
     }
 
@@ -307,7 +341,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param string $title
 	 * @return void
 	 */
-	public function setTitle($title) {
+	public function setTitle($title)
+    {
 		$this->title = $title;
 	}
 
@@ -317,7 +352,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param string $description
 	 * @return void
 	 */
-	public function setDescription($description) {
+	public function setDescription($description)
+    {
 		$this->description = $description;
 	}
 
@@ -327,7 +363,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param string $keywords
 	 * @return void
 	 */
-	public function setKeywords($keywords) {
+	public function setKeywords($keywords)
+    {
 		$this->keywords = $keywords;
 	}
 
@@ -337,7 +374,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param string $identifier
 	 * @return void
 	 */
-	public function setIdentifier($identifier) {
+	public function setIdentifier($identifier)
+    {
 		$this->identifier = $identifier;
 	}
 
@@ -347,7 +385,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUserId
 	 * @return void
 	 */
-	public function setFeUser($feUserId) {
+	public function setFeUser($feUserId)
+    {
         $this->feUserId = $feUserId;
     }
 
@@ -357,7 +396,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param \TYPO3\CMS\Extbase\Domain\Model\BackendUser $cruserId
 	 * @return void
 	 */
-	public function setCruser($cruserId) {
+	public function setCruser($cruserId)
+    {
 		$this->cruserId = $cruserId;
 	}
 
@@ -367,7 +407,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param boolean $noReadAccess
 	 * @return void
 	 */
-	public function setNoReadAccess($noReadAccess) {
+	public function setNoReadAccess($noReadAccess)
+    {
 		$this->noReadAccess = $noReadAccess;
 	}
 
@@ -377,7 +418,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param boolean $noWriteAccess
 	 * @return void
 	 */
-	public function setNoWriteAccess($noWriteAccess) {
+	public function setNoWriteAccess($noWriteAccess)
+    {
 		$this->noWriteAccess = $noWriteAccess;
 	}
 
@@ -387,7 +429,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
 	 * @return void
 	 */
-	public function setUidParent($uidParent) {
+	public function setUidParent($uidParent)
+    {
 		$this->uidParent = $uidParent;
 	}
 
@@ -397,7 +440,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param array $arrayFeGroupRead
 	 * @return void
 	 */
-    public function setArrayFeGroupRead($arrayFeGroupRead) {
+    public function setArrayFeGroupRead($arrayFeGroupRead)
+    {
 		$arrayFeGroupRead = is_array($arrayFeGroupRead) ?  implode(',', $arrayFeGroupRead) : $arrayFeGroupRead;
 		$this->feGroupRead = $arrayFeGroupRead;
 	}
@@ -408,7 +452,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param array $arrayFeGroupWrite
 	 * @return void
 	 */
-	public function setArrayFeGroupWrite($arrayFeGroupWrite) {
+	public function setArrayFeGroupWrite($arrayFeGroupWrite)
+    {
 		$arrayFeGroupWrite = is_array($arrayFeGroupWrite) ?  implode(',', $arrayFeGroupWrite) : $arrayFeGroupWrite;
 		$this->feGroupWrite = $arrayFeGroupWrite;
 	}
@@ -419,7 +464,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param array $arrayFeGroupAddfolder
 	 * @return void
 	 */
-	public function setArrayFeGroupAddfolder($arrayFeGroupAddfolder) {
+	public function setArrayFeGroupAddfolder($arrayFeGroupAddfolder)
+    {
 		$arrayFeGroupAddfolder = is_array($arrayFeGroupAddfolder) ?  implode(',', $arrayFeGroupAddfolder) : $arrayFeGroupAddfolder;
 		$this->feGroupAddfolder = $arrayFeGroupAddfolder;
 	}
@@ -430,46 +476,51 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
 	 * @param array $arrayFeGroupAddfile
 	 * @return void
 	 */
-	public function setArrayFeGroupAddfile($arrayFeGroupAddfile) {
+	public function setArrayFeGroupAddfile($arrayFeGroupAddfile)
+    {
 		$arrayFeGroupAddfile = is_array($arrayFeGroupAddfile) ?  implode(',', $arrayFeGroupAddfile) : $arrayFeGroupAddfile;
 		$this->feGroupAddfile = $arrayFeGroupAddfile;
 	}
 
-	public function getFileNumber() {
+	public function getFileNumber()
+    {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		return $folderRepository->countFilesForFolder($this->getUid());		
 	}
 
-	public function getFolderNumber() {
+	public function getFolderNumber()
+    {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		return $folderRepository->countFoldersForFolder($this->getUid());		
 	}
 
-	public function hasFolder($folderName, $uid=null) {
+	public function hasFolder($folderName, $uid=null)
+    {
 		foreach ($this->getFolders() as $child) {
-			if($child->getTitle() == $folderName && $child->getUid() != $uid){
+			if ($child->getTitle() == $folderName && $child->getUid() != $uid) {
 				return true;
 			}
 		}
 	}
 
 
-    public function getCategories() {
-        $extbaseObjectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+    public function getCategories()
+    {
+        $extbaseObjectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
         $repo = $extbaseObjectManager->get('TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository');
 
         $uidsCat = $this->getCategoriesUids();
 
-        if(!empty($uidsCat)) {
-            $categories = \Ameos\AmeosFilemanager\Tools\Tools::getByUids($repo,$uidsCat);
+        if (!empty($uidsCat)) {
+            $categories = Tools::getByUids($repo, $uidsCat);
             return $categories;
-        }
-        else {
+        } else {
             return;
         }
     }
 
-    public function getCategoriesUids() {
+    public function getCategoriesUids()
+    {
         $test = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid_local',
             'sys_category_record_mm',
@@ -485,7 +536,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
         return $uidsCat;
     }
 
-    public function setCategories($categories) {
+    public function setCategories($categories)
+    {
         if(is_array($categories)) {
             $GLOBALS['TYPO3_DB']->exec_DELETEquery(
                 'sys_category_record_mm',
@@ -506,19 +558,19 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder {
         }
     }
 
-    public function isChildOf($uidFolder) {
-    	if($this->getUid() == $uidFolder){
+    public function isChildOf($uidFolder)
+    {
+    	if ($this->getUid() == $uidFolder) {
     		return true;
-    	}
-    	else if($this->getParent()){
+    	} elseif ($this->getParent()){
     		return $this->getParent()->isChildOf($uidFolder);
-    	}
-    	else{
+    	} else {
     		return false;
     	}
     }
 
-    public function getIsEmpty(){
+    public function getIsEmpty()
+    {
     	return ( $this->getFileNumber() == 0 && $this->getFolderNumber() == 0 );
     }
 }

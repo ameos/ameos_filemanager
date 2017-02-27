@@ -1,11 +1,23 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+ 
+class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
 
 	protected $defaultOrderings = array(
 		'crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
@@ -14,7 +26,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	/**
 	 * Initialization
 	 */
-	public function initializeObject() {
+	public function initializeObject()
+    {
 		$querySettings = $this->createQuery()->getQuerySettings();
 		$querySettings->setRespectStoragePage(FALSE);
         $this->setDefaultQuerySettings($querySettings);
@@ -25,7 +38,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param integer $uid uid of the folder
 	 * @param array $field_values values to update
 	 */
-	public function requestUpdate($uid,$field_values) {
+	public function requestUpdate($uid,$field_values)
+    {
 		$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_ameosfilemanager_domain_model_folder', 
 			'tx_ameosfilemanager_domain_model_folder.uid = '.$uid, 
@@ -38,7 +52,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * Delete a folder and all of it's content
 	 * @param integer $uid folder uid
 	 */
-	public function requestDelete($uid) {
+	public function requestDelete($uid)
+    {
 		$update = array(
 			"deleted" => 1,
 		);
@@ -65,12 +80,14 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * insert new Folder
 	 * @param array $insertArray values of the folder
 	 */
-	public function requestInsert($insertArray) {
+	public function requestInsert($insertArray)
+    {
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_folder', $insertArray);
 	}
 
-	public function countFilesForFolder($folderUid) {
-		if(empty($folderUid)) {
+	public function countFilesForFolder($folderUid)
+    {
+		if (empty($folderUid)) {
 			return 0;
 		}
 		$where = "sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ".(int)$folderUid;
@@ -78,16 +95,18 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	}
 
-	public function countFoldersForFolder($folderUid) {
-		if(empty($folderUid)) {
+	public function countFoldersForFolder($folderUid)
+    {
+		if (empty($folderUid)) {
 			return 0;
 		}	
 		$where = "uid_parent = ".(int)$folderUid;
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','tx_ameosfilemanager_domain_model_folder', $where)['count'];
 	}
 
-	public function getSubFolderFromFolder($folderUid){
-		if(empty($folderUid)) {
+	public function getSubFolderFromFolder($folderUid)
+    {
+		if (empty($folderUid)) {
 			return 0;
 		}
 		$query = $this->createQuery();		
@@ -105,28 +124,29 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $res;
 	}
 
-	public function getModifiedEnabledFields($writeMode = false) {
+	public function getModifiedEnabledFields($writeMode = false)
+    {
 		$pageRepository = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Page\PageRepository');
 		$enableFieldsWithFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder');
 		$enableFieldsWithoutFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder',0,array('fe_group' => 1));
 
 		$ownerOnlyField = $writeMode ? 'no_write_access':'no_read_access';
 
-		if($GLOBALS['TSFE']->fe_user->user) {
+		if ($GLOBALS['TSFE']->fe_user->user) {
 			$where = " AND (( 1=1" . $enableFieldsWithFeGroup . " AND (".$ownerOnlyField." = 0) ) OR ( 1=1".$enableFieldsWithoutFeGroup." AND tx_ameosfilemanager_domain_model_folder.fe_user_id = ".$GLOBALS['TSFE']->fe_user->user["uid"]."))";
-		}
-		else {
+		} else {
 			$where = " AND (( 1=1" . $enableFieldsWithFeGroup . " AND (".$ownerOnlyField." = 0) ) AND ( 1=1".$enableFieldsWithoutFeGroup."))";
 		}
 		return $where;
 	}
 
-	public function findByUid($folderUid, $accessMode = 'read') {
-		if(empty($folderUid)) {
+	public function findByUid($folderUid, $accessMode = 'read')
+    {
+		if (empty($folderUid)) {
 			return 0;
 		}
 		// if write mode is set, we change the fegroup enablecolumns value to match the write column in the bdd
-		switch($accessMode) {
+		switch ($accessMode) {
             case 'read':      $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_read';      break;
             case 'write':     $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_write';     break;
             case 'addfile':   $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_addfile';   break;

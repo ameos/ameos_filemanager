@@ -1,0 +1,49 @@
+plugin.tx_ameosfilemanager {
+	settings {
+		columnsTable = {$plugin.tx_ameosfilemanager.columnsTable}
+		actionDetail = {$plugin.tx_ameosfilemanager.actionDetail}
+		iconFolder = {$plugin.tx_ameosfilemanager.iconFolder}
+		columnsExport = {$plugin.tx_ameosfilemanager.columnsExport}
+		parseFolderInFE = {$plugin.tx_ameosfilemanager.parseFolderInFE}
+        allowedFileExtension = {$plugin.tx_ameosfilemanager.allowedFileExtension}
+	}
+	persistence {
+		classes {
+			Ameos\AmeosFilemanager\Domain\Model\Folder {
+				 mapping {
+            		columns.crdate.mapOnProperty = crdate
+            	}
+			}
+			Ameos\AmeosFilemanager\Domain\Model\File {
+				mapping {
+					tableName = sys_file
+				}
+			}
+			Ameos\AmeosFilemanager\Domain\Model\Category {
+				mapping {
+					tableName = sys_category
+				}
+			}
+			TYPO3\CMS\Core\Resource\ResourceStorage {
+				mapping {
+					tableName = sys_file_storage
+				}
+			}
+		}
+	}
+}
+
+config.tx_extbase {
+	objects {
+		TYPO3\CMS\Extbase\Domain\Model\Category {
+			className = Ameos\AmeosFilemanager\Domain\Model\Category
+		}
+	}
+}
+
+#page.includeCSS.tx_ameosfilemanager1 = typo3conf/ext/ameos_filemanager/Resources/Public/Css/style.css
+page.includeCSS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/Css/datepickr.css
+#page.includeCSS.ameos_fontawesome = typo3conf/ext/ameos_filemanager/Resources/Public/Css/font-awesome.min.css
+
+
+page.includeJS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/Javascript/datepickr.min.js

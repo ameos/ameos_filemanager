@@ -1,352 +1,259 @@
 <?php
-if (!defined ('TYPO3_MODE'))    die ('Access denied.');
+if (!defined('TYPO3_MODE')) {
+    die('Access denied.');
+}
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-$GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"] = Array (
-    "ctrl" => Array (
-        'title' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder',
-        'label' => 'title', 
-        'tstamp' => 'tstamp',
-        'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
-        'delete'            => 'deleted',
-        'enablecolumns' => array (
-            'disabled' => 'hidden',
-            'fe_group' => 'fe_group_read'
-        ),
-        'hideTable' => true,
-        "default_sortby" => "ORDER BY crdate",
-        "iconfile" => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ameos_filemanager')."ext_icon.gif",
-        "searchFields" => "title, description, keywords",
-        "rootLevel" => 1,
-        "security" => array(
-            "ignoreRootLevelRestriction" => 1,
-            "ignoreWebMountRestriction" => 1,
-        ),
-        
-    ),
-    "feInterface" => Array (
-        "fe_admin_fieldList" => "title,description,keywords,fe_groups_access,file,folders,",
-    )
-);
-$GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"] = array(
-    "ctrl" => $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]["ctrl"],
-    "interface" => array(
-        "showRecordFieldList" => "title,description,keywords,fe_groups_access,file,folders,"
-    ),
-    "feInterface" => $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]["feInterface"],
-    "columns" => array(
-        'hidden' => array (        
+$ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_folder';
+
+$GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
+    'ctrl' => [
+        'title'          => $ll,
+        'label'          => 'title', 
+        'tstamp'         => 'tstamp',
+        'crdate'         => 'crdate',
+        'cruser_id'      => 'cruser_id',
+        'delete'         => 'deleted',
+        'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
+        'hideTable'      => true,
+        'default_sortby' => 'ORDER BY crdate',
+        'iconfile'       => ExtensionManagementUtility::extRelPath('ameos_filemanager') . 'ext_icon.png',
+        'searchFields'   => 'title, description, keywords',
+        'rootLevel'      => 1,
+        'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
+    ],
+    'feInterface' => ['fe_admin_fieldList' => 'title,description,keywords,fe_groups_access,file,folder,'],
+    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,no_read_access,fe_group_write,no_write_access,fe_group_addfolder,fe_group_addfile']],
+    'interface' => ['showRecordFieldList' => 'title,description,keywords,fe_groups_access,file,folders'],
+    'columns' => [
+        'hidden' => [        
             'exclude' => 1,
-            'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
-            'config'  => array (
-                'type'    => 'check',
-                'default' => '0'
-            )
-        ),
-        'crdate' => array(
-            "exclude" => 0, 
-            "label" => "LLL:EXT:lang/locallang_general.xml:LGL.crdate",
-            "config" => array(
-                "type" => "input",
-            )
-        ),
-        'tstamp' => array(
-            "exclude" => 0, 
-            "label" => "LLL:EXT:lang/locallang_general.xml:LGL.tstamp",
-            "config" => array(
-                "type" => "input",
-            )
-        ),
-        'cruser_id' => array(
+            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'config'  => ['type' => 'check', 'default' => '0']
+        ],
+        'crdate' => [
+            'exclude' => 0, 
+            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.crdate',
+            'config'  => ['type' => 'input']
+        ],
+        'tstamp' => [
+            'exclude' => 0, 
+            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.tstamp',
+            'config'  => ['type' => 'input']
+        ],
+        'cruser_id' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.be_user',
-            'config' => array(
-                'type' => 'select',
-                'renderType' => 'selectSingleBox',
-                'size' => 5,
-                'maxitems' => 1,
-                'foreign_table' => 'be_user',
+            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.be_user',
+            'config'  => [
+                'type'                => 'select',
+                'renderType'          => 'selectSingleBox',
+                'size'                => 5,
+                'maxitems'            => 1,
+                'foreign_table'       => 'be_user',
                 'foreign_table_where' => 'ORDER BY be_user.uid'
-            )
-        ),
-        'fe_user_id' => array(
+            ]
+        ],
+        'fe_user_id' => [
             'exclude' => 0,
-            'label' => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.fe_user_id",
-            'config' => array(
-                'type' => 'select',
-                'renderType' => 'selectSingleBox',
-                'maxitems' => 1,
-                'size' => 10,
+            'label'   => $ll . '.fe_user_id',
+            'config'  => [
+                'type'          => 'select',
+                'renderType'    => 'selectSingleBox',
+                'maxitems'      => 1,
+                'size'          => 10,
                 'foreign_table' => 'fe_users',
-            )
-        ),
-        "title" => array(
-            "exclude" => 0, 
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.title",
-            "config" => array(
-                "type" => "input",
-                "size" => "30",
-                "eval" => "trim",
-            )
-        ),
-        "no_read_access" => array(
-            "exclude" => 0, 
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.no_read_access",
-            "config" => array(
-                "type" => "check",
-                "default" => "0",
-            )
-        ),
-        "no_write_access" => array(
-            "exclude" => 0, 
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.no_write_access",
-            "config" => array(
-                "type" => "check",
-                "default" => "0",
-            )
-        ),
-        "description" => array(      
-            "exclude" => 0,   
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.description",     
-            "config" => array(
-                "type" => "text", 
-                "cols" => "15",
-                "rows" => "5", 
-                "eval" => "trim", 
-            )
-        ),
-        "identifier" => array(      
-            "exclude" => 0,   
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.identifier",
-            "config" => array(
-                "type" => "text",
-                "cols" => "15",
-                "rows" => "5",
-                "eval" => "trim", 
-            )
-        ),
-        'storage' => array(
+            ]
+        ],
+        'title' => [
+            'exclude' => 0, 
+            'label' => $ll . '.title',
+            'config' => [
+                'type' => 'input',
+                'size' => '30',
+                'eval' => 'trim',
+            ]
+        ],
+        'no_read_access' => [
+            'exclude' => 0, 
+            'label' => $ll . '.no_read_access',
+            'config' => [
+                'type'    => 'check',
+                'default' => '0',
+            ]
+        ],
+        'no_write_access' => [
+            'exclude' => 0, 
+            'label'   => $ll . '.no_write_access',
+            'config'  => [
+                'type'    => 'check',
+                'default' => '0',
+            ]
+        ],
+        'description' => [      
+            'exclude' => 0,   
+            'label'   => $ll . '.description',     
+            'config'  => [
+                'type' => 'text', 
+                'cols' => '15',
+                'rows' => '5', 
+                'eval' => 'trim', 
+            ]
+        ],
+        'identifier' => [      
+            'exclude' => 0,   
+            'label'   => $ll . '.identifier',
+            'config'  => [
+                'type' => 'text',
+                'cols' => '15',
+                'rows' => '5',
+                'eval' => 'trim', 
+            ]
+        ],
+        'storage' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:lang/locallang_tca.xlf:sys_file.storage',
-            'config' => array(
-                'readOnly' => 1,
-                'type' => 'select',
-                'renderType' => 'selectSingleBox',
-                'items' => array(
-                    array('', 0)
-                ),
-                'foreign_table' => 'sys_file_storage',
+            'label'   => 'LLL:EXT:lang/locallang_tca.xlf:sys_file.storage',
+            'config'  => [
+                'readOnly'            => 1,
+                'type'                => 'select',
+                'renderType'          => 'selectSingleBox',
+                'items'               => [['', 0]],
+                'foreign_table'       => 'sys_file_storage',
                 'foreign_table_where' => 'ORDER BY sys_file_storage.name',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1
-            )
-        ),
-        "keywords" => array(      
-            "exclude" => 0,   
-            "label" => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.keywords",     
-            "config" => array(
-                "type" => "text", 
-                "cols" => "15",
-                "rows" => "5", 
-                "eval" => "trim", 
-            )
-        ),
-        'fe_group_read' => array(
+                'size'                => 1,
+                'minitems'            => 0,
+                'maxitems'            => 1
+            ]
+        ],
+        'keywords' => [      
+            'exclude' => 0,   
+            'label'   => $ll . '.keywords',     
+            'config'  => [
+                'type' => 'text', 
+                'cols' => '15',
+                'rows' => '5', 
+                'eval' => 'trim', 
+            ]
+        ],
+        'fe_group_read' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.fe_group_read',
-            'config' => array(
-                'type' => 'select',
+            'label'   => $ll . '.fe_group_read',
+            'config'  => [
+                'type'       => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'size' => 5,
-                'maxitems' => 20,/*
-                'items' => array(
-                    array(
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
-                        -2
-                    ),
-                    array(
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
-                        '--div--'
-                    )
-                ),
-                'exclusiveKeys' => '-1,-2',*/
-                'items' => array(
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
-                            -2
-                        ),
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
-                            '--div--'
-                        )
-                    ),
+                'size'       => 5,
+                'maxitems'   => 20,
+                'items'      => [
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login',  -2],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--']
+                ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title'
-            )
-        ),
-        'fe_group_write' => array(
+            ]
+        ],
+        'fe_group_write' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.fe_group_write',
-            'config' => array(
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
-                'size' => 5,
-                'maxitems' => 20,/*
-                'items' => array(
-                    array(
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
-                        -2
-                    ),
-                    array(
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
-                        '--div--'
-                    )
-                ),
-                'exclusiveKeys' => '-1,-2',*/
-                'items' => array(
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
-                            -2
-                        ),
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
-                            '--div--'
-                        )
-                    ),
-                'exclusiveKeys' => '-1,-2',
-                'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            )
-        ),
-        'fe_group_addfile' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.fe_group_addfile',
-            'config' => array(
+            'label'   => $ll . '.fe_group_write',
+            'config'  => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
                 'maxitems' => 20,
-                'items' => array(
-                        array(
+                'items' => [
+                        [
                             'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
                             -2
-                        ),
-                        array(
+                        ],
+                        [
                             'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
                             '--div--'
-                        )
-                    ),
+                        ]
+                    ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title'
-            )
-        ),
-        'fe_group_addfolder' => array(
+            ]
+        ],
+        'fe_group_addfile' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.fe_group_addfolder',
-            'config' => array(
-                'type' => 'select',
+            'label'   => $ll . '.fe_group_addfile',
+            'config'  => [
+                'type'       => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'size' => 5,
-                'maxitems' => 20,
-                'items' => array(
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
-                            -2
-                        ),
-                        array(
-                            'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
-                            '--div--'
-                        )
-                    ),
+                'size'       => 5,
+                'maxitems'   => 20,
+                'items'      => [
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login',  -2],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--']
+                ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title'
-            )
-        ),
-        'folders' => array( 
+            ]
+        ],
+        'fe_group_addfolder' => [
+            'exclude' => 1,
+            'label'   => $ll . '.fe_group_addfolder',
+            'config'  => [
+                'type'       => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'size'       => 5,
+                'maxitems'   => 20,
+                'items'      => [
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login',  -2],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--']
+                ],
+                'exclusiveKeys' => '-1,-2',
+                'foreign_table' => 'fe_groups',
+                'foreign_table_where' => 'ORDER BY fe_groups.title'
+            ]
+        ],
+        'folders' => [ 
             'exclude' => 0,
-            'label' => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.folders",
-            'config' => array(
-                'maxitems' => 500,
-                'type' => 'inline',
+            'label'   => $ll . '.folders',
+            'config'  => [
+                'maxitems'      => 500,
+                'type'          => 'inline',
                 'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
                 'foreign_field' => 'uid_parent',
-                'appearance' => array(
-                  'collapseAll' => 1,
-                ),
-            )
-        ),
-        
-        'uid_parent' => array(
+                'appearance'    => ['collapseAll' => 1],
+            ]
+        ],
+        'uid_parent' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.uid_parent',
-            'config' => array(
-                'type' => 'select',
-                'renderType' => 'selectSingleBox',
-                'size' => 5,
-                'maxitems' => 1,
-                'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
+            'label'   => $ll . '.uid_parent',
+            'config'  => [
+                'type'                => 'select',
+                'renderType'          => 'selectSingleBox',
+                'size'                => 5,
+                'maxitems'            => 1,
+                'foreign_table'       => 'tx_ameosfilemanager_domain_model_folder',
                 'foreign_table_where' => 'ORDER BY tx_ameosfilemanager_domain_model_folder.title'
-            )
-        ),
-        'files' => array(
+            ]
+        ],
+        'files' => [
             'exclude' => 0,
-            'label' => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_folder.files",
-            'config' => array(
-                'maxitems' => 500,
-                'type' => 'inline',
-                'foreign_table' => 'sys_file',
-                /*
-                'foreign_field' => 'tx_ameosfilemanager_domain_model_folder',
-                
-                'appearance' => array(
-                    'collapseAll' => 1,
-                        'headerThumbnail' => array(
-                            'field' => 'uid_local',
-                            'width' => '45',
-                            'height' => '45c',
-                    ),
-                ),
-               */
-            )
-        ),
-        'fe_user_id' => array(
+            'label'   => $ll . '.files',
+            'config'  => [
+                'maxitems'      => 500,
+                'type'          => 'inline',
+                'foreign_table' => 'sys_file',                
+            ]
+        ],
+        'fe_user_id' => [
             'exclude' => 0,
-            'label' => "LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xml:tx_ameosfilemanager_domain_model_file.fe_user_id",
-            'config' => array(
-                'type' => 'select',
-                'maxitems' => 1,
-                'items' => array(
-                    array(
-                        '',
-                        0
-                    ),
-                ),
-                'size' => 1,
+            'label'   => $ll . '.fe_user_id',
+            'config'  => [
+                'type'          => 'select',
+                'maxitems'      => 1,
+                'items'         => [['', 0]],
+                'size'          => 1,
                 'foreign_table' => 'fe_users',
-            )
-        ),
-    ),
+            ]
+        ],
+    ],
 
-    "types" => array(
-        "0" => array("showitem" => "description,keywords,fe_user_id,fe_group_read,no_read_access,fe_group_write,no_write_access,fe_group_addfolder,fe_group_addfile")
-    ),
-    "palettes" => array(
-        "1" => array("showitem" => "")
-    )
-);
+];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::makeCategorizable(
-        'ameos_filemanager',
-        'tx_ameosfilemanager_domain_model_folder',
-        // Do not use the default field name ("categories"), which is already used
-        // Also do not use a field name containing "categories" (see http://forum.typo3.org/index.php/t/199595/)
-        'cats',
-        array(
-                'exclude' => FALSE,
-        )
-);
+ExtensionManagementUtility::makeCategorizable('ameos_filemanager', 'tx_ameosfilemanager_domain_model_folder', 'cats', ['exclude' => FALSE]);

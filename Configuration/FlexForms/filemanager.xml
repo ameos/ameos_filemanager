@@ -6,13 +6,13 @@
 		<sheetStd>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.generalSheet</sheetTitle>
+					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.generalSheet</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<settings.stockageGroupPid>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.stockageGroupPid</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.stockageGroupPid</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -25,7 +25,7 @@
 					</settings.stockageGroupPid>
 					<settings.storage>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.storage</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.storage</label>
 							<config>
 								<type>select</type>
 								<internal_type>db</internal_type>
@@ -37,9 +37,17 @@
 							</config>
 						</TCEforms>
 					</settings.storage>
+					<settings.recursion>
+						<TCEforms>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.recursion</label>
+							<config>
+								<type>input</type>
+							</config>
+						</TCEforms>
+					</settings.recursion>
 					<settings.startFolder>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.startFolder</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.startFolder</label>
 							<config>
 								<type>select</type>
 								<foreign_table>tx_ameosfilemanager_domain_model_folder</foreign_table>
@@ -57,28 +65,28 @@
 							</config>
 						</TCEforms>
 					</settings.startFolder>
-					<settings.allowedFileExtension>
-						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.allowedFileExtension</label>
-							<config>
-								<type>input</type>
-								<default>jpg,jpeg,tif,png,gif,pdf,docx,doc,xls,csv,odt,ppt</default>
-							</config>
-						</TCEforms>
-					</settings.allowedFileExtension>
+                    <view.pluginNamespace>
+                        <TCEforms>
+                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.pluginNamespace</label>
+                            <config>
+                                <type>input</type>
+                                <default>tx_ameosfilemanager</default>
+                            </config>
+                        </TCEforms>
+                    </view.pluginNamespace>
 				</el>
 			</ROOT>
 		</sheetStd>
 		<sheetAppearance>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.sheetAppearance</sheetTitle>
+					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.sheetAppearance</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<settings.columnsTable>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.columnsTable</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.columnsTable</label>
 							<config>
 								<type>select</type>
 								<multiple>false</multiple>
@@ -87,43 +95,43 @@
 								<maxitems>11</maxitems>
 								<items type="array">
 							        <numIndex index="1" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.icon</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.icon</numIndex>
 							            <numIndex index="1">icon</numIndex>
 							        </numIndex>
 							        <numIndex index="2" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.title</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.title</numIndex>
 							            <numIndex index="1">title</numIndex>
 							        </numIndex>
 							        <numIndex index="3" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.createdAt</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.createdAt</numIndex>
 							            <numIndex index="1">createdAt</numIndex>
 							        </numIndex>
 							        <numIndex index="4" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.updatedAt</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.updatedAt</numIndex>
 							            <numIndex index="1">updatedAt</numIndex>
 							        </numIndex>
 							        <numIndex index="5" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.description</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.description</numIndex>
 							            <numIndex index="1">description</numIndex>
 							        </numIndex>
 							        <numIndex index="6" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.owner</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.owner</numIndex>
 							            <numIndex index="1">owner</numIndex>
 							        </numIndex>
 							        <numIndex index="7" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.size</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.size</numIndex>
 							            <numIndex index="1">size</numIndex>
 							        </numIndex>
 							        <numIndex index="8" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.keywords</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.keywords</numIndex>
 							            <numIndex index="1">keywords</numIndex>
 							        </numIndex>
 							        <numIndex index="9" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.actions</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.actions</numIndex>
 							            <numIndex index="1">actions</numIndex>
 							        </numIndex>
 							        <numIndex index="10" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.categories</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.categories</numIndex>
 							            <numIndex index="1">categories</numIndex>
 							        </numIndex>
 					            </items>
@@ -133,7 +141,7 @@
 					</settings.columnsTable>
 					<settings.actionDetail>
 							<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.actionDetail</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.actionDetail</label>
 							<config>
 								<type>select</type>
 								<multiple>false</multiple>
@@ -142,19 +150,19 @@
 								<maxitems>4</maxitems>
 								<items type="array">
 							        <numIndex index="1" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.download</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.download</numIndex>
 							            <numIndex index="1">download</numIndex>
 							        </numIndex>
 							        <numIndex index="2" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.detail</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.detail</numIndex>
 							            <numIndex index="1">detail</numIndex>
 							        </numIndex>
 							        <numIndex index="3" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.edit</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.edit</numIndex>
 							            <numIndex index="1">edit</numIndex>
 							        </numIndex>
 							        <numIndex index="4" type="array">
-							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.delete</numIndex>
+							            <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.delete</numIndex>
 							            <numIndex index="1">delete</numIndex>
 							        </numIndex>
 					            </items>
@@ -164,7 +172,7 @@
 					</settings.actionDetail>
 					<settings.iconFolder>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.iconFolder</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.iconFolder</label>
 							<config>
 								<type>input</type>
 								<default>typo3conf/ext/ameos_filemanager/Resources/Public/Icons/</default>
@@ -177,13 +185,13 @@
 		<sheetEdition>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.sheetEdition</sheetTitle>
+					<sheetTitle>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.sheetEdition</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<settings.authorizedGroups>
 						<TCEforms>
-							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.authorizedGroup</label>
+							<label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.authorizedGroup</label>
 							<config>
 								<type>select</type>
 								<foreign_table>fe_groups</foreign_table>
@@ -206,7 +214,7 @@
 					<settings.authorizedCategories>
 						<TCEforms>
 						  <exclude>1</exclude>
-						  <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xml:flexform.authorizedCategories</label>
+						  <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.authorizedCategories</label>
 						  <config>
 							<type>select</type>
 							<autoSizeMax>50</autoSizeMax>

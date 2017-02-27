@@ -3,14 +3,14 @@
     <f:for each="{columns}" as="column">
         <f:if condition="{0:column} == {0:'icon'}">
                 <td class="icone">
-                    <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                    <f:link.action action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{file: fi.uid}" >
                         <custom:icon type="{fi.originalResource.extension}" iconFolder="{iconFolder}"/>
                     </f:link.action> 
                 </td>
         </f:if>
         <f:if condition="{0:column} == {0:'title'}">
                 <td>
-                    <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                    <f:link.action action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{file: fi.uid}" >
                         {fi.title}
                     </f:link.action> 
                 </td>
@@ -50,25 +50,25 @@
             <td>
                 <f:for each="{actionDetail}" as="action">
                     <f:if condition="{0:action} == {0:'download'}">
-                        <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                        <f:link.action action="index" addQueryString="1" arguments="{file: fi.uid}">
                             <f:translate key="download"/>
                         </f:link.action><br/>
                     </f:if>
                     <f:if condition="{0:action} == {0:'detail'}">
-                        <f:link.action action="detail" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{file: fi.uid}'}" >
+                        <f:link.action action="detail" addQueryString="1" arguments="{file: fi.uid}">
                             <f:translate key="detail"/>
                         </f:link.action><br/>
                     </f:if>
                     <f:if condition="{0:action} == {0:'edit'}">
                         <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:folderRoot}">
-                            <f:link.action action="formFile" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{newFile: fi.uid}'}" >
+                            <f:link.action action="formFile" addQueryString="1" arguments="{newFile: fi.uid}">
                                 <f:translate key="edit"/>
                             </f:link.action><br/>
                         </custom:checkAccess>
                     </f:if>
                     <f:if condition="{0:action} == {0:'delete'}">
                         <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:folderRoot}">
-                            <f:link.action onclick="return confirm('Are you sure?')" action="deleteFile" addQueryString="0" additionalParams="{tx_ameosfilemanager_fe_filemanager: '{file: fi.uid}'}" >
+                            <f:link.action onclick="return confirm('Are you sure?')" action="deleteFile" addQueryString="1" arguments="{file: fi.uid}">
                                 <f:translate key="delete"/>
                             </f:link.action><br/>
                         </custom:checkAccess>

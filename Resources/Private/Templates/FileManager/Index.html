@@ -1,34 +1,36 @@
 {namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
-<div class="ameos_file_manager">
+<div class="ameos_file_manager" id="ameos_file_manager_{content_uid}">
 	<f:if condition="{folder}">
 		<f:then>
 			<h1>{folder.title}<custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-				<f:link.action action="formFolder" addQueryString="0" title="edit" class="edit" additionalParams="{tx_ameos_filemanager: '{newFolder: folder.uid}'}" >
+				<f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid}" >
 	        		<i class="fa fa-pencil-square-o"></i>
 	        	</f:link.action>
             </custom:checkAccess></h1>
             <custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="formFile" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}"><f:translate key="createFile"/></f:link.action></p>
+                <p><f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFile"/></f:link.action></p>
             </custom:canAddFile>                    
             <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" action="formFolder" ><f:translate key="createFolder"/></f:link.action></p>
+                <p><f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFolder"/></f:link.action></p>
             </custom:canAddFolder>
+            <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                <p><f:link.action action="massDownload" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action></p>
+            </custom:checkAccess>
 
 			<custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}"/>
-			<table cellpadding="4" cellspacing="0">
+			<table cellpadding="0" cellspacing="0" width="100%" border="1">
 
-				<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable}" />
+				<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable,content_uid:content_uid}" />
 				<f:if condition="{0:folder.uid} != {0:settings.startFolder}">
 					<f:if condition="{folder.parent}">
 						<custom:checkAccess folder="{folder.parent}" right="r" arguments="{folderRoot:settings.startFolder}">
-							<f:render partial="FileManager/FolderLine" arguments="{folder:folder.parent,columns:settings.columnsTable,iconFolder:settings.iconFolder,actionDetail:settings.actionDetail,parent:'1',returnFolder:folder.uid}" />
+							<f:render partial="FileManager/FolderLine" arguments="{folder:folder.parent,columns:settings.columnsTable,iconFolder:settings.iconFolder,actionDetail:settings.actionDetail,parent:'1',returnFolder:folder.uid,content_uid:content_uid}" />
 					    </custom:checkAccess>
 					</f:if>
 				</f:if>
 
 				<f:for each="{folder.folders}" as="f">
-
-						<f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid}" />
+                    <f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid,content_uid:content_uid}" />
 				</f:for>
 				<f:for each="{files}" as="fi">
 					<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
@@ -37,11 +39,14 @@
 				</f:for>
 			</table>
 			<custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-				<p><f:link.action action="formFile" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}"><f:translate key="createFile"/></f:link.action></p>
+				<p><f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFile"/></f:link.action></p>
 			</custom:canAddFile>
             <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" action="formFolder" ><f:translate key="createFolder"/></f:link.action></p>
+                <p><f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFolder"/></f:link.action></p>
             </custom:canAddFolder>
+            <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                <p><f:link.action action="massDownload" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action></p>
+            </custom:checkAccess>
 		</f:then>
 		<f:else>
 			<f:translate key="accessDenied"/>

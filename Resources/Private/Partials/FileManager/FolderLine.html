@@ -3,7 +3,7 @@
     <f:for each="{columns}" as="column">
         <f:if condition="{0:column} == {0:'icon'}">
             <td class="icone">
-                <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" >
+                <f:link.action additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}" >
                    
                     <f:if condition="{0:parent} == {0:'1'}">
                         <f:then> <custom:icon type="previous_folder" iconFolder="{iconFolder}"/> </f:then>
@@ -14,7 +14,7 @@
         </f:if>
         <f:if condition="{0:column} == {0:'title'}">
             <td>
-               <f:link.action action="index" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}" >
+               <f:link.action additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}" >
                     <f:if condition="{0:parent} == {0:'1'}">
                         <f:then>..</f:then>
                         <f:else>{folder.title}</f:else>
@@ -52,7 +52,7 @@
                 <f:for each="{actionDetail}" as="action">
                     <f:if condition="{0:action} == {0:'edit'}">
                         <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:folderRoot}">
-                            <f:link.action action="formFolder" addQueryString="0" additionalParams="{tx_ameos_filemanager: '{newFolder: folder.uid,returnFolder:returnFolder}'}" >
+                            <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{newFolder: folder.uid,returnFolder:returnFolder}" >
                                 <f:translate key="edit"/>
                             </f:link.action><br/>
                         </custom:checkAccess>
@@ -61,7 +61,7 @@
                     <f:if condition="{0:action} == {0:'delete'}">
                         <f:if condition="{folder.isEmpty}">
                             <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:folderRoot}">
-                                <f:link.action onclick="return confirm('Are you sure?')" action="deleteFolder" addQueryString="0" additionalParams="{tx_ameosfilemanager_fe_filemanager: '{folder: folder.uid}'}" >
+                                <f:link.action onclick="return confirm('Are you sure?')" action="deleteFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}" >
                                     <f:translate key="delete"/>
                                 </f:link.action><br/>
                             </custom:checkAccess>

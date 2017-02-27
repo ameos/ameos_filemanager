@@ -1,10 +1,21 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
-class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
-
+class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 	/**
 	 * @var Tx_AmeosFilemanager_Domain_Model_File
 	 */
@@ -21,14 +32,16 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $userDownload;
 
 
-	public function getFile() {
+	public function getFile()
+    {
 		return $this->file;
 	}
 
 	/**
      * @return integer
      */
-	public function getCrdate() {
+	public function getCrdate()
+    {
 		return $this->crdate;
 	}
 
@@ -38,7 +51,8 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param Tx_AmeosFilemanager_Domain_Model_File $file
 	 * @return void
 	 */
-	public function setFile($file) {
+	public function setFile($file)
+    {
 		$this->file = $file;
 	}
 
@@ -48,7 +62,8 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param int $crdate
 	 * @return void
 	 */
-	public function setCrdate($crdate) {
+	public function setCrdate($crdate)
+    {
 		$this->crdate = $crdate;
 	}
 
@@ -58,7 +73,8 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param TYPO3\CMS\Extbase\Domain\Model\FrontendUser $userDownload
 	 * @return void
 	 */
-	public function setUserDownload($userDownload) {
+	public function setUserDownload($userDownload)
+    {
 		$this->userDownload = $userDownload;
 	}
 }

@@ -24,7 +24,8 @@ $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_fil
 ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_search', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/search.xml');
 
 // Typoscript
-ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/Typoscript/', 'Ameos file manager');
+ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'File manager > Default');
+ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Ajax/', 'File manager > Activate Ajax Mode (required jquery)');
 
 if (TYPO3_MODE == 'BE') {
     // wizicon

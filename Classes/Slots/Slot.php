@@ -1,11 +1,24 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\Slots;
 
 use Ameos\AmeosFilemanager\Tools\Tools;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Slot {
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+ 
+class Slot
+{
 
 	/**
 	 * Call after folder rename in filelist
@@ -14,7 +27,8 @@ class Slot {
 	 * @param string $newName
 	 * @return void
 	 */
-	public function postFolderRename($folder,$newName) {
+	public function postFolderRename($folder,$newName)
+    {
 		$folderRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getName()."'" );
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -33,7 +47,8 @@ class Slot {
 	 * @param Folder $folder
 	 * @return void
 	 */
-	public function postFolderAdd($folder) {
+	public function postFolderAdd($folder)
+    {
 		if($folder->getParentFolder() && $folder->getParentFolder()->getName() != '') {
 			$inserted = false;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getParentFolder()->getName()."'" );
@@ -83,7 +98,8 @@ class Slot {
 	 * @param string $newName
 	 * @return void
 	 */
-	public function postFolderMove($folder, $targetFolder, $newName) {
+	public function postFolderMove($folder, $targetFolder, $newName)
+    {
 		$folderRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$targetFolder->getName()."'" );
@@ -113,7 +129,8 @@ class Slot {
 	 * @param string $newName
 	 * @return void
 	 */
-	public function postFolderCopy($folder, $targetFolder, $newName) {
+	public function postFolderCopy($folder, $targetFolder, $newName)
+    {
 		$folderRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$targetFolder->getName()."'" );
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -126,7 +143,8 @@ class Slot {
 		self::setDatabaseForFolder($targetFolder->getSubfolder($newName),$uid_parent);
 	}
 	
-	public function setDatabaseForFolder($folder,$uidParent=0) {
+	public function setDatabaseForFolder($folder,$uidParent=0)
+    {
 		$folderRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getName()."'" );
 		$exist = false;
@@ -145,7 +163,7 @@ class Slot {
 			$afmFolder->setCruser($GLOBALS["BE_USER"]->user["uid"]);
 			$afmFolder->setUidParent($uidParent);
 			$folderRepository->add($afmFolder);
-			GeneralUtility::makeInstance('Tx_Extbase_Persistence_Manager')->persistAll();
+			GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager')->persistAll();
 			$uid = $afmFolder->getUid();
 		}
 
@@ -185,7 +203,8 @@ class Slot {
 	 * @param Folder $folder
 	 * @return void
 	 */
-	public function postFolderDelete($folder) {
+	public function postFolderDelete($folder)
+    {
 		$folderRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getName()."'" );
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -204,7 +223,8 @@ class Slot {
 	 * @param Folder $targetFolder
 	 * @return void
 	 */
-	public function postFileAdd($file, $targetFolder) {
+	public function postFileAdd($file, $targetFolder)
+    {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$targetFolder->getName()."'" );
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -241,7 +261,8 @@ class Slot {
 	 * @param Folder $targetFolder
 	 * @return void
 	 */
-	public function postFileCopy($file, $targetFolder) {
+	public function postFileCopy($file, $targetFolder)
+    {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$targetFolder->getName()."'" );
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if(Tools::getFolderPathFromUid($row['uid']).'/' == $targetFolder->getIdentifier()) {
@@ -283,7 +304,8 @@ class Slot {
 	 * @param Folder $targetFolder
 	 * @return void
 	 */
-	public function postFileMove($file, $targetFolder) {
+	public function postFileMove($file, $targetFolder)
+    {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$targetFolder->getName()."'" );
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if(Tools::getFolderPathFromUid($row['uid']).'/' == $targetFolder->getIdentifier())

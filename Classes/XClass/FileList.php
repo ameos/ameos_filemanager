@@ -1,7 +1,5 @@
 <?php
-
 namespace Ameos\AmeosFilemanager\XClass;
-
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -10,18 +8,32 @@ use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
-
 use Ameos\AmeosFilemanager\Tools\Tools;
 
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 // XClassed to add an edit button for the folder in filelist
-class FileList extends \TYPO3\CMS\FileList\FileList {
+class FileList extends \TYPO3\CMS\FileList\FileList
+{
 
 	/**
 	 * indexFileOrFolder
 	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
 	 */
-	protected function indexFileOrFolder($fileOrFolderObject) {
-		if(is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\File') && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
+	protected function indexFileOrFolder($fileOrFolderObject)
+    {
+		if (is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\File') && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
 			$metaData = $fileOrFolderObject->_getMetaData();
 			if($metaData['folder_uid'] == 0){
 				$folder = $fileOrFolderObject->getStorage()->getFolder($fileOrFolderObject->getStorage()->getFolderIdentifierFromFileIdentifier($fileOrFolderObject->getIdentifier()));
@@ -32,9 +44,9 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 			}
 		}
 		
-		if(is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\Folder')  && $fileOrFolderObject->checkActionPermission('write')) {
+		if (is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\Folder')  && $fileOrFolderObject->checkActionPermission('write')) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$fileOrFolderObject->getName()."'" );
-			if(($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === FALSE) {
+			if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === FALSE) {
 				$slot = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Slots\Slot');
 				$slot->postFolderAdd($fileOrFolderObject);
 			}
@@ -45,9 +57,10 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 	 * additionnal cells
 	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
 	 */
-	protected function addAdditionalCells($fileOrFolderObject) {
+	protected function addAdditionalCells($fileOrFolderObject)
+    {
 		$cells = array();
-		if(is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\File') && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
+		if (is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\File') && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
 			$metaData = $fileOrFolderObject->_getMetaData();
 			$data = array('sys_file_metadata' => array($metaData['uid'] => 'edit'));
 			$editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $data), $GLOBALS['BACK_PATH'], $this->listUrl());
@@ -59,7 +72,7 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 			}
 		}
 		
-		if(is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\Folder')  && $fileOrFolderObject->checkActionPermission('write')) {
+		if (is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\Folder')  && $fileOrFolderObject->checkActionPermission('write')) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$fileOrFolderObject->getName()."'" );
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				if(Tools::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
@@ -86,7 +99,8 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 	 * @return string HTML-table
 	 * @todo Define visibility
 	 */
-	public function makeEdit($fileOrFolderObject) {
+	public function makeEdit($fileOrFolderObject)
+    {
 		$this->indexFileOrFolder($fileOrFolderObject);
 		if (version_compare(TYPO3_version, '7', '>=')) {
 			return $this->makeEdit7($fileOrFolderObject);
@@ -102,7 +116,8 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 	 * @return string HTML-table
 	 * @todo Define visibility
 	 */
-	protected function makeEdit7($fileOrFolderObject) {
+	protected function makeEdit7($fileOrFolderObject)
+    {
 		$cells = array();
 		$fullIdentifier = $fileOrFolderObject->getCombinedIdentifier();
 		// Edit file content (if editable)
@@ -192,7 +207,8 @@ class FileList extends \TYPO3\CMS\FileList\FileList {
 	 * @return string HTML-table
 	 * @todo Define visibility
 	 */
-	protected function makeEdit62($fileOrFolderObject) {
+	protected function makeEdit62($fileOrFolderObject)
+    {
 		$cells = array();
 		$fullIdentifier = $fileOrFolderObject->getCombinedIdentifier();
 		// Edit metadata of file

@@ -3,19 +3,19 @@
 	<p>
 		<custom:checkAccess folder="{folder.parent}" right="r" arguments="{folderRoot:settings.startFolder}">
 			<f:then>
-				<f:link.action class="grad-btn" addQueryString="0" action="index" additionalParams="{tx_ameos_filemanager: '{folder: parentFolder}'}">
+				<f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: parentFolder}">
 					<f:translate key="back"/>
 				</f:link.action>
 			</f:then>
 			<f:else>
 				<f:if condition="{folder}">
 					<f:then>
-						<f:link.action class="grad-btn" addQueryString="0" action="index" additionalParams="{tx_ameos_filemanager: '{folder: folder.uid}'}">
+						<f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: folder.uid}">
 							<f:translate key="back"/>
 						</f:link.action>
 					</f:then>
 					<f:else>
-						<f:link.action class="grad-btn" addQueryString="0" action="index" additionalParams="{tx_ameos_filemanager: '{folder: parentFolder}'}">
+						<f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: parentFolder}">
 							<f:translate key="back"/>
 						</f:link.action>
 					</f:else>

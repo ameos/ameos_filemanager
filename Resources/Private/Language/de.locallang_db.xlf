@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="de" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+		<header/>
+		<body>
+            <trans-unit id="tx_ameosfilemanager" xml:space="preserve"><source>EDM</source><target>EDM</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder" xml:space="preserve"><source>Folders</source><target>Ordner</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filedownload" xml:space="preserve"><source>File download</source><target>Datei herunterladen</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.keywords" xml:space="preserve"><source>Keywords</source><target>Keywords</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.description" xml:space="preserve"><source>Description</source><target>Beschreibung</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.category" xml:space="preserve"><source>Category</source><target>Kategorie</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.files" xml:space="preserve"><source>Files</source><target>Dateien</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.folders" xml:space="preserve"><source>SubFolder</source><target>Unterordner</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.identifier" xml:space="preserve"><source>Identifier</source><target>ID</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.uidParent" xml:space="preserve"><source>Parent Folder</source><target>Übergeordneter Ordner</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_user_id" xml:space="preserve"><source>Owner</source><target>Besitzer</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_read" xml:space="preserve"><source>Groups allowed to read the folder</source><target>Gruppen mit Leseberechtigung</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_write" xml:space="preserve"><source>Groups allowed to edit the folder (rename)</source><target>Gruppen mit Bearbeitungsrechten</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.no_read_access" xml:space="preserve"><source>Only owner can read the folder</source><target>Nur der Besitzer kann den Ordner lesen</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.no_write_access" xml:space="preserve"><source>Only owner can edit the folder</source><target>Nur der Besitzer kann den Ordner bearbeiten</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_user_id" xml:space="preserve"><source>Propriétaire front_end</source><target>Frontendbesitzer</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_read" xml:space="preserve"><source>Groups allowed to read the file</source><target>Gruppen mit Leseberechtigung</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_write" xml:space="preserve"><source>Groups allowed to edit the file</source><target>Gruppen mit Bearbeitungsrechten</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.no_read_access" xml:space="preserve"><source>Only owner can read the file</source><target>Nur der Besitzer kann die Datei lesen</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.no_write_access" xml:space="preserve"><source>Only owner can edit the file</source><target>Nur der Besitzer kann die Datei bearbeiten</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.file_type" xml:space="preserve"><source>Type</source><target>Typ</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.folder_uid" xml:space="preserve"><source>Folder</source><target>Ordner</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.file_category" xml:space="preserve"><source>Category</source><target>Kategorie</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve"><source>Category</source><target>Kategorie</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_filetype" xml:space="preserve"><source>Type</source><target>Typ</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filetype.title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>
+		</body>
+	</file>
+</xliff>

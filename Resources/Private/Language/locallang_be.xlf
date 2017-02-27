@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+		<header/>
+		<body>
+			<trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source></trans-unit>
+			<trans-unit id="flexform.title" xml:space="preserve"><source>Title</source></trans-unit>
+			<trans-unit id="flexform.categories" xml:space="preserve"><source>Cateories</source></trans-unit>
+			<trans-unit id="flexform.createdAt" xml:space="preserve"><source>Created at</source></trans-unit>
+			<trans-unit id="flexform.updatedAt" xml:space="preserve"><source>Updated at</source></trans-unit>
+			<trans-unit id="flexform.description" xml:space="preserve"><source>Description</source></trans-unit>
+			<trans-unit id="flexform.owner" xml:space="preserve"><source>Owner</source></trans-unit>
+			<trans-unit id="flexform.size" xml:space="preserve"><source>Size</source></trans-unit>
+			<trans-unit id="flexform.keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
+			<trans-unit id="flexform.actions" xml:space="preserve"><source>Actions</source></trans-unit>
+			<trans-unit id="flexform.detail" xml:space="preserve"><source>Detail</source></trans-unit>
+			<trans-unit id="flexform.edit" xml:space="preserve"><source>Edit</source></trans-unit>
+			<trans-unit id="flexform.delete" xml:space="preserve"><source>Delete</source></trans-unit>
+			<trans-unit id="flexform.download" xml:space="preserve"><source>Download</source></trans-unit>
+
+			<trans-unit id="flexform.generalSheet" xml:space="preserve"><source>General configuration</source></trans-unit>
+			<trans-unit id="flexform.sheetAppearance" xml:space="preserve"><source>Tab display</source></trans-unit>
+			<trans-unit id="flexform.sheetEdition" xml:space="preserve"><source>Edit options</source></trans-unit>
+
+			<trans-unit id="flexform.authorizedGroup" xml:space="preserve"><source>Groups that can be selected while editing a record</source></trans-unit>
+			<trans-unit id="flexform.authorizedCategories" xml:space="preserve"><source>Categories that can be selected while editing a record</source></trans-unit>
+			<trans-unit id="flexform.stockageGroupPid" xml:space="preserve"><source>User groups folder</source></trans-unit>
+			<trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source></trans-unit>
+			<trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source></trans-unit>
+			<trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source></trans-unit>
+			<trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source></trans-unit>
+			<trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source></trans-unit>
+			<trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source></trans-unit>
+			<trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source></trans-unit>
+			<trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
+			<trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source></trans-unit>
+			<trans-unit id="flexform.recursion" xml:space="preserve"><source>Limiting the number of levels (No limit if empty)</source></trans-unit>
+			<trans-unit id="flexform.pluginNamespace" xml:space="preserve"><source>Namespace (Can be changed if there are more than 2 plugin in the same page)</source></trans-unit>
+
+			<trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source></trans-unit>
+			<trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source></trans-unit>
+			<trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source></trans-unit>
+			<trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source></trans-unit>
+			<trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source></trans-unit>
+            <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source></trans-unit>
+		</body>
+    </file>
+</xliff>

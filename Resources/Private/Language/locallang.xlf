@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+		<header/>
+		<body>
+            <trans-unit id="file" xml:space="preserve"><source>File</source></trans-unit>
+			<trans-unit id="title" xml:space="preserve"><source>Title</source></trans-unit>
+			<trans-unit id="categories" xml:space="preserve"><source>Categories</source></trans-unit>
+			<trans-unit id="description" xml:space="preserve"><source>Description</source></trans-unit>
+			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
+			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source></trans-unit>
+			<trans-unit id="search" xml:space="preserve"><source>Search</source></trans-unit>
+			<trans-unit id="feGroupRead" xml:space="preserve"><source>Groups with read permissions</source></trans-unit>
+			<trans-unit id="feGroupWrite" xml:space="preserve"><source>Groups with write permissions</source></trans-unit>
+            <trans-unit id="feGroupAddfolder" xml:space="preserve"><source>Groups with add folders permissions</source></trans-unit>
+            <trans-unit id="feGroupAddfile" xml:space="preserve"><source>Groups with add files permissions</source></trans-unit>
+			<trans-unit id="fileNotUploaded" xml:space="preserve"><source>You must upload a file to create a document.</source></trans-unit>
+			<trans-unit id="fileUploadError" xml:space="preserve"><source>An error occured while loading the file. Please try again.</source></trans-unit>
+			<trans-unit id="errors" xml:space="preserve"><source>Error(s) were detected, please fill the form correctly.</source></trans-unit>
+			<trans-unit id="createFile" xml:space="preserve"><source>Submit file</source></trans-unit>
+			<trans-unit id="createFolder" xml:space="preserve"><source>Create folder</source></trans-unit>
+			<trans-unit id="fileName" xml:space="preserve"><source>Name</source></trans-unit>
+			<trans-unit id="createdAt" xml:space="preserve"><source>Created the</source></trans-unit>
+			<trans-unit id="updatedAt" xml:space="preserve"><source>Updated the</source></trans-unit>
+			<trans-unit id="owner" xml:space="preserve"><source>Owner</source></trans-unit>
+			<trans-unit id="size" xml:space="preserve"><source>Size</source></trans-unit>
+			<trans-unit id="actions" xml:space="preserve"><source>Action</source></trans-unit>
+			<trans-unit id="back" xml:space="preserve"><source>Back</source></trans-unit>
+			<trans-unit id="download" xml:space="preserve"><source>Download</source></trans-unit>
+			<trans-unit id="downloadCurrent" xml:space="preserve"><source>Download current version</source></trans-unit>
+			<trans-unit id="noReadAccess" xml:space="preserve"><source>Only owner can see this</source></trans-unit>
+			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source></trans-unit>
+			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source></trans-unit>
+			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source></trans-unit>
+			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source></trans-unit>
+			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source></trans-unit>
+			<trans-unit id="warningInitialize" xml:space="preserve"><source>This will browse your fileadmin directory and create the correct architecture in the database. If you have many folders/files this might take a while.</source></trans-unit>
+			<trans-unit id="warning" xml:space="preserve"><source>Warning</source></trans-unit>
+			<trans-unit id="adviceInitialize" xml:space="preserve"><source>Now you can go in the "filelist" menu and start to set metadatas and permissions on your files and folders.</source></trans-unit>
+			<trans-unit id="searchResultFor" xml:space="preserve"><source>Results for</source></trans-unit>
+			<trans-unit id="download" xml:space="preserve"><source>Download</source></trans-unit>
+			<trans-unit id="detail" xml:space="preserve"><source>Detail</source></trans-unit>
+			<trans-unit id="edit" xml:space="preserve"><source>Edit</source></trans-unit>
+			<trans-unit id="delete" xml:space="preserve"><source>Delete</source></trans-unit>
+			<trans-unit id="form.submit" xml:space="preserve"><source>Submit</source></trans-unit>
+			<trans-unit id="fileNotFound" xml:space="preserve"><source>The file you required wasn't found</source></trans-unit>
+			<trans-unit id="fileAlreadyExist" xml:space="preserve"><source>A file with this name already exists.</source></trans-unit>
+			<trans-unit id="filecategory" xml:space="preserve"><source>Category</source></trans-unit>
+			<trans-unit id="category" xml:space="preserve"><source>Category</source></trans-unit>
+			<trans-unit id="filetype" xml:space="preserve"><source>Axe</source></trans-unit>
+			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source></trans-unit>
+			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source></trans-unit>
+			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source></trans-unit>
+			<trans-unit id="filesizeGO" xml:space="preserve"><source>Go</source></trans-unit>
+			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source></trans-unit>
+			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source></trans-unit>
+			<trans-unit id="folderFiles" xml:space="preserve"><source>File(s)</source></trans-unit>
+			<trans-unit id="massDownload" xml:space="preserve"><source>Download files and sub-folders as ZIP archive.</source></trans-unit>
+
+			<!-- Languages for export controller -->
+			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
+			<trans-unit id="export.title" xml:space="preserve"><source>Title</source></trans-unit>
+			<trans-unit id="export.createdAt" xml:space="preserve"><source>Created the</source></trans-unit>
+			<trans-unit id="export.updatedAt" xml:space="preserve"><source>Updated the</source></trans-unit>
+			<trans-unit id="export.owner" xml:space="preserve"><source>Owner</source></trans-unit>
+			<trans-unit id="export.size" xml:space="preserve"><source>Size</source></trans-unit>
+			<trans-unit id="export.keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
+			<trans-unit id="export.extension" xml:space="preserve"><source>Extension</source></trans-unit>
+			<trans-unit id="export.description" xml:space="preserve"><source>Description</source></trans-unit>
+			<trans-unit id="export.path" xml:space="preserve"><source>Path</source></trans-unit>
+			<trans-unit id="export.submit" xml:space="preserve"><source>Go !</source></trans-unit>
+			<trans-unit id="export.from" xml:space="preserve"><source>From</source></trans-unit>
+			<trans-unit id="export.to" xml:space="preserve"><source>To</source></trans-unit>
+			<trans-unit id="export.mainTitle" xml:space="preserve"><source>Export downloaded files (EDM)</source></trans-unit>
+
+			<!-- Languages for datepiker-->
+			<trans-unit id="format" xml:space="preserve"><source>m/d/y</source></trans-unit>
+			<trans-unit id="unknownFormat" xml:space="preserve"><source>Unknown date format.</source></trans-unit>
+			<trans-unit id="sunday" xml:space="preserve"><source>Sunday</source></trans-unit>
+			<trans-unit id="monday" xml:space="preserve"><source>Monday</source></trans-unit>
+			<trans-unit id="tuesday" xml:space="preserve"><source>Tuesday</source></trans-unit>
+			<trans-unit id="wednesday" xml:space="preserve"><source>Wednesday</source></trans-unit>
+			<trans-unit id="thursday" xml:space="preserve"><source>Thursday</source></trans-unit>
+			<trans-unit id="friday" xml:space="preserve"><source>Friday</source></trans-unit>
+			<trans-unit id="saturday" xml:space="preserve"><source>Saturday</source></trans-unit>
+
+			<trans-unit id="january" xml:space="preserve"><source>January</source></trans-unit>
+			<trans-unit id="february" xml:space="preserve"><source>February</source></trans-unit>
+			<trans-unit id="march" xml:space="preserve"><source>March</source></trans-unit>
+			<trans-unit id="april" xml:space="preserve"><source>April</source></trans-unit>
+			<trans-unit id="may" xml:space="preserve"><source>May</source></trans-unit>
+			<trans-unit id="june" xml:space="preserve"><source>June</source></trans-unit>
+			<trans-unit id="july" xml:space="preserve"><source>July</source></trans-unit>
+			<trans-unit id="august" xml:space="preserve"><source>August</source></trans-unit>
+			<trans-unit id="september" xml:space="preserve"><source>September</source></trans-unit>
+			<trans-unit id="october" xml:space="preserve"><source>October</source></trans-unit>
+			<trans-unit id="november" xml:space="preserve"><source>November</source></trans-unit>
+			<trans-unit id="december" xml:space="preserve"><source>December</source></trans-unit>
+
+			<!-- Languages for constant categories -->
+			<trans-unit id="category.content" xml:space="preserve"><source>Page content</source></trans-unit>
+
+			<!-- Languages for errors -->
+			<trans-unit id="error.1221560718" xml:space="preserve"><source>Page content</source></trans-unit>
+			<trans-unit id="error.newFolder.title.1221560718" xml:space="preserve"><source>Page content2</source></trans-unit>
+        </body>
+    </file>
+</xliff>

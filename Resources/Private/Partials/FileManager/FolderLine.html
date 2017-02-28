@@ -67,6 +67,12 @@
                             </custom:checkAccess>
                         </f:if>
                     </f:if>
+                    <f:if condition="{0:action} == {0:'massDownload'}">
+                        <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:folderRoot}">
+                            <p><f:link.action action="massDownload" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action></p>
+                        </custom:checkAccess>
+                    </f:if>
+                    
                 </f:for>
             </td>
         </f:if>

@@ -17,6 +17,7 @@
 			<trans-unit id="flexform.edit" xml:space="preserve"><source>Edit</source><target>Bearbeiten</target></trans-unit>
 			<trans-unit id="flexform.delete" xml:space="preserve"><source>Delete</source><target>Löschen</target></trans-unit>
 			<trans-unit id="flexform.download" xml:space="preserve"><source>Download</source><target>Herunterladen</target></trans-unit>
+            <trans-unit id="flexform.massDownload" xml:space="preserve"><source>Download as a Zip Archive</source><target>Als Zip-Archiv herunterladen</target></trans-unit>
 
 			<trans-unit id="flexform.generalSheet" xml:space="preserve"><source>General configuration</source><target>Allgemeine Konfiguration</target></trans-unit>
 			<trans-unit id="flexform.sheetAppearance" xml:space="preserve"><source>Tab display</source><target>Tab Anzeige</target></trans-unit>

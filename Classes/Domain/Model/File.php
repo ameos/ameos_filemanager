@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -247,7 +248,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
 
         $uidsCat = $this->getCategoriesUids();
         if (!empty($uidsCat)) {
-            $categories = \Ameos\AmeosFilemanager\Tools\Tools::getByUids($repo,$uidsCat);
+            $categories = FilemanagerUtility::getByUids($repo, $uidsCat);
             return $categories;
         } else {
             return;

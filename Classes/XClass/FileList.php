@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
-use Ameos\AmeosFilemanager\Tools\Tools;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -75,7 +75,7 @@ class FileList extends \TYPO3\CMS\FileList\FileList
 		if (is_a($fileOrFolderObject, 'TYPO3\\CMS\\Core\\Resource\\Folder')  && $fileOrFolderObject->checkActionPermission('write')) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$fileOrFolderObject->getName()."'" );
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if(Tools::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
+				if(FilemanagerUtility::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
 				{
 					$folder = array('tx_ameosfilemanager_domain_model_folder' => array($row['uid'] => 'edit'));
 					$editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $folder), $GLOBALS['BACK_PATH'], $this->listUrl());

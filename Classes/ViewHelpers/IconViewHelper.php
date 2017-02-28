@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,8 +26,8 @@ class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      * @param string $iconFolder
      * @return string
      */
-    public function render($type=null,$iconFolder=null)
+    public function render($type=null, $iconFolder=null)
     {
-        return \Ameos\AmeosFilemanager\Tools\Tools::getImageIconeTagForType($type,$iconFolder);
+        return FilemanagerUtility::getImageIconeTagForType($type, $iconFolder);
     }
 }

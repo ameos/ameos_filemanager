@@ -36,7 +36,7 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use Ameos\AmeosFilemanager\Tools\Tools;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 class ext_update  {
 
@@ -45,14 +45,13 @@ class ext_update  {
 	 *
 	 * @return	string		HTML
 	 */
-	function main()	{
+	public function main()	{
 		if (!GeneralUtility::_GP('do_initialize')) {
 			$content = $this->displayWarning();
-			$onClick = "document.location='".GeneralUtility::linkThisScript(array('do_initialize'=>1))."'; return false;";
-			$content .= htmlspecialchars($GLOBALS['LANG']->getLL('update_convert_now')).'
+			$onClick = 'document.location="' . GeneralUtility::linkThisScript(array('do_initialize'=>1)) . '"; return false;';
+			$content .= htmlspecialchars($GLOBALS['LANG']->getLL('update_convert_now')) . '
 				<br /><br />
-				<form action=""><input type="submit" value="'.LocalizationUtility::translate('doInitialize', 'ameos_filemanager').'" onclick="'.htmlspecialchars($onClick).'"></form>
-			';
+				<form action=""><input type="submit" value="' . LocalizationUtility::translate('doInitialize', 'ameos_filemanager') . '" onclick="' . htmlspecialchars($onClick) . '"></form>';
 		} else {
 			$this->countFolder = 0;
 			$this->countAddedFolder = 0;
@@ -69,7 +68,8 @@ class ext_update  {
 	 *
 	 * @return	boolean		true if user have access, otherwise false
 	 */
-	function access() {
+	public function access()
+    {
 			// We cannot update before the extension is installed: required tables are not yet in TCA
 		if (ExtensionManagementUtility::isLoaded('ameos_filemanager')) {
 			return TRUE;
@@ -83,7 +83,7 @@ class ext_update  {
 	 *
 	 * @return	string	indication about the success or failure of the task
 	 */
-	function initializeDatabase() {
+	protected function initializeDatabase() {
 		$contenu = '';
 		$this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$storageRepository = $this->objectManager->get('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
@@ -106,8 +106,8 @@ class ext_update  {
 		$out = '
 			<div style="padding:15px 15px 20px 0;">
 				<div class="typo3-message message-warning">
-						<div class="message-header">'.LocalizationUtility::translate('warning', 'ameos_filemanager').'</div>
-						<div class="message-body">'.LocalizationUtility::translate('warningInitialize', 'ameos_filemanager').'</div>
+						<div class="message-header">' . LocalizationUtility::translate('warning', 'ameos_filemanager') . '</div>
+						<div class="message-body">' . LocalizationUtility::translate('warningInitialize', 'ameos_filemanager') . '</div>
 					</div>
 				</div>
 			</div>';
@@ -119,28 +119,26 @@ class ext_update  {
 	 *
 	 * Parse a folder and add the necessary folder/file into the database
 	 *
-	 * @param Folder $folder the folder currently in treatment
+	 * @param string $storageFolderPath storage folder path
+	 * @param Ameos\AmeosFilemanager\Domain\Model\Folder $folder the folder currently in treatment
 	 * @param integer $uidParent his parent's uid
-	 * @return string
 	 */
-	function setDatabaseForFolder($storageFolderPath, $folder, $uidParent = 0){
-		$this->countFolder ++;
+	protected function setDatabaseForFolder($storageFolderPath, $folder, $uidParent = 0){
+		$this->countFolder++;
 		if ($handle = opendir($folder)) {
-		    while (false !== ($entry = readdir($handle))) {
-		        if ($entry != "." && $entry != "..") {
+		    while (($entry = readdir($handle)) !== false) {
+		        if ($entry != '.' && $entry != '..') {
 		            if(is_dir($folder . $entry)){
-		            	$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '". $entry ."'" );
+		            	$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like ''. $entry .''' );
 						$exist = false;
 						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-							if(Tools::getFolderPathFromUid($row['uid']) == str_replace($storageFolderPath,'',$folder . $entry))
-							{
+							if(FilemanagerUtility::getFolderPathFromUid($row['uid']) == str_replace($storageFolderPath,'',$folder . $entry)) {
 								$exist = true;
 								$uid = $row['uid'];
 								break;
 							}
 						}
-						if(!$exist)
-						{
+						if(!$exist) {
 							$this->countAddedFolder ++;
 							
 							$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -148,7 +146,7 @@ class ext_update  {
 								array(
 									'title' => $entry,
 									'pid' => 0,
-									'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
+									'cruser_id' => $GLOBALS['BE_USER']->user['uid'],
 									'uid_parent' => $uidParent,
 									'crdate' => time(),
 									'tstamp' => time(),
@@ -162,8 +160,7 @@ class ext_update  {
 							
 						}
 		            	$this->setDatabaseForFolder($storageFolderPath, $folder . $entry . '/', $uid);
-		            }
-		            else{
+		            } else {
 		            	$this->setDatabaseForFile($storageFolderPath, $folder, $entry, $uidParent);
 		            }
 		        }
@@ -172,40 +169,44 @@ class ext_update  {
 		}
 	}
 
-	function setDatabaseForFile($storageFolderPath, $folderPath, $entry , $folderParentUid){
+    /**
+	 *
+	 * add file into the database
+	 */
+	protected function setDatabaseForFile($storageFolderPath, $folderPath, $entry, $folderParentUid)
+    {
 		$filePath = $folderPath . $entry;
 		$fileIdentifier = str_replace($storageFolderPath, '', $filePath);
 		$infoFile = $this->currentStorage->getFileInfoByIdentifier($fileIdentifier, array());
 
 		// Add file into sys_file if it doesn't exist
-		$file = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid','sys_file', "identifier LIKE '" . $fileIdentifier . "'" );
+		$file = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'sys_file', 'identifier LIKE '' . $fileIdentifier . ''' );
 		if($file){
 			$fileUid = $file['uid'];
 
 			// adding metadatas.
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'sys_file_metadata', 
-				'sys_file_metadata.file = '.$fileUid, 
+				'sys_file_metadata.file = ' . $fileUid, 
 				array('folder_uid' => $folderParentUid), 
-				$no_quote_fields=FALSE
+				FALSE
 			);
 		}
 		else{
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'sys_file', 
 				array(
-					'pid' => 0,
-					'tstamp' => time(),
-					'storage' => $infoFile['storage'],
-					'identifier' => $infoFile['identifier'],
-					'identifier_hash' => $infoFile['identifier_hash'],
-					'folder_hash' => $infoFile['folder_hash'],
-					'extension' =>  pathinfo($filePath)['extension'] ?: '',
-					'mime_type' =>  $infoFile['mimetype'],
-					'name' =>  $entry,
-					//'sha1' => $this->currentStorage->hashFile($file, 'sha1'),
-					'size' => $infoFile['size'],
-					'creation_date' => $infoFile['ctime'],
+					'pid'              => 0,
+					'tstamp'           => time(),
+					'storage'          => $infoFile['storage'],
+					'identifier'       => $infoFile['identifier'],
+					'identifier_hash'  => $infoFile['identifier_hash'],
+					'folder_hash'      => $infoFile['folder_hash'],
+					'extension'        =>  pathinfo($filePath)['extension'] ?: '',
+					'mime_type'        =>  $infoFile['mimetype'],
+					'name'             => $entry,
+					'size'             => $infoFile['size'],
+					'creation_date'    => $infoFile['ctime'],
 					'modification_date' => $infoFile['mtime']
 				)
 			);
@@ -215,14 +216,12 @@ class ext_update  {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'sys_file_metadata', 
 				array(
-					'pid' => 0,
+					'pid'    => 0,
 					'tstamp' => time(),
 					'crdate' => time(),
-					'file' => $fileUid,
+					'file'   => $fileUid,
 				)
 			);
 		}	
 	}
 }
-
-?>

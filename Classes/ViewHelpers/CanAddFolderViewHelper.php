@@ -1,7 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
-use Ameos\AmeosFilemanager\Tools\Tools;
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Utility\AccessUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -24,7 +25,7 @@ class CanAddFolderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCo
     public function __construct()
     {
         parent::__construct();
-        $this->registerArgument('folder',    'Ameos\\AmeosFilemanager\\Domain\\Model\\Folder', 'Folder value.', false);
+        $this->registerArgument('folder',    Folder::class, 'Folder value.', false);
         $this->registerArgument('arguments', 'array', 'Arguments.', false);
     }
 
@@ -37,6 +38,6 @@ class CanAddFolderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCo
     static protected function evaluateCondition($arguments = null)
     {
         $user = $GLOBALS['TSFE']->fe_user->user;
-		return Tools::userHasAddFolderAccess($user, $arguments['folder'], $arguments['arguments']);
+		return AccessUtility::userHasAddFolderAccess($user, $arguments['folder'], $arguments['arguments']);
     }
 }

@@ -1,7 +1,9 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
-use Ameos\AmeosFilemanager\Tools\Tools;
+use Ameos\AmeosFilemanager\Domain\Model\File;
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Utility\AccessUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -24,8 +26,8 @@ class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCon
     public function __construct()
     {
         parent::__construct();
-        $this->registerArgument('folder',    'Ameos\\AmeosFilemanager\\Domain\\Model\\Folder', 'Folder', false);
-        $this->registerArgument('file',      'Ameos\\AmeosFilemanager\\Domain\\Model\\File', 'File', false);
+        $this->registerArgument('folder',    Folder::class, 'Folder', false);
+        $this->registerArgument('file',      File::class, 'File', false);
         $this->registerArgument('arguments', 'array', 'Arguments.', false);
         $this->registerArgument('right',     'string', 'right.', false);
     }
@@ -44,17 +46,17 @@ class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCon
         }
         if ($arguments['folder'] != null) {   
             if($arguments['right'] == "r") {
-                return Tools::userHasFolderReadAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
+                return AccessUtility::userHasFolderReadAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
             } elseif ($arguments['right'] == "w") {
-                return Tools::userHasFolderWriteAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
+                return AccessUtility::userHasFolderWriteAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
             } else {
                 return false;
             }
         } elseif ($arguments['file'] != null) {
             if ($arguments['right'] == "r") {
-                return Tools::userHasFileReadAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
+                return AccessUtility::userHasFileReadAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
             } elseif ($arguments['right'] == "w") {
-                return Tools::userHasFileWriteAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
+                return AccessUtility::userHasFileWriteAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
             } else {
                 return false;                
             }

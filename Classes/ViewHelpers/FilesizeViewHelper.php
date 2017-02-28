@@ -30,7 +30,7 @@ class FilesizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
         $stringLength = strlen($size);
         $separatorNumber = 3;
         $separatorChar = ' ';
-        $temp = $stringLength%$separatorNumber;
+        $temp = $stringLength % $separatorNumber;
         $packOfThree = floor($stringLength / $separatorNumber);
         if ($temp != 0) {
             $newString = substr($size, 0,$temp ).".".substr($size, $temp);
@@ -38,13 +38,18 @@ class FilesizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
             $newString = substr($size, 0,$separatorNumber ).".".substr($size, $separatorNumber);
             $packOfThree--;
         }
-        return round($newString,2) . ' ' . $this->getUnit($packOfThree);
+        return round($newString, 2) . ' ' . $this->getUnit($packOfThree);
     }
 
-    public function getUnit($packOfThree)
+    /**
+     * return unit
+     * @param int $packOfThree
+     * @return string
+     */ 
+    protected function getUnit($packOfThree)
     {
         switch ($packOfThree) {
-            case 0:  return LocalizationUtility::translate('filesizeO', 'ameos_filemanager');  break;
+            case 0:  return LocalizationUtility::translate('filesizeO',  'ameos_filemanager');  break;
             case 1:  return LocalizationUtility::translate('filesizeKO', 'ameos_filemanager'); break;
             case 2:  return LocalizationUtility::translate('filesizeMO', 'ameos_filemanager'); break;
             case 3:  return LocalizationUtility::translate('filesizeGO', 'ameos_filemanager'); break;

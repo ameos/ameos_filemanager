@@ -2,7 +2,6 @@
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Ameos\AmeosFilemanager\Tools\Tools;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Model\File;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;

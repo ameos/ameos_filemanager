@@ -31,13 +31,21 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
     	}
     }
 
-    public function getBreadcrumb($folder,$startFolder)
+    /**
+     * return breadcrumb
+     * $param Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * $param Ameos\AmeosFilemanager\Domain\Model\Folder $startFolder
+     * @return string
+     */ 
+    public function getBreadcrumb($folder, $startFolder)
     {
-    	$typolink["parameter"] = intval($GLOBALS['TSFE']->id);
-        $typolink["additionalParams"] = '&tx_ameos_filemanager[folder]='.$folder->getUid();
-        $url = $GLOBALS['TSFE']->cObj->typolink($folder->getTitle(),$typolink);
+    	$typolink = [
+            'parameter' => (int)$GLOBALS['TSFE']->id,
+            'additionalParams' => '&tx_ameos_filemanager[folder]='  .$folder->getUid()
+        ];
+        $url = $GLOBALS['TSFE']->cObj->typolink($folder->getTitle(), $typolink);
     	if ($folder->getParent() && $folder->getUid() != $startFolder) {
-    		return  $this->getBreadcrumb($folder->getParent(),$startFolder)  .'-->' . $url;
+    		return $this->getBreadcrumb($folder->getParent(), $startFolder) . '-->' . $url;
     	} else {
     		return $url;
     	}

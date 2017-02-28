@@ -3,7 +3,7 @@ namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-
+use TYPO3\CMS\Fluid\View\StandaloneView;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,14 +28,14 @@ class GenerateCategoryListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Ab
      */
     public function render($categories)
     {
-        $test = GeneralUtility::makeInstance('\\TYPO3\\CMS\\Fluid\\View\\StandaloneView');    
-        $test->setControllerContext($this->controllerContext);
+        $view = GeneralUtility::makeInstance(StandaloneView::class);    
+        $view->setControllerContext($this->controllerContext);
         $templatePath = ExtensionManagementUtility::extPath('ameos_filemanager') . 'Resources/Private/Templates/ViewHelpers/Checkbox.html';
-        $test->setTemplatePathAndFilename($templatePath);
-        $test->assign("name" , "name");
-        $test->assign("value" , "value");
-        $test->assign("label" , "label");
+        $view->setTemplatePathAndFilename($templatePath);
+        $view->assign("name" , "name");
+        $view->assign("value" , "value");
+        $view->assign("label" , "label");
         
-        return $test->render();
+        return $view->render();
     }
 }

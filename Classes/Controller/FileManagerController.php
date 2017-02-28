@@ -116,8 +116,8 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
     protected function indexAction()
     {
         if ($this->request->getMethod() == 'POST') {
-            if (GeneralUtility::_POST('tx_ameosfilemanager_keyword')) {
-                $this->redirect('list', null, null, ['keyword' => GeneralUtility::_POST('tx_ameosfilemanager_keyword')]);
+            if ($this->request->hasArgument('keyword') && $this->request->getArgument('keyword') != '') {
+                $this->redirect('list', null, null, ['keyword' => $this->request->getArgument('keyword')]);
             }
         }
         
@@ -572,7 +572,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         }
 
         $args = $this->request->getArguments();
-        $t = $this->fileRepository->findBySearchCriterias($args, null, $configuration['view']['pluginNamespace']);
+        $t = $this->fileRepository->findBySearchCriterias($args, $this->settings['startFolder'], $configuration['view']['pluginNamespace'], $this->settings['recursion']);
         $this->view->assign('files', $t);
         $this->view->assign('value', $args);
         $this->settings['columnsTable'] = explode(',', $this->settings['columnsTable']);

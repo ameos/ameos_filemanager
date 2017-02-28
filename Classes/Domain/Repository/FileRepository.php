@@ -77,8 +77,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * return files identifiers for folder recursively
      * @param string folders
+     * @param int $recursiveLimit
+     * @param int $currentRecursive
      */
-    protected function getFilesIdentifiersRecursively($folders)
+    protected function getFilesIdentifiersRecursively($folders, $recursiveLimit = 0, $currentRecursive = 1)
     {
         $files = [];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('file', 'sys_file_metadata', 'folder_uid IN (' . $folders . ')');
@@ -86,13 +88,16 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $files[] = $file['file'];
         }
 
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'uid_parent IN (' . $folders . ')');
-        $childs = [];
-        while (($folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) !== false) {
-            $childs[] = $folder['uid'];
-        }
-        if (!empty($childs)) {
-            $files = array_merge($files, $this->getFilesIdentifiersRecursively(implode(',', $childs)));    
+        if ($currentRecursive < $recursiveLimit) {
+            $currentRecursive++;
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'uid_parent IN (' . $folders . ')');
+            $childs = [];
+            while (($folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) !== false) {
+                $childs[] = $folder['uid'];
+            }
+            if (!empty($childs)) {
+                $files = array_merge($files, $this->getFilesIdentifiersRecursively(implode(',', $childs), $recursiveLimit, $currentRecursive));    
+            }
         }
         return $files;
     }
@@ -101,10 +106,12 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 	 * Return all filter by search criterias
 	 * @param array $criterias criterias
      * @param int $rootFolder
+     * @param string $pluginNamespace
+     * @param int $recursiveLimit
 	 */
-	public function findBySearchCriterias($criterias, $rootFolder = null, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
+	public function findBySearchCriterias($criterias, $rootFolder = null, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager', $recursiveLimit = 0)
     {
-		if (!is_array($criterias) || empty($criterias)) {
+        if (!is_array($criterias) || empty($criterias)) {
 			return $this->findAll();
 		}
 
@@ -112,7 +119,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $additionnalWhereClause = '';
         if (!is_null($rootFolder) && (int)$rootFolder > 0) {
-            $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder);
+            $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder, $recursiveLimit);
             if (empty($availableFilesIdentifiers)) {
                 $additionnalWhereClause = ' AND sys_file.uid = 0';    
             } else {

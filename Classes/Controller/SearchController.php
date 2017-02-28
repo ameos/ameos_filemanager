@@ -26,11 +26,12 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function indexAction()
     {
-        if ($this->request->getMethod() == 'POST') {
-            $this->view->assign('current_keyword', GeneralUtility::_POST('tx_ameosfilemanager_keyword'));
+        if (($getData = GeneralUtility::_GET($this->settings['remotePluginNamespace'])) !== null) {
+            $this->view->assign('current_keyword', $getData['keyword']);
         }
         $actionUri = $this->uriBuilder->reset()->setTargetPageUid($this->settings['filemanagerPid'])->build();
         $this->view->assign('action_uri', $actionUri);
+        $this->view->assign('keyword_fieldname', $this->settings['remotePluginNamespace'] . '[keyword]');
     }
 }
 

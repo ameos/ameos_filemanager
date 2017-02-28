@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +26,11 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function indexAction()
     {
-        $this->view->assign('filemanagerPid', $this->settings['filemanagerPid']);
+        if ($this->request->getMethod() == 'POST') {
+            $this->view->assign('current_keyword', GeneralUtility::_POST('tx_ameosfilemanager_keyword'));
+        }
+        $actionUri = $this->uriBuilder->reset()->setTargetPageUid($this->settings['filemanagerPid'])->build();
+        $this->view->assign('action_uri', $actionUri);
     }
 }
 

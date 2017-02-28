@@ -23,15 +23,6 @@
                             </config>
                         </TCEforms>
                     </settings.filemanagerPid>
-                    <view.pluginNamespace>
-                        <TCEforms>
-                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.pluginNamespace</label>
-                            <config>
-                                <type>input</type>
-                                <default>tx_ameosfilemanager</default>
-                            </config>
-                        </TCEforms>
-                    </view.pluginNamespace>
                 </el>
             </ROOT>
         </sheetStd>

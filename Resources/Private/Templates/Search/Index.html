@@ -1,11 +1,11 @@
 <div class="ameos_file_manager">
 	<div class="frame">
-		<f:form pageUid="{filemanagerPid}" controller="FileManager" action="search" name="criteria">
+		<form method="post" action="{action_uri}">
 			<p>
 				<label for="keyword"><f:translate key="search"/>&nbsp;:</label>
-				<f:form.textfield id="keyword" name="keyword" placeholder="<f:translate key='keywords'/>"/>
+				<f:form.textfield id="keyword" name="tx_ameosfilemanager_keyword" value="{current_keyword}" placeholder="{f:translate(key:'keywords')}" />
 			</p>
 			<p class="align-center"><f:form.submit value="Rechercher" class="grad-btn-2" /></p>
-		</f:form>
+		</form>
 	</div>
 </div>

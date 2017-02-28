@@ -115,6 +115,12 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
      */
     protected function indexAction()
     {
+        if ($this->request->getMethod() == 'POST') {
+            if (GeneralUtility::_POST('tx_ameosfilemanager_keyword')) {
+                $this->redirect('list', null, null, ['keyword' => GeneralUtility::_POST('tx_ameosfilemanager_keyword')]);
+            }
+        }
+        
         $contentUid = $this->configurationManager->getContentObject()->data['uid'];
         $configuration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if (!isset($configuration['view']['pluginNamespace'])) {
@@ -549,31 +555,6 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             }
         }
         
-        $this->redirectToUri($resultUri);
-    }
-
-    /**
-     * Set the research arguments and send them to the list action
-     *
-     * @return void
-     */
-    protected function searchAction()
-    {
-        $arguments = array();
-        if ($this->request->hasArgument('keyword')) {
-            if ($this->request->getArgument('keyword') !== '') {
-                $arguments['keyword'] = $this->request->getArgument('keyword');
-            }
-        }
-        if (GeneralUtility::_POST('tx_ameosfilemanager_fe_filemanager_search')['keyword'] && GeneralUtility::_POST('tx_ameosfilemanager_fe_filemanager_search')['keyword'] != '') {
-            $arguments['keyword'] = GeneralUtility::_POST('tx_ameosfilemanager_fe_filemanager_search')['keyword'];
-        }
-        $resultUri = $this->uriBuilder
-            ->reset()
-            ->setCreateAbsoluteUri(true)
-            ->setArguments(array('tx_ameos_filemanager' => $arguments))
-            ->uriFor('list');
-
         $this->redirectToUri($resultUri);
     }
 

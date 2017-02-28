@@ -4,6 +4,10 @@ if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
+use Ameos\AmeosFilemanager\Slots\Slot;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 // register plugin
 ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager', 'Frontend File Manager');
@@ -32,21 +36,21 @@ if (TYPO3_MODE == 'BE') {
     $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['Ameos\\AmeosFilemanager\\Wizicon\\Filemanager'] = ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Wizicon/Filemanager.php';
 
     //Slots
-    $dispatcher = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+    $dispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         
     /*
      * FOLDERS SLOTS
      */
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFolderRename', 'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFolderRename');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFolderAdd',    'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFolderAdd');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFolderMove',   'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFolderMove');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFolderCopy',   'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFolderCopy');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFolderDelete', 'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFolderDelete');
+    $dispatcher->connect(ResourceStorage::class, 'postFolderRename', Slot::class, 'postFolderRename');
+    $dispatcher->connect(ResourceStorage::class, 'postFolderAdd',    Slot::class, 'postFolderAdd');
+    $dispatcher->connect(ResourceStorage::class, 'postFolderMove',   Slot::class, 'postFolderMove');
+    $dispatcher->connect(ResourceStorage::class, 'postFolderCopy',   Slot::class, 'postFolderCopy');
+    $dispatcher->connect(ResourceStorage::class, 'postFolderDelete', Slot::class, 'postFolderDelete');
 
     /*
      * FILES SLOTS
      */
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFileAdd',  'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFileAdd');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFileCopy', 'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFileCopy');
-    $dispatcher->connect('TYPO3\\CMS\\Core\\Resource\\ResourceStorage', 'postFileMove', 'Ameos\\AmeosFilemanager\\Slots\\Slot', 'postFileMove');
+    $dispatcher->connect(ResourceStorage::class, 'postFileAdd',  Slot::class, 'postFileAdd');
+    $dispatcher->connect(ResourceStorage::class, 'postFileCopy', Slot::class, 'postFileCopy');
+    $dispatcher->connect(ResourceStorage::class, 'postFileMove', Slot::class, 'postFileMove');
 }

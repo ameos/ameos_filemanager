@@ -126,10 +126,16 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             Tools::downloadFile($args['file'],$this->settings['startFolder']);
         }
         $startFolder = $args['folder'] ?: $this->settings['startFolder'];
+        $rootFolder = $this->folderRepository->findByUid($this->settings['startFolder']);
         $folder = $this->folderRepository->findByUid($startFolder);
         if (!$folder || !$folder->isChildOf($this->startFolder)) {
             return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
         }
+
+        if (Tools::hasTooMuchRecursion($rootFolder, $folder, $this->settings['recursion'])) {
+            return LocalizationUtility::translate('tooMuchRecursion', 'ameos_filemanager');
+        }
+        
         if ($this->settings["parseFolderInFE"]) {
             Tools::parseFolderForNewElements($this->storage,$folder->getGedPath(),$folder->getTitle());
         }
@@ -137,6 +143,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $this->settings['actionDetail'] = explode(',', $this->settings['actionDetail']);
         $this->view->assign('settings', $this->settings);
         $this->view->assign('folder', $folder);
+        $this->view->assign('is_last_recursion', Tools::isTheLastRecursion($rootFolder, $folder, $this->settings['recursion']));
         $this->view->assign('files', $this->fileRepository->findFilesForFolder($startFolder, $configuration['view']['pluginNamespace']));
         $this->view->assign('content_uid', $contentUid);
 

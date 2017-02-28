@@ -19,6 +19,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tools
 {
 
+    /**
+     * check recursion
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
+     * @param int $recursion
+     */
+    public static function hasTooMuchRecursion($rootFolder, $childFolder, $recursion)
+    {
+        if (!$recursion) {
+            return false;
+        }        
+        return self::calculRecursion($rootFolder, $childFolder) > $recursion;
+    }
+
+    /**
+     * check is is the last recursion
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
+     * @param int $recursion
+     */
+    public static function isTheLastRecursion($rootFolder, $childFolder, $recursion)
+    {
+        if (!$recursion) {
+            return false;
+        }        
+        return self::calculRecursion($rootFolder, $childFolder) >= $recursion;
+    }
+    
+    /**
+     * calcul recursion
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
+     * @return int $recursion
+     */
+    public static function calculRecursion($rootFolder, $childFolder)
+    {
+        $deltaPath = trim(str_replace($rootFolder->getGedPath(), '', $childFolder->getGedPath()), '/');
+        $deltaPart = GeneralUtility::trimExplode('/', $deltaPath);
+        return count($deltaPart);
+    }
+
 	/**
 	 * return the image corresponding to the given extension
 	 * @param string $type extension of the file

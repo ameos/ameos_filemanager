@@ -35,10 +35,9 @@
 					    </custom:checkAccess>
 					</f:if>
 				</f:if>
-
-				<f:for each="{folder.folders}" as="f">
+                <f:if condition="{is_last_recursion} == 0"><f:for each="{folder.folders}" as="f">
                     <f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid,content_uid:content_uid}" />
-				</f:for>
+				</f:for></f:if>
 				<f:for each="{files}" as="fi">
 					<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
 						<f:render partial="FileManager/FileLine" arguments="{fi:fi,folderRoot:settings.startFolder,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable}" />

@@ -31,6 +31,7 @@
 			<trans-unit id="noReadAccess" xml:space="preserve"><source>Only owner can see this</source></trans-unit>
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source></trans-unit>
 			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source></trans-unit>
+            <trans-unit id="tooMuchRecursion" xml:space="preserve"><source>Too much recursion.</source></trans-unit>
 			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source></trans-unit>
 			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source></trans-unit>
 			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source></trans-unit>

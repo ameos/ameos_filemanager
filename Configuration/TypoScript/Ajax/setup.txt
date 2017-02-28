@@ -1,1 +1,7 @@
 page.includeJS.ajax_filemanager = EXT:ameos_filemanager/Resources/Public/Javascript/ajax_filemanager.js
+
+plugin.tx_ameosfilemanager {
+    settings {
+        ajax_mode = 1
+    }
+}

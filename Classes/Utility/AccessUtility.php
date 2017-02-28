@@ -125,7 +125,7 @@ class AccessUtility
 				return false;
 			}
 		}
-        if (!self::userHasFolderReadAccess($user,$file->getParentFolder(),$arguments)) {
+        if (!self::userHasFolderReadAccess($user,$file->getParentFolder(), $arguments)) {
             return false;
         }
 		if ($file->getArrayFeGroupRead()) {            
@@ -134,7 +134,7 @@ class AccessUtility
 				return true;
 			}
 		} else {            
-			return self::userHasFolderReadAccess($user,$file->getParentFolder(),$arguments);
+			return self::userHasFolderReadAccess($user,$file->getParentFolder(), $arguments);
 		}
 		return false;
 	}

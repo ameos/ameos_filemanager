@@ -131,7 +131,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         
         $args = $this->request->getArguments();
         if ($args['file']) {
-            DownloadUtility::downloadFile($args['file'],$this->settings['startFolder']);
+            DownloadUtility::downloadFile($args['file'], $this->settings['startFolder']);
         }
         $startFolder = $args['folder'] ?: $this->settings['startFolder'];
         $rootFolder = $this->folderRepository->findByUid($this->settings['startFolder']);
@@ -183,7 +183,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE);
-        DownloadUtility::addFolderToZip($filePath, $folder, $zip);
+        DownloadUtility::addFolderToZip($filePath, $folder, $zip, $this->settings['startFolder']);
         $zip->close();
 
         header('Content-Description: File Transfer');
@@ -192,7 +192,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-
+        
         ob_clean();
         flush();
         readfile($zipPath);

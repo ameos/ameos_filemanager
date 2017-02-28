@@ -23,20 +23,26 @@ class DownloadUtility
 	 * add folder to zip
 	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
 	 * @param ZipArchive $zip zip archive
+	 * @param int $rootFolder root folder uid
 	 * @return void
 	 */
-	public static function addFolderToZip($rootPath, $folder, $zip)
+	public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid)
     {
+        $user = ($GLOBALS['TSFE']->fe_user->user);
         $fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
-            $localFilepath = PATH_site . $file->getOriginalResource()->getPublicUrl();
-            $zipFilepath   = str_replace($rootPath, '', $localFilepath);
-            $zip->addFile($localFilepath, $zipFilepath);
+            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
+                $localFilepath = PATH_site . $file->getOriginalResource()->getPublicUrl();
+                $zipFilepath   = str_replace($rootPath, '', $localFilepath);
+                $zip->addFile($localFilepath, $zipFilepath);
+            }
         }
 
         foreach ($folder->getFolders() as $subFolder) {
-            self::addFolderToZip($rootPath, $subFolder, $zip);
+            if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])) {
+                self::addFolderToZip($rootPath, $subFolder, $zip, $rootFolderUid);
+            }
         }
     }
     
@@ -52,7 +58,7 @@ class DownloadUtility
 		$user = ($GLOBALS['TSFE']->fe_user->user);
 
         // We check if the user has access to the file.
-        if (AccessUtility::userHasFileReadAccess($user, $file, array("folderRoot" => $folderRoot))) {
+        if (AccessUtility::userHasFileReadAccess($user, $file, array('folderRoot' => $folderRoot))) {
 			if ($file) {
 				$filename = urldecode($file->getPublicUrl());
 			}
@@ -84,7 +90,7 @@ class DownloadUtility
 			}
 		} else {
 			header('HTTP/1.1 403 Forbidden');
-			$message = $GLOBALS["TSFE"]->tmpl->setup["plugin."]["tx_ameosfilemanager."]["settings."]["forbidden"] ?: "Access denied";
+			$message = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ameosfilemanager.']['settings.']['forbidden'] ?: 'Access denied';
 			exit($message);
 		}
 	}

@@ -2,11 +2,18 @@
 <div class="ameos_file_manager" id="ameos_file_manager_{content_uid}">
 	<f:if condition="{folder}">
 		<f:then>
-			<h1>{folder.title}<custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+			<h1>{folder.title}
+                <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
 				<f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid}" >
 	        		<i class="fa fa-pencil-square-o"></i>
 	        	</f:link.action>
-            </custom:checkAccess></h1>
+                </custom:checkAccess>
+                <f:if condition="{settings.ajax_mode}">
+                    <f:link.action additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
+                        <f:image src="/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/refresh.png" />
+                    </f:link.action>
+                </f:if>
+            </h1>
             <custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
                 <p><f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFile"/></f:link.action></p>
             </custom:canAddFile>                    

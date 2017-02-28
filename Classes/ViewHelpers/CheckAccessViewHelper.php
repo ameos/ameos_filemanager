@@ -16,49 +16,26 @@ use Ameos\AmeosFilemanager\Tools\Tools;
  * The TYPO3 project - inspiring people to share!
  */
  
-class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper {
-
-	 /**
-     * Check user access to folder or file
-     *
-     * @param \Ameos\AmeosFilemanager\Domain\Model\File $file
-     * @param \Ameos\AmeosFilemanager\Domain\Model\_Folder $folder
-     * @param string $right
-     * @param array $arguments Arguments
-     * @return string the rendered string
+class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+{
+    /**
+     * Initializes arguments
      */
-    public function render($file=null,$folder=null,$right=null, $arguments=null)
+    public function __construct()
     {
-		$user = ($GLOBALS['TSFE']->fe_user->user);
-        if (($file==null && $folder==null) || $right==null) {
-            return $this->renderElseChild();
-        }
-        if ($folder != null) {   
-            if($right=="r") {
-                return Tools::userHasFolderReadAccess($user, $folder, $arguments) ? $this->renderThenChild() : $this->renderElseChild();
-            }
-            else if($right=="w") {
-                return Tools::userHasFolderWriteAccess($user, $folder, $arguments) ? $this->renderThenChild() : $this->renderElseChild();
-            }
-            else {
-                return $this->renderElseChild();
-            }
-        } elseif ($file != null) {
-            if($right=="r") {
-                return Tools::userHasFileReadAccess($user, $file, $arguments) ? $this->renderThenChild() : $this->renderElseChild();
-            }
-            else if($right=="w") {
-            	return Tools::userHasFileWriteAccess($user, $file, $arguments) ? $this->renderThenChild() : $this->renderElseChild();
-            }
-            else {
-            	return $this->renderElseChild();				
-            }
-    	} else {
-    		return $this->renderElseChild();
-        }
-    	return $this->renderElseChild();
-	}
+        parent::__construct();
+        $this->registerArgument('folder',    'Ameos\\AmeosFilemanager\\Domain\\Model\\Folder', 'Folder', false);
+        $this->registerArgument('file',      'Ameos\\AmeosFilemanager\\Domain\\Model\\File', 'File', false);
+        $this->registerArgument('arguments', 'array', 'Arguments.', false);
+        $this->registerArgument('right',     'string', 'right.', false);
+    }
 
+    /**
+     * This method decides if the condition is TRUE or FALSE
+     *
+     * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.
+     * @return bool
+     */ 
     static protected function evaluateCondition($arguments = null)
     {
         $user = ($GLOBALS['TSFE']->fe_user->user);
@@ -66,17 +43,17 @@ class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCon
             return false;
         }
         if ($arguments['folder'] != null) {   
-            if($arguments['right']=="r") {
+            if($arguments['right'] == "r") {
                 return Tools::userHasFolderReadAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
-            } elseif ($arguments['right']=="w") {
+            } elseif ($arguments['right'] == "w") {
                 return Tools::userHasFolderWriteAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
             } else {
                 return false;
             }
         } elseif ($arguments['file'] != null) {
-            if ($arguments['right']=="r") {
+            if ($arguments['right'] == "r") {
                 return Tools::userHasFileReadAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
-            } elseif ($arguments['right']=="w") {
+            } elseif ($arguments['right'] == "w") {
                 return Tools::userHasFileWriteAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
             } else {
                 return false;                

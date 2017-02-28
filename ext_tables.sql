@@ -25,13 +25,15 @@ CREATE TABLE tx_ameosfilemanager_domain_model_folder (
     fe_group_addfolder tinytext NOT NULL,
 	no_write_access tinyint(4) DEFAULT '0' NOT NULL,
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
+    status int(11) DEFAULT '0' NOT NULL,
 
 	cats int(11) DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY fe_user_id (fe_user_id),
-	KEY folder_uid (uid_parent)
+	KEY folder_uid (uid_parent),
+    KEY status (status)
 );
 
 
@@ -64,8 +66,10 @@ CREATE TABLE sys_file_metadata (
 	# if fe_user
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
 	folder_uid int(11) DEFAULT '0' NOT NULL,
+    status int(11) DEFAULT '0' NOT NULL,
 
 	KEY folder_uid (folder_uid),
 	KEY fe_user_id (fe_user_id),
+    KEY status (status),
 	KEY no_read_access (no_read_access)
 );

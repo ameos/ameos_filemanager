@@ -92,6 +92,11 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	protected $noWriteAccess;
 
 	/**
+	 * @var integer
+	 */
+	protected $status;
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
 	 */
 	protected $cruserId;
@@ -292,6 +297,14 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 		return $this->noWriteAccess;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getStatus()
+    {
+		return $this->status;
+	}
+
     /**
      * @return string
      */
@@ -421,6 +434,17 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function setNoWriteAccess($noWriteAccess)
     {
 		$this->noWriteAccess = $noWriteAccess;
+	}
+
+	/**
+	 * Setter for status
+	 *
+	 * @param int $status
+	 * @return void
+	 */
+	public function setStatus($status)
+    {
+		$this->status = $status;
 	}
 
 	/**

@@ -36,12 +36,16 @@
 					</f:if>
 				</f:if>
                 <f:if condition="{is_last_recursion} == 0"><f:for each="{folder.folders}" as="f">
-                    <f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid,content_uid:content_uid}" />
+                    <custom:displayRow folder="{f}" settings="{settings}">
+                        <f:render partial="FileManager/FolderLine" arguments="{folder:f,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable,folderRoot:settings.startFolder,returnFolder:folder.uid,content_uid:content_uid}" />
+                    </custom:displayRow>
 				</f:for></f:if>
 				<f:for each="{files}" as="fi">
+                    <custom:displayRow file="{fi}" settings="{settings}">
 					<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
 						<f:render partial="FileManager/FileLine" arguments="{fi:fi,folderRoot:settings.startFolder,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable}" />
 				    </custom:checkAccess>
+                    </custom:displayRow>
 				</f:for>
 			</table>
 			<custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">

@@ -24,7 +24,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
     ],
     'feInterface' => ['fe_admin_fieldList' => 'title,description,keywords,fe_groups_access,file,folder,'],
-    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,no_read_access,fe_group_write,no_write_access,fe_group_addfolder,fe_group_addfile']],
+    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,no_read_access,fe_group_write,no_write_access,fe_group_addfolder,fe_group_addfile,status']],
     'interface' => ['showRecordFieldList' => 'title,description,keywords,fe_groups_access,file,folders'],
     'columns' => [
         'hidden' => [        
@@ -250,6 +250,21 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
                 'items'         => [['', 0]],
                 'size'          => 1,
                 'foreign_table' => 'fe_users',
+            ]
+        ],
+        'status' => [
+            'exclude' => 1,
+            'label'   => $ll . '.status',
+            'config'  => [
+                'type'          => 'select',
+                'maxitems'      => 1,
+                'minitems'      => 0,
+                'size'          => 1,
+                'items'         => [
+                    [$ll . '.status.parent',  0],
+                    [$ll . '.status.ready',   1],
+                    [$ll . '.status.archive', 2],
+                ],
             ]
         ],
     ],

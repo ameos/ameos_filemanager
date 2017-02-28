@@ -37,7 +37,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     /**
      * @var Object meta
      */
-    protected $feuser = FALSE;
+    protected $feuser = FALSE; 
 
     /**
      * @return array
@@ -49,6 +49,14 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             $this->meta = $metaDataRepository->findByFileUid($this->getUid());
         }
         return $this->meta;
+    }
+
+    /**
+     * return status
+     */
+    public function getStatus()
+    {
+        return $this->getMeta()['status'];
     }
 
     /**

@@ -107,8 +107,23 @@ $additionalColumnsMetadata = [
             'default'  => '0',
         ]
     ],
+    'status' => [
+        'exclude' => 1,
+        'label'   => $ll . '.status',
+        'config'  => [
+            'type'          => 'select',
+            'maxitems'      => 1,
+            'minitems'      => 0,
+            'size'          => 1,
+            'items'         => [
+                [$ll . '.status.parent',  0],
+                [$ll . '.status.ready',   1],
+                [$ll . '.status.archive', 2],
+            ],
+        ]
+    ],
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,datetime,no_read_access,fe_group_read, no_write_access,owner_read_only,fe_group_write,keywords,fe_user_id');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,datetime,no_read_access,fe_group_read, no_write_access,owner_read_only,fe_group_write,keywords,fe_user_id,status');
 

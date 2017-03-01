@@ -55,7 +55,12 @@ class CanDisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractC
                 if ($arguments['folder']->getRealstatus() > 0) {
                     $hasAccess = $arguments['folder']->getRealstatus() == 1 ? true : false;
                 } else {
-                    $realstatus = FilemanagerUtility::updateFolderCacheStatus($arguments['folder']->toArray());
+                    $realstatus = FilemanagerUtility::updateFolderCacheStatus([
+                        'uid'        => $arguments['folder']->getUid(),
+                        'uid_parent' => $arguments['folder']->getParent()->getUid(),
+                        'status'     => $arguments['folder']->getStatus(),
+                        'realstatus' => $arguments['folder']->getRealstatus(),
+                    ]);
                     $hasAccess = $realstatus == 1 ? true : false;
                 }
             }

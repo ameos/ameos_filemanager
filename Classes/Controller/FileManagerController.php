@@ -575,6 +575,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 
         $this->settings['columnsTable'] = explode(',', $this->settings['columnsTable']);
         $this->settings['actionDetail'] = explode(',', $this->settings['actionDetail']);
+        $this->view->assign('settings', $this->settings);
 
         $args = $this->request->getArguments();
         $t = $this->fileRepository->findBySearchCriterias($args, $this->settings['startFolder'], $configuration['view']['pluginNamespace'], $this->settings['recursion']);

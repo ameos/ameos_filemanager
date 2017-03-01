@@ -4,6 +4,8 @@
 		<f:then>
 			<h3>{folder.title}</h3>
 
+            <f:flashMessages />
+
             <f:render partial="FileManager/Toolbar" arguments="{_all}" />
 
 			<p class="breadcrumb"><custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}" separator=" / " contentUid="{content_uid}" /></p>

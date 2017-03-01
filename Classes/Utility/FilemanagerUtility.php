@@ -55,6 +55,9 @@ class FilemanagerUtility
      */
     public static function calculRecursion($rootFolder, $childFolder)
     {
+        if ($rootFolder->getGedPath() == $childFolder->getGedPath()) {
+            return 0;
+        }
         $deltaPath = trim(str_replace($rootFolder->getGedPath(), '', $childFolder->getGedPath()), '/');
         $deltaPart = GeneralUtility::trimExplode('/', $deltaPath);
         return count($deltaPart);

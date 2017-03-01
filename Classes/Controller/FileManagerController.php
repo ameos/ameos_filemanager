@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -172,8 +173,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             throw new \Exception('ZipArchive is not installed on your server : see http://php.net/ZipArchive');
         }
 
+        $rootFolder = $this->folderRepository->findByUid((int)$this->settings['startFolder']);
         $folderId = $this->request->hasArgument('folder') ? $this->request->getArgument('folder') : $this->settings['startFolder'];
-        $folder = $this->folderRepository->findByUid($folderId);
+        $folder = $this->folderRepository->findByUid((int)$folderId);
         if (!$folder || !$folder->isChildOf($this->startFolder)) {
             return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
         }
@@ -183,21 +185,32 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE);
-        DownloadUtility::addFolderToZip($filePath, $folder, $zip, $this->settings['startFolder']);
+        DownloadUtility::addFolderToZip(
+            $filePath,
+            $folder,
+            $zip,
+            $this->settings['startFolder'],
+            (bool)$this->settings['displayArchive'],
+            ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
+            FilemanagerUtility::calculRecursion($rootFolder, $folder)
+        );
         $zip->close();
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: ' . mime_content_type($zipPath));
-        header('Content-Disposition: attachment; filename="' . $folder->getTitle() . '.zip"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        
-        ob_clean();
-        flush();
-        readfile($zipPath);
-        unlink($zipPath);
-        die();
+        if (file_exists($zipPath)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: ' . mime_content_type($zipPath));
+            header('Content-Disposition: attachment; filename="' . $folder->getTitle() . '.zip"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            
+            ob_clean();
+            flush();
+            readfile($zipPath);
+            unlink($zipPath);
+            die();
+        }
+        $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
+        $this->redirect('index');
     }
 
     /**

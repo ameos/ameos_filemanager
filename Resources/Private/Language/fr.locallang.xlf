@@ -55,9 +55,10 @@
 			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source><target>To</target></trans-unit>
 			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source><target>Po</target></trans-unit>
 			<trans-unit id="folderFiles" xml:space="preserve"><source>File(s)</source><target>Fichier(s)</target></trans-unit>
-            <trans-unit id="massDownload" xml:space="preserve"><source>Download files and sub-folders as ZIP archive.</source><target>Téléchargez les fichiers et sous-dossiers sous forme d'archive ZIP</target></trans-unit>
+            <trans-unit id="massDownload" xml:space="preserve"><source>Download as ZIP archive</source><target>Télécharger en tant qu'archive ZIP</target></trans-unit>
             <trans-unit id="search" xml:space="preserve"><source>Search</source><target>Rechercher</target></trans-unit>
             <trans-unit id="refresh" xml:space="preserve"><source>Reload</source><target>Recharger</target></trans-unit>
+            <trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source><target>Le dossier est vide</target></trans-unit>
 
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>

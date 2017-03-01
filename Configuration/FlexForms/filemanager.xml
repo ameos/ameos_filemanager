@@ -184,15 +184,6 @@
                             </config>
                         </TCEforms>
                     </settings.actionDetail>
-                    <settings.iconFolder>
-                        <TCEforms>
-                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.iconFolder</label>
-                            <config>
-                                <type>input</type>
-                                <default>typo3conf/ext/ameos_filemanager/Resources/Public/Icons/</default>
-                            </config>
-                        </TCEforms>
-                    </settings.iconFolder>
                 </el>
             </ROOT>
         </sheetAppearance>

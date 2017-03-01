@@ -2,29 +2,12 @@
 <div class="ameos_file_manager" id="ameos_file_manager_{content_uid}">
 	<f:if condition="{folder}">
 		<f:then>
-			<h1>{folder.title}
-                <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-				<f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid}" >
-	        		<i class="fa fa-pencil-square-o"></i>
-	        	</f:link.action>
-                </custom:checkAccess>
-                <f:if condition="{settings.ajax_mode}">
-                    <f:link.action additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
-                        <f:image src="/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/refresh.png" />
-                    </f:link.action>
-                </f:if>
-            </h1>
-            <custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFile"/></f:link.action></p>
-            </custom:canAddFile>                    
-            <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFolder"/></f:link.action></p>
-            </custom:canAddFolder>
-            <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="massDownload" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action></p>
-            </custom:checkAccess>
+			<h3>{folder.title}</h3>
 
-			<custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}"/>
+            <f:render partial="FileManager/Toolbar" arguments="{_all}" />
+
+			<p class="breadcrumb"><custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}" separator=" / " contentUid="{content_uid}" /></p>
+
 			<table cellpadding="0" cellspacing="0" width="100%" border="1">
 
 				<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable,content_uid:content_uid}" />
@@ -48,15 +31,9 @@
                     </custom:displayRow>
 				</f:for>
 			</table>
-			<custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-				<p><f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFile"/></f:link.action></p>
-			</custom:canAddFile>
-            <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="createFolder"/></f:link.action></p>
-            </custom:canAddFolder>
-            <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
-                <p><f:link.action action="massDownload" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action></p>
-            </custom:checkAccess>
+
+			<f:render partial="FileManager/Toolbar" arguments="{_all}" />
+
 		</f:then>
 		<f:else>
 			<f:translate key="accessDenied"/>

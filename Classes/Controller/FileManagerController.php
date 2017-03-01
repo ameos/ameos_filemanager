@@ -573,13 +573,13 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $configuration['view']['pluginNamespace'] = 'tx_ameosfilemanager_fe_filemanager';
         }
 
+        $this->settings['columnsTable'] = explode(',', $this->settings['columnsTable']);
+        $this->settings['actionDetail'] = explode(',', $this->settings['actionDetail']);
+
         $args = $this->request->getArguments();
         $t = $this->fileRepository->findBySearchCriterias($args, $this->settings['startFolder'], $configuration['view']['pluginNamespace'], $this->settings['recursion']);
         $this->view->assign('files', $t);
-        $this->view->assign('value', $args);
-        $this->settings['columnsTable'] = explode(',', $this->settings['columnsTable']);
-        $this->settings['actionDetail'] = explode(',', $this->settings['actionDetail']);
-        $this->view->assign('settings', $this->settings);
+        $this->view->assign('value', $args);        
         $this->view->assign('content_uid', $contentUid);
 
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
@@ -597,13 +597,18 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
      */
     protected function detailAction()
     {
-        $args = $this->request->getArguments();
-        if ($args['file'] && $file = $this->fileRepository->findByUid($args['file'])) {
-            $this->view->assign('file', $file);
+        if ($this->request->hasArgument('file')) {
+            $file = $this->fileRepository->findByUid((int)$this->request->getArgument('file'));
+            if ($file) {
+                $this->view->assign('file', $file);    
+            } else {
+                $this->view->assign('error', LocalizationUtility::translate('fileNotFound', 'ameos_filemanager'));
+            }
+            
         } else {
-            return LocalizationUtility::translate('fileNotFound', 'ameos_filemanager');
+            $this->view->assign('error', LocalizationUtility::translate('fileNotFound', 'ameos_filemanager'));
         }
-        $this->view->assign('settings', $this->settings);
+        
     }
 
 

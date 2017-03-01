@@ -1,0 +1,33 @@
+{namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
+<p class="toolbar">
+    
+<custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid}" >
+        &nbsp;<f:translate key="edit"/>&nbsp;
+    </f:link.action>
+</custom:checkAccess>
+
+<f:if condition="{settings.ajax_mode}">
+    <f:link.action additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" action="index" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
+        &nbsp;<f:translate key="refresh"/>&nbsp;
+    </f:link.action>
+</f:if>
+
+<custom:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="formFile" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
+        &nbsp;<f:translate key="createFile"/>&nbsp;
+    </f:link.action>
+</custom:canAddFile>
+
+<custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
+        &nbsp;<f:translate key="createFolder"/>&nbsp;
+    </f:link.action>
+</custom:canAddFolder>
+
+<custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="massDownload" arguments="{folder: folder.uid}">
+        &nbsp;<f:translate key="massDownload"/>&nbsp;
+    </f:link.action>
+</custom:checkAccess>
+</p>

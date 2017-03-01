@@ -22,32 +22,38 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      *
      * @param Folder $folder 
      * @param int $startFolder 
+     * @param string $separator 
+     * @param int $contentUid 
      * @return string 
      */
-    public function render($folder=null,$startFolder = null)
+    public function render($folder=null, $startFolder = null, $separator = ' / ', $contentUid = 0)
     {
     	if ($folder != null) {
-            return $this->getBreadcrumb($folder,$startFolder);
+            return $this->getBreadcrumb($folder, $startFolder, $separator, $contentUid);
     	}
     }
 
     /**
      * return breadcrumb
      * $param Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-     * $param Ameos\AmeosFilemanager\Domain\Model\Folder $startFolder
+     * $param int $startFolder
+     * @param string $separator
+     * @param int $contentUid 
      * @return string
      */ 
-    public function getBreadcrumb($folder, $startFolder)
+    public function getBreadcrumb($folder, $startFolder, $separator = ' / ', $contentUid)
     {
-    	$typolink = [
-            'parameter' => (int)$GLOBALS['TSFE']->id,
-            'additionalParams' => '&tx_ameos_filemanager[folder]='  .$folder->getUid()
-        ];
-        $url = $GLOBALS['TSFE']->cObj->typolink($folder->getTitle(), $typolink);
+        $uri = $this->controllerContext->getUriBuilder()->reset()
+            ->setAddQueryString(true)
+            ->setArgumentsToBeExcludedFromQueryString(['id'])
+            ->uriFor('index', ['folder' => $folder->getUid()]);
+
+        $link = '<a href="' . $uri . '" data-ged-reload="1" data-ged-uid="' . $contentUid . '">' . $folder->getTitle() . '</a>';
+    	
     	if ($folder->getParent() && $folder->getUid() != $startFolder) {
-    		return $this->getBreadcrumb($folder->getParent(), $startFolder) . '-->' . $url;
+    		return $this->getBreadcrumb($folder->getParent(), $startFolder, $separator, $contentUid) . $separator . $link;
     	} else {
-    		return $url;
+    		return $link;
     	}
     }   
 }

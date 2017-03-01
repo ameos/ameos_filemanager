@@ -88,7 +88,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $files[] = $file['file'];
         }
 
-        if ($currentRecursive < $recursiveLimit) {
+        if ($currentRecursive <= $recursiveLimit) {
             $currentRecursive++;
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'uid_parent IN (' . $folders . ')');
             $childs = [];

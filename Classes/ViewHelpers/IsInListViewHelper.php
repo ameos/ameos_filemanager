@@ -26,7 +26,7 @@ class IsInListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCondit
      */
     public function render($uid=null, $list = null)
     {
-        if (is_array($list) && in_array($uid,$list)) {
+        if (is_array($list) && in_array($uid, $list)) {
             return $this->renderThenChild();
         }
         return $this->renderElseChild();

@@ -1,35 +1,33 @@
 {namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
-<tr>
-    <f:for each="{columns}" as="column">
-        <f:if condition="{0:column} == {0:'icon'}">
-            <th class="icone"></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'title'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file.name"><f:translate key="fileName"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'createdAt'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.crdate"><f:translate key="createdAt"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'updatedAt'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.tstamp"><f:translate key="updatedAt"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'categories'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.categories"><f:translate key="categories"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'description'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.description"><f:translate key="description"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'owner'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="fe_users.username"><f:translate key="owner"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'size'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file.size"><f:translate key="size"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'keywords'}">
-            <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.keywords"><f:translate key="keywords"/></custom:sortlink></th>
-        </f:if>
-        <f:if condition="{0:column} == {0:'actions'}">
-            <th><f:translate key="actions"/></th>
-        </f:if>                                                   
-    </f:for>
-</tr>
+<tr><f:for each="{columns}" as="column">
+    <f:if condition="{column} == 'icon'">
+        <th class="icon"></th>
+    </f:if>
+    <f:if condition="{column} == 'title'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file.name"><f:translate key="fileName"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'createdAt'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.crdate"><f:translate key="createdAt"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'updatedAt'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.tstamp"><f:translate key="updatedAt"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'categories'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.categories"><f:translate key="categories"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'description'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.description"><f:translate key="description"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'owner'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="fe_users.username"><f:translate key="owner"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'size'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file.size"><f:translate key="size"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'keywords'">
+        <th><custom:sortlink additionalAttributes="{data-ged-reload: '1', data-ged-uid: content_uid}" column="sys_file_metadata.keywords"><f:translate key="keywords"/></custom:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'actions'">
+        <th><f:translate key="actions"/></th>
+    </f:if>
+</f:for></tr>

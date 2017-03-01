@@ -6,7 +6,7 @@
 		<f:for each="{files}" as="fi">
             <custom:displayRow file="{fi}" settings="{settings}">
 			<custom:checkAccess file="{fi}" right="r" arguments="{folderRoot:settings.startFolder}">
-				<f:render partial="FileManager/FileLine" arguments="{fi:fi,actionDetail:settings.actionDetail,iconFolder:settings.iconFolder,columns:settings.columnsTable}" />
+				<f:render partial="FileManager/FileLine" arguments="{fi:fi}" />
 		    </custom:checkAccess>
             </custom:displayRow>
 		</f:for>

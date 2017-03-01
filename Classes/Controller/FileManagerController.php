@@ -78,26 +78,26 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         if ($this->settings['startFolder'] != '') {
             $this->startFolder = $this->settings['startFolder'];
         } else {
-            throw new Exception("The root folder was not configured. Please add it in plugin configuration.");
+            throw new Exception('The root folder was not configured. Please add it in plugin configuration.');
         }
         // Setting feUser Repository
-        if ($this->settings['stockageGroupPid']!='') {
+        if ($this->settings['stockageGroupPid'] != '') {
               $querySettings = $this->feGroupRepository->createQuery()->getQuerySettings();
               $querySettings->setStoragePageIds(array($this->settings['stockageGroupPid']));
               $this->feGroupRepository->setDefaultQuerySettings($querySettings);
         } else {
-            throw new Exception("The user folder was not configured. Please add it in plugin configuration.");
+            throw new Exception('The user folder was not configured. Please add it in plugin configuration.');
         }
         // Setting storage folder, return error if not set or not found.
         if($this->settings['storage']) {
             $this->storageUid = $this->settings['storage'];
         } else {
-            throw new Exception("The storage folder was not configured. Please add it in plugin configuration.");
+            throw new Exception('The storage folder was not configured. Please add it in plugin configuration.');
         }
         $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
         $this->storage = $storageRepository->findByUid($this->storageUid);
         if ($this->storage == null) {
-            throw new Exception("Storage folder not found. Please check configuration");
+            throw new Exception('Storage folder not found. Please check configuration');
         }
         // Setting list of usergroups to send to form actions
         if ($this->settings['authorizedGroups']) {
@@ -226,29 +226,29 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $fileArgs['noReadAccess'] = $meta['no_read_access'];
             $fileArgs['noWriteAccess'] = $meta['no_write_access'];
 
-            $this->view->assign('properties',$fileArgs);
-            $this->view->assign('file',$newFile);
-            $this->view->assign('parentFolder',$newFile->getParentFolder()->getUid());
-            $this->view->assign('uidFile',$newFile->getUid());
+            $this->view->assign('properties', $fileArgs);
+            $this->view->assign('file', $newFile);
+            $this->view->assign('parentFolder', $newFile->getParentFolder()->getUid());
+            $this->view->assign('uidFile', $newFile->getUid());
         } else {
             if (!AccessUtility::userHasAddFileAccess($this->user, $this->folderRepository->findByUid($folder))) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
-            $this->view->assign('parentFolder',$folder);
+            $this->view->assign('parentFolder', $folder);
         }
         // Setting userGroup list
         if ($this->authorizedGroups!='') {
-            $feGroup = FilemanagerUtility::getByUids($this->feGroupRepository,$this->authorizedGroups)->toArray();
+            $feGroup = FilemanagerUtility::getByUids($this->feGroupRepository, $this->authorizedGroups)->toArray();
             if (GeneralUtility::inList($this->authorizedGroups,-2)) {
                 $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
-                $temp->_setProperty('uid',-2);
+                $temp->_setProperty('uid', -2);
                 $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
                 $feGroup[] = $temp;    
             }
         } else {
             $feGroup = $this->feGroupRepository->findAll()->toArray();
             $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
-            $temp->_setProperty('uid',-2);
+            $temp->_setProperty('uid', -2);
             $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
             $feGroup[] = $temp;
         }
@@ -264,8 +264,8 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $this->view->assign('errors',$args['errors']);
             $this->view->assign('properties',$args['properties']);
         }
-        $this->view->assign('feGroup',$feGroup);
-        $this->view->assign('categories',$categories);
+        $this->view->assign('feGroup', $feGroup);
+        $this->view->assign('categories', $categories);
     }
 
     /**

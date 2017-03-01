@@ -129,7 +129,7 @@ class ext_update  {
 		    while (($entry = readdir($handle)) !== false) {
 		        if ($entry != '.' && $entry != '..') {
 		            if(is_dir($folder . $entry)){
-		            	$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like ''. $entry .''' );
+		            	$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \''. $entry .'\'' );
 						$exist = false;
 						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 							if(FilemanagerUtility::getFolderPathFromUid($row['uid']) == str_replace($storageFolderPath,'',$folder . $entry)) {
@@ -180,7 +180,7 @@ class ext_update  {
 		$infoFile = $this->currentStorage->getFileInfoByIdentifier($fileIdentifier, array());
 
 		// Add file into sys_file if it doesn't exist
-		$file = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'sys_file', 'identifier LIKE '' . $fileIdentifier . ''' );
+		$file = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'sys_file', 'identifier LIKE \'' . $fileIdentifier . '\'');
 		if($file){
 			$fileUid = $file['uid'];
 

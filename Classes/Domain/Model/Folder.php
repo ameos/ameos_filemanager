@@ -96,6 +96,11 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	 */
 	protected $status;
 
+    /**
+	 * @var integer
+	 */
+	protected $realstatus;
+
 	/**
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
 	 */
@@ -305,6 +310,14 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 		return $this->status;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getRealstatus()
+    {
+		return $this->realstatus;
+	}
+
     /**
      * @return string
      */
@@ -445,6 +458,17 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function setStatus($status)
     {
 		$this->status = $status;
+	}
+
+	/**
+	 * Setter for realstatus
+	 *
+	 * @param int $realstatus
+	 * @return void
+	 */
+	public function setRealstatus($realstatus)
+    {
+		$this->realstatus = $realstatus;
 	}
 
 	/**

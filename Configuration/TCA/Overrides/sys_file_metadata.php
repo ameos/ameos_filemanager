@@ -122,6 +122,7 @@ $additionalColumnsMetadata = [
             ],
         ]
     ],
+    'realstatus' => ['config' => ['type' => 'passthrough']]
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);

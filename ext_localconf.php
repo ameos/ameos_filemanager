@@ -3,6 +3,7 @@ if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Filelist\FileList;
+use Ameos\AmeosFilemanager\Hooks\ProcessDatamap;
 use Ameos\AmeosFilemanager\XClass\FileList as XClassFileList;
 
 // plugin
@@ -20,5 +21,7 @@ ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
 );
 
 // xclass
-$TYPO3_CONF_VARS['SYS']['Objects'][FileList::class] = ['className' => XClassFileList::class];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][FileList::class] = ['className' => XClassFileList::class];
 
+// hooks
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][ProcessDatamap::class] = 'EXT:ameos_filemanager/Classes/Hooks/ProcessDatamap.php:' . ProcessDatamap::class;

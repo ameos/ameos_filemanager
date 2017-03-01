@@ -26,6 +26,7 @@ CREATE TABLE tx_ameosfilemanager_domain_model_folder (
 	no_write_access tinyint(4) DEFAULT '0' NOT NULL,
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
     status int(11) DEFAULT '0' NOT NULL,
+    realstatus int(11) DEFAULT '0' NOT NULL,
 
 	cats int(11) DEFAULT '0' NOT NULL,
 
@@ -48,7 +49,7 @@ CREATE TABLE tx_ameosfilemanager_domain_model_filedownload (
 
     file int(11) DEFAULT '0' NOT NULL,
     user_download int(11) DEFAULT '0' NOT NULL,
-        
+
     PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY user_download (user_download)
@@ -67,6 +68,7 @@ CREATE TABLE sys_file_metadata (
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
 	folder_uid int(11) DEFAULT '0' NOT NULL,
     status int(11) DEFAULT '0' NOT NULL,
+    realstatus int(11) DEFAULT '0' NOT NULL,
 
 	KEY folder_uid (folder_uid),
 	KEY fe_user_id (fe_user_id),

@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Model\File;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -49,35 +50,23 @@ class DisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCond
         }
         
         if (is_a($arguments['folder'], Folder::class)) {
-            return self::testFolder($arguments['folder']);
+            if ($arguments['folder']->getRealstatus() > 0) {
+                return $arguments['folder']->getRealstatus() == 1 ? true : false;
+            } else {
+                $realstatus = FilemanagerUtility::updateFolderCacheStatus($arguments['folder']->toArray());
+                return $realstatus == 1 ? true : false;
+            }
         }
 
         if (is_a($arguments['file'], File::class)) {
-            if ($arguments['file']->getStatus() == 1) {
-                return true;
-            }            
-            return self::testFolder($arguments['file']->getParentFolder());
+            if ($arguments['file']->getRealstatus() > 0) {
+                return $arguments['file']->getRealstatus() == 1 ? true : false;
+            } else {                
+                $realstatus = FilemanagerUtility::updateFileCacheStatus($arguments['file']->getMeta());
+                return $realstatus == 1 ? true : false;
+            }
         }
         
-        return false;
-    }
-
-    /**
-     * test folder archive state
-     */ 
-    static protected function testFolder($folder)
-    {
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        do {
-            if ($folder->getStatus() == 2) {
-                return false;
-            }
-            if ($folder->getStatus() == 1) {
-                return true;
-            }
-            $folder = $folder->getParent();
-            
-        } while ($folder);
         return false;
     }
 }

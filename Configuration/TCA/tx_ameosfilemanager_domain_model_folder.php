@@ -18,7 +18,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => ExtensionManagementUtility::extRelPath('ameos_filemanager') . 'ext_icon.png',
+        'iconfile'       => ExtensionManagementUtility::extRelPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
         'searchFields'   => 'title, description, keywords',
         'rootLevel'      => 1,
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
@@ -267,6 +267,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
                 ],
             ]
         ],
+        'realstatus' => ['config' => ['type' => 'passthrough']]
     ],
 
 ];

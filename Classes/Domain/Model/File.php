@@ -61,6 +61,14 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
+     * return status
+     */
+    public function getRealstatus()
+    {
+        return $this->getMeta()['realstatus'];
+    }
+
+    /**
      * @return int
      */ 
     public function getDatetime()

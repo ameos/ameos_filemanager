@@ -9,7 +9,7 @@
 			<p class="breadcrumb"><custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}" separator=" / " contentUid="{content_uid}" /></p>
 
 			<table cellpadding="0" cellspacing="0" width="100%" border="1">
-				<f:render partial="FileManager/HeaderTable" arguments="{columns:settings.columnsTable,content_uid:content_uid}" />
+				<f:render partial="FileManager/HeaderTable" arguments="{content_uid:content_uid}" />
 
 				<f:if condition="{0:folder.uid} != {0:settings.startFolder}">
 					<f:if condition="{folder.parent}">

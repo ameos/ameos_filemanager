@@ -85,22 +85,39 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_folder', $insertArray);
 	}
 
-	public function countFilesForFolder($folderUid)
+    /**
+     * count file for a folder
+     * @param int $folderUid
+     * @param bool $withArchive
+     * @return int
+     */ 
+	public function countFilesForFolder($folderUid, $withArchive = true)
     {
 		if (empty($folderUid)) {
 			return 0;
 		}
-		$where = "sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ".(int)$folderUid;
+		$where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ' . (int)$folderUid;
+        if (!$withArchive) {
+            $where .= ' AND sys_file_metadata.realstatus IN (0,1)';
+        }
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','sys_file, sys_file_metadata', $where)['count'];
-
 	}
 
-	public function countFoldersForFolder($folderUid)
+    /**
+     * count file for a folder
+     * @param int $folderUid
+     * @param bool $withArchive
+     * @return int
+     */ 
+	public function countFoldersForFolder($folderUid, $withArchive = true)
     {
 		if (empty($folderUid)) {
 			return 0;
 		}	
-		$where = "uid_parent = ".(int)$folderUid;
+		$where = 'uid_parent = ' . (int)$folderUid;
+        if (!$withArchive) {
+            $where .= ' AND realstatus IN (0,1)';
+        }
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','tx_ameosfilemanager_domain_model_folder', $where)['count'];
 	}
 

@@ -530,16 +530,44 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 		$this->feGroupAddfile = $arrayFeGroupAddfile;
 	}
 
+    /**
+     * return number of files in the folder
+     * @return int
+     */ 
 	public function getFileNumber()
     {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		return $folderRepository->countFilesForFolder($this->getUid());		
 	}
 
+    /**
+     * return number of ready files in the folder
+     * @return int
+     */ 
+	public function getReadyFileNumber()
+    {
+		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+		return $folderRepository->countFilesForFolder($this->getUid(), false);		
+	}
+
+    /**
+     * return number of subfolders in the folder
+     * @return int
+     */ 
 	public function getFolderNumber()
     {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		return $folderRepository->countFoldersForFolder($this->getUid());		
+	}
+
+    /**
+     * return number of ready subfolders in the folder
+     * @return int
+     */ 
+	public function getReadyFolderNumber()
+    {
+		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+		return $folderRepository->countFoldersForFolder($this->getUid(), false);		
 	}
 
 	public function hasFolder($folderName, $uid=null)

@@ -39,7 +39,10 @@
            <td>{folder.ownerUsername}</td>
         </f:if>
         <f:if condition="{column} == 'size'">
-            <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
+            <f:if condition="{settings.displayArchive}">
+                <f:then><td>{folder.fileNumber} <f:translate key="folderFiles"/></td></f:then>
+                <f:else><td>{folder.readyFileNumber} <f:translate key="folderFiles"/></td></f:else>
+            </f:if>            
         </f:if>
         <f:if condition="{column} == 'keywords'">
              <td>{folder.keywords}</td>

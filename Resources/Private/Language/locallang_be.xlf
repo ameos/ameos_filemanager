@@ -46,6 +46,8 @@
 			<trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source></trans-unit>
 			<trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source></trans-unit>
             <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source></trans-unit>
+
+            <trans-unit id="scheduler.cachestatus.title" xml:space="preserve"><source>File Manager : Calculate real state from parent if necessary</source></trans-unit>
 		</body>
     </file>
 </xliff>

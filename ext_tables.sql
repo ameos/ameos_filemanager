@@ -17,13 +17,17 @@ CREATE TABLE tx_ameosfilemanager_domain_model_folder (
 	description text,
 	keywords text,
 	category int(11) DEFAULT '0' NOT NULL,
-	# FE permissions for folder itself
+	
 	no_read_access tinyint(4) DEFAULT '0' NOT NULL,
+    no_write_access tinyint(4) DEFAULT '0' NOT NULL,
+    owner_has_read_access tinyint(4) DEFAULT '0' NOT NULL,
+    owner_has_write_access tinyint(4) DEFAULT '0' NOT NULL,
+    
 	fe_group_read tinytext NOT NULL,
     fe_group_write tinytext NOT NULL,
     fe_group_addfile tinytext NOT NULL,
     fe_group_addfolder tinytext NOT NULL,
-	no_write_access tinyint(4) DEFAULT '0' NOT NULL,
+	
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
     status int(11) DEFAULT '0' NOT NULL,
     realstatus int(11) DEFAULT '0' NOT NULL,
@@ -57,16 +61,21 @@ CREATE TABLE tx_ameosfilemanager_domain_model_filedownload (
 
 CREATE TABLE sys_file_metadata (
 	datetime int(11) unsigned DEFAULT '0' NOT NULL,
-	# FE permissions for file itself
+	
 	no_read_access tinyint(4) DEFAULT '0' NOT NULL,
-	fe_group_read tinytext NOT NULL,
-	no_write_access tinyint(4) DEFAULT '0' NOT NULL,
+    no_write_access tinyint(4) DEFAULT '0' NOT NULL,
+    owner_has_read_access tinyint(4) DEFAULT '0' NOT NULL,
+    owner_has_write_access tinyint(4) DEFAULT '0' NOT NULL,
+
+    fe_group_read tinytext NOT NULL,	
 	fe_group_write tinytext NOT NULL,
+    
     owner_read_only tinyint(4) DEFAULT '0' NOT NULL,
+    
 	keywords text,
-	# if fe_user
 	fe_user_id int(11) DEFAULT '0' NOT NULL,
-	folder_uid int(11) DEFAULT '0' NOT NULL,
+
+    folder_uid int(11) DEFAULT '0' NOT NULL,
     status int(11) DEFAULT '0' NOT NULL,
     realstatus int(11) DEFAULT '0' NOT NULL,
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
-		<header/>
-		<body>
+    <file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+        <header/>
+        <body>
             <trans-unit id="tx_ameosfilemanager" xml:space="preserve"><source>EDM</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder" xml:space="preserve"><source>Folders</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filedownload" xml:space="preserve"><source>File download</source></trans-unit>
@@ -25,6 +25,8 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.parent" xml:space="preserve"><source></source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.ready" xml:space="preserve"><source>Ready</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.archive" xml:space="preserve"><source>Archive</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_read_access" xml:space="preserve"><source>Owner has read access</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_write_access" xml:space="preserve"><source>Owner has write access</source></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_user_id" xml:space="preserve"><source>Propriétaire front_end</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_read" xml:space="preserve"><source>Groups allowed to read the file</source></trans-unit>
@@ -39,12 +41,14 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.parent" xml:space="preserve"><source></source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.ready" xml:space="preserve"><source>Ready</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.archive" xml:space="preserve"><source>Archive</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_read_access" xml:space="preserve"><source>Owner has read access</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_write_access" xml:space="preserve"><source>Owner has write access</source></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve"><source>Category</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve"><source>Title</source></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_filetype" xml:space="preserve"><source>Type</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filetype.title" xml:space="preserve"><source>Title</source></trans-unit>
-		</body>
-	</file>
+        </body>
+    </file>
 </xliff>

@@ -398,6 +398,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         } else {
             $properties['no_write_access'] = 0;
         }
+        $properties['owner_has_read_access']  = isset($this->settings['newFile']['owner_has_read_access'])  ? $this->settings['newFile']['owner_has_read_access']  : 1;
+        $properties['owner_has_write_access'] = isset($this->settings['newFile']['owner_has_write_access']) ? $this->settings['newFile']['owner_has_write_access'] : 1;
+
         if ($fileArgs['uidFile'] != '') {
             $metaDataRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
                 $metaDataRepository->update($fileModel->getUid(),$properties);
@@ -564,7 +567,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $newFolder->setArrayFeGroupAddfolder($fileArgs['arrayFeGroupAddfolder']);
         $newFolder->setCategories($fileArgs['categories']);
         $newFolder->setUidParent($parent);
-
+        $newFolder->setOwnerHasReadAccess((isset($this->settings['newFolder']['owner_has_read_access']) ? $this->settings['newFolder']['owner_has_read_access'] : 1));
+        $newFolder->setOwnerHasWriteAccess((isset($this->settings['newFolder']['owner_has_write_access']) ? $this->settings['newFolder']['owner_has_write_access'] : 1));
+        
         $this->folderRepository->add($newFolder);
 
         if ($fileArgs['uidFolder'] != '') {

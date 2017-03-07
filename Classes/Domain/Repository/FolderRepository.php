@@ -144,15 +144,47 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 	public function getModifiedEnabledFields($writeMode = false)
     {
 		$pageRepository = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Page\PageRepository');
-		$enableFieldsWithFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder');
-		$enableFieldsWithoutFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder',0,array('fe_group' => 1));
+		$enableFieldsWithFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['disabled' => 1]);
+        $enableFieldsWithoutFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['fe_group' => 1]);
 
-		$ownerOnlyField = $writeMode ? 'no_write_access':'no_read_access';
+		$ownerOnlyField   = $writeMode ? 'no_write_access' : 'no_read_access';
+        $ownerAccessField = $writeMode ? 'owner_has_write_access' : 'owner_has_read_access';
 
 		if ($GLOBALS['TSFE']->fe_user->user) {
-			$where = " AND (( 1=1" . $enableFieldsWithFeGroup . " AND (".$ownerOnlyField." = 0) ) OR ( 1=1".$enableFieldsWithoutFeGroup." AND tx_ameosfilemanager_domain_model_folder.fe_user_id = ".$GLOBALS['TSFE']->fe_user->user["uid"]."))";
+            $where = ' AND (';
+            $where .= '(1 ' . $enableFieldsWithoutFeGroup  . ')'; // classic enable fields
+
+            // open clause access right 
+            $where .= ' AND (';
+                
+            // available for all (owner only field = 0)
+            $where .=  '(' . $ownerOnlyField . ' = 0 ' // owner only field = 0
+                    . ' AND (' // and
+                        . '(1 ' . $enableFieldsWithFeGroup . ')' // group access
+                        . ' OR (' // is owner 
+                            . 'tx_ameosfilemanager_domain_model_folder.fe_user_id = ' . $GLOBALS['TSFE']->fe_user->user['uid']
+                            . ' AND tx_ameosfilemanager_domain_model_folder.' . $ownerAccessField . ' = 1
+                        )
+                    )
+                )';
+
+            // available only owner (owner only field = 1)
+            $where .=  ' OR ('
+                    . $ownerOnlyField . ' = 1 ' // owner only field = 0
+                    . ' AND tx_ameosfilemanager_domain_model_folder.fe_user_id = ' . $GLOBALS['TSFE']->fe_user->user['uid'] // user is the owner
+                    . ' AND (' // and
+                        . '(1 ' . $enableFieldsWithFeGroup . ')'  // group access
+                        . ' OR tx_ameosfilemanager_domain_model_folder.fe_user_id = ' . $GLOBALS['TSFE']->fe_user->user['uid'] // owner has access
+                    . ')
+                )';
+
+            // close clause access right 
+            $where .= ')';
+
+            // close enable field clause
+            $where .= ')';
 		} else {
-			$where = " AND (( 1=1" . $enableFieldsWithFeGroup . " AND (".$ownerOnlyField." = 0) ) AND ( 1=1".$enableFieldsWithoutFeGroup."))";
+			$where = ' AND (' . $ownerOnlyField . ' = 0 ' . $enableFieldsWithFeGroup . ')';
 		}
 		return $where;
 	}
@@ -169,9 +201,11 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             case 'addfile':   $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_addfile';   break;
             case 'addfolder': $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_addfolder'; break;
 		}
+
+        $writeMode = $accessMode == 'read' ? false : true;        
 		$query = $this->createQuery();		
 		$where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
-		$where .= $this->getModifiedEnabledFields($writeRight);
+		$where .= $this->getModifiedEnabledFields($writeMode);
 		$query->statement
 		(	'	SELECT tx_ameosfilemanager_domain_model_folder.* 
 				FROM tx_ameosfilemanager_domain_model_folder 
@@ -181,7 +215,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 		);
 
 		// Don't forget to change back to read right once the deed is done
-        $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_read';
+        $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group'] = 'fe_group_read';
 
         $res = $query->execute()->getFirst();
 		return $res;

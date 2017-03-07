@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="fr" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
-		<header/>
-		<body>
+    <file source-language="fr" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+        <header/>
+        <body>
             <trans-unit id="plugin.fe_filemanager.title" xml:space="preserve"><source>File Manager</source><target>Gestion de fichier</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager.description" xml:space="preserve"><source>Electronic Document Management</source><target>Gestion électronique des documents</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source><target>Gestion de fichier > Export</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source><target>Gestion de fichier > Recherche</target></trans-unit>
             
-			<trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source><target>Icône</target></trans-unit>
-			<trans-unit id="flexform.title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>
-			<trans-unit id="flexform.categories" xml:space="preserve"><source>Cateories</source><target>Catégories</target></trans-unit>
-			<trans-unit id="flexform.createdAt" xml:space="preserve"><source>Created at</source><target>Créé le</target></trans-unit>
-			<trans-unit id="flexform.updatedAt" xml:space="preserve"><source>Updated at</source><target>Mise à jour le</target></trans-unit>
-			<trans-unit id="flexform.description" xml:space="preserve"><source>Description</source><target>Description</target></trans-unit>
-			<trans-unit id="flexform.owner" xml:space="preserve"><source>Owner</source><target>Propriétaire</target></trans-unit>
-			<trans-unit id="flexform.size" xml:space="preserve"><source>Size</source><target>Taille</target></trans-unit>
-			<trans-unit id="flexform.keywords" xml:space="preserve"><source>Keywords</source><target>Keywords</target></trans-unit>
-			<trans-unit id="flexform.actions" xml:space="preserve"><source>Actions</source><target>Actions</target></trans-unit>
-			<trans-unit id="flexform.detail" xml:space="preserve"><source>Detail</source><target>Detail</target></trans-unit>
-			<trans-unit id="flexform.edit" xml:space="preserve"><source>Edit</source><target>Editer</target></trans-unit>
-			<trans-unit id="flexform.delete" xml:space="preserve"><source>Delete</source><target>Supprimer</target></trans-unit>
-			<trans-unit id="flexform.download" xml:space="preserve"><source>Download</source><target>Télécharger</target></trans-unit>
+            <trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source><target>Icône</target></trans-unit>
+            <trans-unit id="flexform.title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>
+            <trans-unit id="flexform.categories" xml:space="preserve"><source>Cateories</source><target>Catégories</target></trans-unit>
+            <trans-unit id="flexform.createdAt" xml:space="preserve"><source>Created at</source><target>Créé le</target></trans-unit>
+            <trans-unit id="flexform.updatedAt" xml:space="preserve"><source>Updated at</source><target>Mise à jour le</target></trans-unit>
+            <trans-unit id="flexform.description" xml:space="preserve"><source>Description</source><target>Description</target></trans-unit>
+            <trans-unit id="flexform.owner" xml:space="preserve"><source>Owner</source><target>Propriétaire</target></trans-unit>
+            <trans-unit id="flexform.size" xml:space="preserve"><source>Size</source><target>Taille</target></trans-unit>
+            <trans-unit id="flexform.keywords" xml:space="preserve"><source>Keywords</source><target>Keywords</target></trans-unit>
+            <trans-unit id="flexform.actions" xml:space="preserve"><source>Actions</source><target>Actions</target></trans-unit>
+            <trans-unit id="flexform.detail" xml:space="preserve"><source>Detail</source><target>Detail</target></trans-unit>
+            <trans-unit id="flexform.edit" xml:space="preserve"><source>Edit</source><target>Editer</target></trans-unit>
+            <trans-unit id="flexform.delete" xml:space="preserve"><source>Delete</source><target>Supprimer</target></trans-unit>
+            <trans-unit id="flexform.download" xml:space="preserve"><source>Download</source><target>Télécharger</target></trans-unit>
             <trans-unit id="flexform.massDownload" xml:space="preserve"><source>Download as a Zip Archive</source><target>Télécharger en ZIP</target></trans-unit>
 
-			<trans-unit id="flexform.generalSheet" xml:space="preserve"><source>General configuration</source><target>Configuration générale</target></trans-unit>
-			<trans-unit id="flexform.sheetAppearance" xml:space="preserve"><source>Tab display</source><target>Affichage tableau</target></trans-unit>
-			<trans-unit id="flexform.sheetEdition" xml:space="preserve"><source>Edit options</source><target>Options d'édition</target></trans-unit>
+            <trans-unit id="flexform.generalSheet" xml:space="preserve"><source>General configuration</source><target>Configuration générale</target></trans-unit>
+            <trans-unit id="flexform.sheetAppearance" xml:space="preserve"><source>Tab display</source><target>Affichage tableau</target></trans-unit>
+            <trans-unit id="flexform.sheetEdition" xml:space="preserve"><source>Edit options</source><target>Options d'édition</target></trans-unit>
 
-			<trans-unit id="flexform.authorizedGroup" xml:space="preserve"><source>Groups that can be selected while editing a record</source><target>Groupes pouvant être séléctionnés lors de la modification d'une entrée</target></trans-unit>
-			<trans-unit id="flexform.authorizedCategories" xml:space="preserve"><source>Categories that can be selected while editing a record</source><target>Catégories pouvant être séléctionnés lors de la modification d'une entrée</target></trans-unit>
-			<trans-unit id="flexform.stockageGroupPid" xml:space="preserve"><source>User groups folder</source><target>Stockage des groupes utilisateurs</target></trans-unit>
-			<trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source><target>Storage</target></trans-unit>
-			<trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source><target>Dossier de base</target></trans-unit>
-			<trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source><target>Colonnes affichées dans le tableau</target></trans-unit>
-			<trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source><target>Action proposé ( si action est affiché dans le tableau)</target></trans-unit>
-			<trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
-			<trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source><target>Informations exportées.</target></trans-unit>
-			<trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source><target>Chemin du fichier</target></trans-unit>
-			<trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>
-			<trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source><target>Extension du fichier</target></trans-unit>
+            <trans-unit id="flexform.authorizedGroup" xml:space="preserve"><source>Groups that can be selected while editing a record</source><target>Groupes pouvant être séléctionnés lors de la modification d'une entrée</target></trans-unit>
+            <trans-unit id="flexform.authorizedCategories" xml:space="preserve"><source>Categories that can be selected while editing a record</source><target>Catégories pouvant être séléctionnés lors de la modification d'une entrée</target></trans-unit>
+            <trans-unit id="flexform.stockageGroupPid" xml:space="preserve"><source>User groups folder</source><target>Stockage des groupes utilisateurs</target></trans-unit>
+            <trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source><target>Storage</target></trans-unit>
+            <trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source><target>Dossier de base</target></trans-unit>
+            <trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source><target>Colonnes affichées dans le tableau</target></trans-unit>
+            <trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source><target>Action proposé ( si action est affiché dans le tableau)</target></trans-unit>
+            <trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
+            <trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source><target>Informations exportées.</target></trans-unit>
+            <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source><target>Chemin du fichier</target></trans-unit>
+            <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>
+            <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source><target>Extension du fichier</target></trans-unit>
             <trans-unit id="flexform.recursion" xml:space="preserve"><source>Limiting the number of levels (No limit if empty)</source><target>Limitation du nombre de niveau (pas de limite si vide)</target></trans-unit>
-			<trans-unit id="flexform.pluginNamespace" xml:space="preserve"><source>Namespace (Can be changed if there are more than 2 plugin in the same page)</source><target>Namespace (peut être modifié s'il y a plus de 2 plug-in dans la même page)</target></trans-unit>
+            <trans-unit id="flexform.pluginNamespace" xml:space="preserve"><source>Namespace (Can be changed if there are more than 2 plugin in the same page)</source><target>Namespace (peut être modifié s'il y a plus de 2 plug-in dans la même page)</target></trans-unit>
             <trans-unit id="flexform.remotePluginNamespace" xml:space="preserve"><source>Namespace of the remote plugin</source><target>Namespace du plugin distant</target></trans-unit>
             <trans-unit id="flexform.displayArchive" xml:space="preserve"><source>Display archived files and folders</source><target>Afficher les fichiers et dossiers achivés</target></trans-unit>
             <trans-unit id="flexform.templateRootPaths" xml:space="preserve"><source>Template root path</source><target>Chemin des templates</target></trans-unit>
             <trans-unit id="flexform.partialRootPaths" xml:space="preserve"><source>Partial root path</source><target>Chemin des templates partiels</target></trans-unit>
 
-			<trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source><target>Colonnes affichées:Colonnes affichées dans le tableau</target></trans-unit>
-			<trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source><target>Actions :Action proposées dans la colonne correspondante du tableau (si action est affiché dans le tableau)</target></trans-unit>
-			<trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Dossier d'îcone : Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
-			<trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source><target>Informations exportées.</target></trans-unit>
-			<trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source><target>Balayer dossier en FE:Verifier présence de nouveaux objets dans le dossier visité en FE. (Peut réduire grandement les performances)</target></trans-unit>
+            <trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source><target>Colonnes affichées:Colonnes affichées dans le tableau</target></trans-unit>
+            <trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source><target>Actions :Action proposées dans la colonne correspondante du tableau (si action est affiché dans le tableau)</target></trans-unit>
+            <trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Dossier d'îcone : Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
+            <trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source><target>Informations exportées.</target></trans-unit>
+            <trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source><target>Balayer dossier en FE:Verifier présence de nouveaux objets dans le dossier visité en FE. (Peut réduire grandement les performances)</target></trans-unit>
             <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source><target>Type de fichier autorisé</target></trans-unit>
-
+            <trans-unit id="constant.newFolder.owner_has_read_access" xml:space="preserve"><source>New folder : owner has read access</source><target>Nouveau dossier : le propriétaire a les droits de lecture</target></trans-unit>
+            <trans-unit id="constant.newFolder.owner_has_write_access" xml:space="preserve"><source>New folder : owner has write access</source><target>Nouveau dossier : le propriétaire a les droits d'écriture</target></trans-unit>
+            <trans-unit id="constant.newFile.owner_has_read_access" xml:space="preserve"><source>New file : owner has read access</source><target>Nouveau fichier : le propriétaire a les droits de lecture</target></trans-unit>
+            <trans-unit id="constant.newFile.owner_has_write_access" xml:space="preserve"><source>New file : owner has write access</source><target>Nouveau fichier : le propriétaire a les droits d'écriture</target></trans-unit>
+            
             <trans-unit id="scheduler.cachestatus.title" xml:space="preserve"><source>File Manager : Calculate state from parent if necessary</source><target>File Manager : Calculer l'état réel depuis le parent si nécessaire</target></trans-unit>
-		</body>
+        </body>
     </file>
 </xliff>

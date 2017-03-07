@@ -6,6 +6,15 @@ plugin.tx_ameosfilemanager {
 		columnsExport = {$plugin.tx_ameosfilemanager.columnsExport}
 		parseFolderInFE = {$plugin.tx_ameosfilemanager.parseFolderInFE}
         allowedFileExtension = {$plugin.tx_ameosfilemanager.allowedFileExtension}
+
+        newFile {
+            owner_has_read_access = {$plugin.tx_ameosfilemanager.newFile.owner_has_read_access}
+            owner_has_write_access = {$plugin.tx_ameosfilemanager.newFile.owner_has_write_access}
+        }
+        newFolder {
+            owner_has_read_access = {$plugin.tx_ameosfilemanager.newFolder.owner_has_read_access}
+            owner_has_write_access = {$plugin.tx_ameosfilemanager.newFolder.owner_has_write_access}
+        }
 	}
 	persistence {
 		classes {

@@ -24,7 +24,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
     ],
     'feInterface' => ['fe_admin_fieldList' => 'title,description,keywords,fe_groups_access,file,folder,'],
-    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,no_read_access,fe_group_write,no_write_access,fe_group_addfolder,fe_group_addfile,status']],
+    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,owner_has_read_access,no_read_access,fe_group_write,owner_has_write_access,no_write_access,fe_group_addfolder,fe_group_addfile,status']],
     'interface' => ['showRecordFieldList' => 'title,description,keywords,fe_groups_access,file,folders'],
     'columns' => [
         'hidden' => [        
@@ -88,6 +88,22 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             'config'  => [
                 'type'    => 'check',
                 'default' => '0',
+            ]
+        ],
+        'owner_has_read_access' => [
+            'exclude' => 1,
+            'label'   => $ll . '.owner_has_read_access',
+            'config'  => [
+                'type'    => 'check',
+                'default' => '1'
+            ]
+        ],
+        'owner_has_write_access' => [
+            'exclude' => 1,
+            'label'   => $ll . '.owner_has_write_access',
+            'config'  => [
+                'type'    => 'check',
+                'default' => '1'
             ]
         ],
         'description' => [      

@@ -218,32 +218,48 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 		return $query->execute();
 	}
 
-	public function findByUid($fileUid,$writeRight=false)
+    /**
+     * return file by uid
+     * @param int $fileUid file uid
+     * @param boolean $writeRight if true, use write access instead of read access
+     */ 
+	public function findByUid($fileUid, $writeRight = false)
     {
 		if (empty($fileUid)) {
 			return 0;
 		}
-		if ($writeRight) {
-			$column = 'fe_group_write';
-		} else {
-			$column = 'fe_group_read';	
-		}
-		$userGroups = $GLOBALS['TSFE']->gr_list;
 
-		$query = $this->createQuery();		
+		// filter by uid
 		$where = 'sys_file.uid = ' . (int)$fileUid;
-		$where .= " AND (( 
-			sys_file_metadata.".$column."='' 
-			OR sys_file_metadata.".$column." IS NULL 
-			OR sys_file_metadata.".$column."='0' ";
+
+        // check group access 
+        $column = $writeRight ? 'fe_group_write' : 'fe_group_read';
+        $userGroups = $GLOBALS['TSFE']->gr_list;
+		$where .= ' AND (
+            ( 
+                sys_file_metadata.' . $column . ' = \'\' 
+                OR sys_file_metadata.' . $column . ' IS NULL 
+                OR sys_file_metadata.' . $column . ' = 0';
+
+        
 		foreach (explode(',', $userGroups) as $userGroup) {
-			$where .= "OR FIND_IN_SET('".$userGroup."',sys_file_metadata.".$column.") ";
-		} if($GLOBALS['TSFE']->fe_user->user) {
-			$where .= ') OR sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . ')';	
-		} else {
-			$where .= '))';
+			$where .= ' OR FIND_IN_SET(' . $userGroup . ', sys_file_metadata.' . $column . ')';
 		}
-		
+        $where .= ')';
+
+        // check owner access 
+        if($GLOBALS['TSFE']->fe_user->user) {
+            $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
+			$where .= ' OR (
+                sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . '
+                AND sys_file_metadata.' . $ownerAccessField . ' = 1
+            )';
+		}
+
+        // clause access right 
+		$where .= ')';
+
+        $query = $this->createQuery();
 		$query->statement
 		(	'	SELECT distinct sys_file.uid, sys_file_metadata.folder_uid 
 				FROM sys_file_metadata

@@ -73,6 +73,22 @@ $additionalColumnsMetadata = [
             'default' => '0',
         ]
     ],
+    'owner_has_read_access' => [
+        'exclude' => 1,
+        'label'   => $ll . '.owner_has_read_access',
+        'config'  => [
+            'type'    => 'check',
+            'default' => '1'
+        ]
+    ],
+    'owner_has_write_access' => [
+        'exclude' => 1,
+        'label'   => $ll . '.owner_has_write_access',
+        'config'  => [
+            'type'    => 'check',
+            'default' => '1'
+        ]
+    ],
     'fe_user_id' => [
         'exclude' => 1,
         'label'   => $ll . '.fe_user_id',
@@ -126,5 +142,5 @@ $additionalColumnsMetadata = [
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,datetime,no_read_access,fe_group_read, no_write_access,owner_read_only,fe_group_write,keywords,fe_user_id,status');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,datetime,fe_user_id,owner_has_read_access,no_read_access,fe_group_read,owner_has_write_access,no_write_access,fe_group_write,keywords,status');
 

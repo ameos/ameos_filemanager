@@ -44,11 +44,22 @@ class AccessUtility
 				}
 			}
 		}
-		if ($user) {
-			if ($folder->getNoReadAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
+        if($folder->getNoReadAccess() && // read only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($folder->getFeUser()) // no owner
+                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
+            return false;
 		}
+        if($user && $user['uid'] > 0
+            && $folder->getOwnerHasReadAccess()
+            && is_object($folder->getFeUser())
+            && $folder->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
+        }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid())) {
 			return true;
@@ -69,13 +80,21 @@ class AccessUtility
         if (!$folder instanceof \Ameos\AmeosFilemanager\Domain\Model\Folder) {
             return false;
         }
-        if ($user) {
-			if ($folder->getNoWriteAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
-		}
-        if (!$user && $folder->getNoWriteAccess()) {
+        if($folder->getNoWriteAccess() && // write only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($folder->getFeUser()) // no owner
+                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
             return false;
+		}
+        if($user && $user['uid'] > 0
+            && $folder->getOwnerHasWriteAccess()
+            && is_object($folder->getFeUser())
+            && $folder->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
         }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfolder')) {
@@ -97,13 +116,21 @@ class AccessUtility
         if (!$folder instanceof \Ameos\AmeosFilemanager\Domain\Model\Folder) {
             return false;
         }
-        if ($user) {
-			if ($folder->getNoWriteAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
-		}
-        if (!$user && $folder->getNoWriteAccess()) {
+        if($folder->getNoWriteAccess() && // write only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($folder->getFeUser()) // no owner
+                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
             return false;
+		}
+        if($user && $user['uid'] > 0
+            && $folder->getOwnerHasWriteAccess()
+            && is_object($folder->getFeUser())
+            && $folder->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
         }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfile')) {
@@ -136,16 +163,27 @@ class AccessUtility
 				}
 			}
 		}
-		if ($user) {
-			if($file->getNoReadAccess() && (!is_object($file->getFeUser()) || $file->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
+        if($file->getNoReadAccess() && // read only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($file->getFeUser()) // no owner
+                || $file->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
+            return false;
 		}
-        if (!self::userHasFolderReadAccess($user,$file->getParentFolder(), $arguments)) {
+        if($user && $user['uid'] > 0
+            && $file->getOwnerHasReadAccess()
+            && is_object($file->getFeUser())
+            && $file->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
+        }
+        if (!self::userHasFolderReadAccess($user, $file->getParentFolder(), $arguments)) {
             return false;
         }
-		if ($file->getArrayFeGroupRead()) {            
-			$fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
+		if ($file->getArrayFeGroupRead()) {
+            $fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
 			if ($exist = $fileRepository->findByUid($file->getUid())) {
 				return true;
 			}
@@ -183,13 +221,21 @@ class AccessUtility
 				}
 			}
 		}
-		if ($user) {
-			if ($folder->getNoWriteAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
-		}
-        if (!$user && $folder->getNoWriteAccess()) {
+        if($folder->getNoWriteAccess() && // write only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($folder->getFeUser()) // no owner
+                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
             return false;
+		}
+        if($user && $user['uid'] > 0
+            && $folder->getOwnerHasWriteAccess()
+            && is_object($folder->getFeUser())
+            && $folder->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
         }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid(), 'write')) {
@@ -223,16 +269,22 @@ class AccessUtility
 				}
 			}
 		}
-        if ($user && $file->getOwnerReadOnly()) {
-            if ($file->getFeUser() && $file->getFeUser()->getUid() == $user['uid']) {
-                return false;
-            }
-        }
-		if ($user) {
-			if ($file->getNoWriteAccess() && (!is_object($file->getFeUser()) || $file->getFeUser()->getUid() != $user['uid'])) {
-				return false;
-			}
+        if($file->getNoWriteAccess() && // write only for owner
+            (
+                !isset($user['uid']) // no user authenficated
+                || !is_object($file->getFeUser()) // no owner
+                || $file->getFeUser()->getUid() != $user['uid'] // user is not the owner
+            )
+        ) {
+            return false;
 		}
+        if($user && $user['uid'] > 0
+            && $file->getOwnerHasWriteAccess()
+            && is_object($file->getFeUser())
+            && $file->getFeUser()->getUid() == $user['uid']
+        ) {
+            return true;
+        }
 		if ($file->getArrayFeGroupWrite()) {
 			$fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
 			if ($exist = $fileRepository->findByUid($file->getUid(),$writeMode = true)) {

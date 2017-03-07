@@ -223,6 +223,20 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     /**
      * @return boolean
      */
+    public function getOwnerHasReadAccess() {
+        return $this->getMeta()['owner_has_read_access'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getOwnerHasWriteAccess() {
+        return $this->getMeta()['owner_has_write_access'];
+    }
+
+    /**
+     * @return boolean
+     */
     public function getOwnerReadOnly()
     {
         return $this->getMeta()['owner_read_only'];

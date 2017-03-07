@@ -94,6 +94,16 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	/**
 	 * @var integer
 	 */
+	protected $ownerHasReadAccess;
+
+	/**
+	 * @var integer
+	 */
+	protected $ownerHasWriteAccess;
+
+	/**
+	 * @var integer
+	 */
 	protected $status;
 
     /**
@@ -302,6 +312,22 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 		return $this->noWriteAccess;
 	}
 
+    /**
+	 * @return boolean
+	 */
+	public function getOwnerHasReadAccess()
+    {
+		return $this->ownerHasReadAccess;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getOwnerHasWriteAccess()
+    {
+		return $this->ownerHasWriteAccess;
+	}
+
 	/**
 	 * @return int
 	 */
@@ -447,6 +473,28 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function setNoWriteAccess($noWriteAccess)
     {
 		$this->noWriteAccess = $noWriteAccess;
+	}
+
+	/**
+	 * Setter for ownerHasReadAccess
+	 *
+	 * @param boolean $ownerHasReadAccess
+	 * @return void
+	 */
+	public function setOwnerHasReadAccess($ownerHasReadAccess)
+    {
+		$this->ownerHasReadAccess = $ownerHasReadAccess;
+	}
+
+	/**
+	 * Setter for ownerHasWriteAccess
+	 *
+	 * @param boolean $ownerHasWriteAccess
+	 * @return void
+	 */
+	public function setOwnerHasWriteAccess($ownerHasWriteAccess)
+    {
+		$this->ownerHasWriteAccess = $ownerHasWriteAccess;
 	}
 
 	/**

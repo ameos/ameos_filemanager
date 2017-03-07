@@ -10,7 +10,7 @@ plugin.tx_ameosfilemanager {
 	persistence {
 		classes {
 			Ameos\AmeosFilemanager\Domain\Model\Folder {
-				 mapping {
+				mapping {
             		columns.crdate.mapOnProperty = crdate
             	}
 			}

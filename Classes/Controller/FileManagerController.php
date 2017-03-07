@@ -4,6 +4,7 @@ namespace Ameos\AmeosFilemanager\Controller;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
@@ -67,6 +68,34 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
     protected $categoryRepository;
 
     /**
+     * Handles the path resolving for *rootPath(s)
+     *
+     * numerical arrays get ordered by key ascending
+     *
+     * @param array $extbaseFrameworkConfiguration
+     * @param string $setting parameter name from TypoScript
+     *
+     * @return array
+     */
+    protected function getViewProperty($extbaseFrameworkConfiguration, $setting)
+    {
+        $values = [];
+        if (
+            !empty($extbaseFrameworkConfiguration['view'][$setting])
+            && is_array($extbaseFrameworkConfiguration['view'][$setting])
+        ) {
+            $values = ArrayUtility::sortArrayWithIntegerKeys($extbaseFrameworkConfiguration['view'][$setting]);
+            $values = array_reverse($values, true);
+        } elseif (
+            !empty($extbaseFrameworkConfiguration['view'][$setting])
+            && is_string($extbaseFrameworkConfiguration['view'][$setting])
+        ) {
+            $values = [$extbaseFrameworkConfiguration['view'][$setting]];
+        }
+        return $values;
+    }
+    
+    /**
      * Initialization of all actions.
      * Check if the plugin is correctly configured and set the basic variables.
      *
@@ -125,7 +154,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         }
         
         $contentUid = $this->configurationManager->getContentObject()->data['uid'];
-        $configuration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $configuration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if (!isset($configuration['view']['pluginNamespace'])) {
             $configuration['view']['pluginNamespace'] = 'tx_ameosfilemanager_fe_filemanager';
         }
@@ -581,7 +610,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
     protected function listAction()
     {
         $contentUid = $this->configurationManager->getContentObject()->data['uid'];
-        $configuration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $configuration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if (!isset($configuration['view']['pluginNamespace'])) {
             $configuration['view']['pluginNamespace'] = 'tx_ameosfilemanager_fe_filemanager';
         }

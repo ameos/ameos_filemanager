@@ -94,6 +94,22 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
+                    <view.templateRootPaths>
+                        <TCEforms>
+                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.templateRootPaths</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </view.templateRootPaths>
+                    <view.partialRootPaths>
+                        <TCEforms>
+                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.partialRootPaths</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </view.partialRootPaths>
                     <settings.columnsTable>
                         <TCEforms>
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.columnsTable</label>

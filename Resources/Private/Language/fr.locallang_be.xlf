@@ -44,6 +44,8 @@
 			<trans-unit id="flexform.pluginNamespace" xml:space="preserve"><source>Namespace (Can be changed if there are more than 2 plugin in the same page)</source><target>Namespace (peut être modifié s'il y a plus de 2 plug-in dans la même page)</target></trans-unit>
             <trans-unit id="flexform.remotePluginNamespace" xml:space="preserve"><source>Namespace of the remote plugin</source><target>Namespace du plugin distant</target></trans-unit>
             <trans-unit id="flexform.displayArchive" xml:space="preserve"><source>Display archived files and folders</source><target>Afficher les fichiers et dossiers achivés</target></trans-unit>
+            <trans-unit id="flexform.templateRootPaths" xml:space="preserve"><source>Template root path</source><target>Chemin des templates</target></trans-unit>
+            <trans-unit id="flexform.partialRootPaths" xml:space="preserve"><source>Partial root path</source><target>Chemin des templates partiels</target></trans-unit>
 
 			<trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source><target>Colonnes affichées:Colonnes affichées dans le tableau</target></trans-unit>
 			<trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source><target>Actions :Action proposées dans la colonne correspondante du tableau (si action est affiché dans le tableau)</target></trans-unit>

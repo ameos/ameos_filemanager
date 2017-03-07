@@ -20,13 +20,23 @@ class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
 
     /**
+     * @var boolean
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var boolean
+     */
+    protected $escapeOutput = false;
+
+    /**
      * Renders icon of extension $type
      *
      * @param string $type 
      * @param string $iconFolder
      * @return string
      */
-    public function render($type=null, $iconFolder=null)
+    public function render($type = null, $iconFolder = null)
     {
         return FilemanagerUtility::getImageIconeTagForType($type, $iconFolder);
     }

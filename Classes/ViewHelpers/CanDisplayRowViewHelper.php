@@ -27,9 +27,9 @@ class CanDisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractC
     /**
      * Initializes arguments
      */
-    public function __construct()
+    public function initializeArguments()
     {
-        parent::__construct();
+        parent::initializeArguments();
         $this->registerArgument('folder',     Folder::class, 'Folder', false);
         $this->registerArgument('file',       File::class, 'File', false);
         $this->registerArgument('folderRoot', 'int', 'Root Folder', false);

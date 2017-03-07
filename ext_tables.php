@@ -6,13 +6,15 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
-use Ameos\AmeosFilemanager\Slots\Slot;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
+use Ameos\AmeosFilemanager\Slots\Slot;
 
 // register plugin
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager', 'Frontend File Manager');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export', 'Frontend File Manager - Export plugin');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search', 'Frontend File Manager - Search form plugin');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
 
 //Flexform
 $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager'] = 'layout,select_key,recursive';
@@ -31,9 +33,18 @@ ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_
 ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'File manager > Default');
 ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Ajax/', 'File manager > Activate Ajax Mode (required jquery)');
 
+// Register icons
+$iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+$iconRegistry->registerIcon('extension-ameosfilemanager-main', SvgIconProvider::class, ['source' => 'EXT:ameos_filemanager/Resources/Public/IconsBackend/folder.svg']);
+
+/**
+ * ContentElementWizard for Pi1
+ */
+ExtensionManagementUtility::addPageTSConfig(
+    '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:ameos_filemanager/Configuration/TSConfig/ContentElementWizard.tsconfig">'
+);
+
 if (TYPO3_MODE == 'BE') {
-    // wizicon
-    $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['Ameos\\AmeosFilemanager\\Wizicon\\Filemanager'] = ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Wizicon/Filemanager.php';
 
     //Slots
     $dispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);

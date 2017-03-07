@@ -22,9 +22,9 @@ class CanAddFolderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCo
     /**
      * Initializes arguments
      */
-    public function __construct()
+    public function initializeArguments()
     {
-        parent::__construct();
+        parent::initializeArguments();
         $this->registerArgument('folder',    Folder::class, 'Folder value.', false);
         $this->registerArgument('arguments', 'array', 'Arguments.', false);
     }

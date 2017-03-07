@@ -3,6 +3,11 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
 		<header/>
 		<body>
+            <trans-unit id="plugin.fe_filemanager.title" xml:space="preserve"><source>File Manager</source></trans-unit>
+            <trans-unit id="plugin.fe_filemanager.description" xml:space="preserve"><source>Electronic Document Management</source></trans-unit>
+            <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source></trans-unit>
+            <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source></trans-unit>
+            
 			<trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source></trans-unit>
 			<trans-unit id="flexform.title" xml:space="preserve"><source>Title</source></trans-unit>
 			<trans-unit id="flexform.categories" xml:space="preserve"><source>Cateories</source></trans-unit>

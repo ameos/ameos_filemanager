@@ -18,15 +18,25 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 {
 
     /**
+     * @var boolean
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var boolean
+     */
+    protected $escapeOutput = false;
+    
+    /**
      * Renders line for folder or file
      *
-     * @param Folder $folder 
+     * @param Ameos\AmeosFilemanager\Domain\Model\Folder $folder 
      * @param int $startFolder 
      * @param string $separator 
      * @param int $contentUid 
      * @return string 
      */
-    public function render($folder=null, $startFolder = null, $separator = ' / ', $contentUid = 0)
+    public function render($folder = null, $startFolder = null, $separator = ' / ', $contentUid = 0)
     {
     	if ($folder != null) {
             return $this->getBreadcrumb($folder, $startFolder, $separator, $contentUid);

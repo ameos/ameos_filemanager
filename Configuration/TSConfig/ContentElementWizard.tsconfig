@@ -1,0 +1,13 @@
+mod.wizards.newContentElement.wizardItems.plugins {
+	elements {
+		filemanager {
+			iconIdentifier = extension-ameosfilemanager-main
+			title = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title
+			description = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.description
+			tt_content_defValues {
+				CType = list
+				list_type = ameosfilemanager_fe_filemanager
+			}
+		}
+	}
+}

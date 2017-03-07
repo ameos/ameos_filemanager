@@ -1,6 +1,4 @@
 function loadGoToFolderListener() {
-console.log();
-    
     jQuery("*[data-ged-reload=1]").unbind("click");
     jQuery("*[data-ged-reload=1]").bind("click", function(event) {        
         var currentLink = jQuery(this);

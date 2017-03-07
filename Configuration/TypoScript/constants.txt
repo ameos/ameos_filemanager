@@ -13,13 +13,12 @@ plugin.tx_ameosfilemanager {
     parseFolderInFE = 0
     # cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.allowedFileExtension
     allowedFileExtension = jpg,jpeg,tif,png,gif,pdf,docx,doc,xls,xlsx,csv,odt,ppt,ods,pptx
-
-    # cat=plugin.tx_ameosfilemanager/basic; type=int; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_read_access
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_read_access
     newFile.owner_has_read_access = 1
-    # cat=plugin.tx_ameosfilemanager/basic; type=int; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_write_access
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_write_access
     newFile.owner_has_write_access = 1
-    # cat=plugin.tx_ameosfilemanager/basic; type=int; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_read_access
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_read_access
     newFolder.owner_has_read_access = 1
-    # cat=plugin.tx_ameosfilemanager/basic; type=int; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_write_access
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_write_access
     newFolder.owner_has_write_access = 1
 }

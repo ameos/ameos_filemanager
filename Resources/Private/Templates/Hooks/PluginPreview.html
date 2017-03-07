@@ -1,0 +1,6 @@
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+
+<f:if condition="{folder}">
+    <core:Icon identifier="extension-ameosfilemanager-main" />
+    <f:translate key="LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.label.folder" /> : {folder.identifier}
+</f:if>

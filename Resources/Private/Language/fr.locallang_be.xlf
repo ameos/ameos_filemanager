@@ -5,6 +5,7 @@
         <body>
             <trans-unit id="plugin.fe_filemanager.title" xml:space="preserve"><source>File Manager</source><target>Gestion de fichier</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager.description" xml:space="preserve"><source>Electronic Document Management</source><target>Gestion électronique des documents</target></trans-unit>
+            <trans-unit id="plugin.fe_filemanager.label.folder" xml:space="preserve"><source>Folder</source><target>Dossier</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source><target>Gestion de fichier > Export</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source><target>Gestion de fichier > Recherche</target></trans-unit>
             

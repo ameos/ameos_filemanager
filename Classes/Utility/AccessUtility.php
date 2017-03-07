@@ -69,6 +69,14 @@ class AccessUtility
         if (!$folder instanceof \Ameos\AmeosFilemanager\Domain\Model\Folder) {
             return false;
         }
+        if ($user) {
+			if ($folder->getNoWriteAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
+				return false;
+			}
+		}
+        if (!$user && $folder->getNoWriteAccess()) {
+            return false;
+        }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfolder')) {
 			return true;
@@ -87,6 +95,14 @@ class AccessUtility
     {
 		$rootFolder = $arguments['folderRoot'] ? $arguments['folderRoot'] : null;
         if (!$folder instanceof \Ameos\AmeosFilemanager\Domain\Model\Folder) {
+            return false;
+        }
+        if ($user) {
+			if ($folder->getNoWriteAccess() && (!is_object($folder->getFeUser()) || $folder->getFeUser()->getUid() != $user['uid'])) {
+				return false;
+			}
+		}
+        if (!$user && $folder->getNoWriteAccess()) {
             return false;
         }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
@@ -172,6 +188,9 @@ class AccessUtility
 				return false;
 			}
 		}
+        if (!$user && $folder->getNoWriteAccess()) {
+            return false;
+        }
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
 		if ($exist = $folderRepository->findByUid($folder->getUid(), 'write')) {
 			return true;

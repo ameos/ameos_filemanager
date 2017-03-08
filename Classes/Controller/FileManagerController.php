@@ -107,8 +107,11 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 
         if ($this->settings['startFolder'] != '') {
             $this->startFolder = $this->settings['startFolder'];
+        } elseif ($this->request->hasArgument('rootFolder')) {
+            $this->settings['startFolder'] = $this->request->getArgument('rootFolder');
+            $this->startFolder = $this->settings['startFolder'];
         } else {
-            throw new Exception('The root folder was not configured. Please add it in plugin configuration.');
+            throw new \Exception('The root folder was not configured. Please add it in plugin configuration.');
         }
         // Setting feUser Repository
         if ($this->settings['stockageGroupPid'] != '') {
@@ -116,18 +119,18 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
               $querySettings->setStoragePageIds(array($this->settings['stockageGroupPid']));
               $this->feGroupRepository->setDefaultQuerySettings($querySettings);
         } else {
-            throw new Exception('The user folder was not configured. Please add it in plugin configuration.');
+            throw new \Exception('The user folder was not configured. Please add it in plugin configuration.');
         }
         // Setting storage folder, return error if not set or not found.
         if($this->settings['storage']) {
             $this->storageUid = $this->settings['storage'];
         } else {
-            throw new Exception('The storage folder was not configured. Please add it in plugin configuration.');
+            throw new \Exception('The storage folder was not configured. Please add it in plugin configuration.');
         }
         $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
         $this->storage = $storageRepository->findByUid($this->storageUid);
         if ($this->storage == null) {
-            throw new Exception('Storage folder not found. Please check configuration');
+            throw new \Exception('Storage folder not found. Please check configuration');
         }
         // Setting list of usergroups to send to form actions
         if ($this->settings['authorizedGroups']) {

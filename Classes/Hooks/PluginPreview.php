@@ -57,7 +57,7 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
 
             $urlParameters = [
                 'edit' => [
-                    'ameosfilemanager_fe_filemanager' => [
+                    'tt_content' => [
                         $row['uid'] => 'edit'
                     ]
                 ],

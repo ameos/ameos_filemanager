@@ -188,11 +188,6 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $this->view->assign('files', $this->fileRepository->findFilesForFolder($startFolder, $configuration['view']['pluginNamespace']));
         $this->view->assign('content_uid', $contentUid);
 
-        if (($massdownload = $GLOBALS['TSFE']->fe_user->getKey('ses', 'massdownload')) !== null) {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'massdownload', null);
-            $this->view->assign('massdownload', '/typo3temp/' . $massdownload);
-        }
-
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
             && $contentUid == GeneralUtility::_POST('ameos_filemanager_content')) {
             header('Content-Type: text/json; charset=utf8;');
@@ -247,6 +242,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
                 ob_clean();
                 flush();
                 readfile($zipPath);
+                unlink($zipPath);
                 die();
             } else {
                 $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
@@ -265,9 +261,26 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $command = 'cd ' . $filePath . '; zip  ' . $zipPath . ' ' . implode(' ', $files) . ';';
             exec($command, $output);
             if (file_exists($zipPath)) {
-                $GLOBALS['TSFE']->fe_user->setKey('ses', 'massdownload', basename($zipPath));
+                $filesize = filesize($zipPath);
+                header('Content-Type: ' . mime_content_type($zipPath));
+                header('Content-Transfer-Encoding: Binary');             
+                header('Content-Length: ' . $filesize);
+                header('Content-Disposition: attachment; filename="' . basename($zipPath) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
 
-                $this->redirect('index', null, null, ['returnfolder' => (int)$this->request->getArgument('returnfolder')]);
+                if (ob_get_level()) {
+                    ob_end_clean();   
+                }
+                $handle = fopen($zipPath, "rb");
+                while (!feof($handle)) {
+                    echo fread($handle, 8192);
+                }
+                fclose($handle);
+                unlink($zipPath);
+                die();
+
             } else {
                 $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
                 $this->redirect('index');

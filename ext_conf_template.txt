@@ -1,0 +1,2 @@
+# cat=basic; type=boolean; label=Use ZIP Archive
+use_ziparchive = 0

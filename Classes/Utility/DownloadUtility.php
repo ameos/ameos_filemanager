@@ -24,6 +24,46 @@ use Ameos\AmeosFilemanager\Domain\Model\Filedownload;
 class DownloadUtility
 {
     /**
+	 * return files to add in zip
+	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+	 * @param ZipArchive $zip zip archive
+	 * @param int $rootFolder root folder uid
+     * @param int $includeArchive include archive file
+     * @param int $recursiveLimit recursive limit
+     * @param int $recursiveOccurence recursive occurence
+	 * @return void
+	 */
+    public static function getFilesToAdd($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
+    {
+        $filesToAdd = [];
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+        $files = $fileRepository->findFilesForFolder($folder->getUid());
+        foreach ($files as $file) {
+            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
+                && ($includeArchive || $file->getRealstatus() != 2)) {
+                    
+                $localFilepath = PATH_site . $file->getOriginalResource()->getPublicUrl();
+                $zipFilepath   = str_replace($rootPath, '', $localFilepath);
+                $filesToAdd[$zipFilepath] =  trim($zipFilepath, '/');
+            }
+        }
+
+        if ($recursiveOccurence < (int)$recursiveLimit || $recursiveLimit === false) {
+            foreach ($folder->getFolders() as $subFolder) {
+                if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])
+                    && ($includeArchive || $subFolder->getRealstatus() != 2)) {
+                    $recursiveOccurence++;
+                    $filesToAdd = array_merge(
+                        $filesToAdd,
+                        self::getFilesToAdd($rootPath, $subFolder, $zip, $rootFolderUid, $includeArchive, $recursiveLimit, $recursiveOccurence)
+                    );
+                }
+            }
+        }
+        return $filesToAdd; 
+    }
+    
+    /**
 	 * add folder to zip
 	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
 	 * @param ZipArchive $zip zip archive

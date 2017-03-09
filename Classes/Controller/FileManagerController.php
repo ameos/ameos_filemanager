@@ -187,6 +187,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $this->view->assign('is_last_recursion', FilemanagerUtility::isTheLastRecursion($rootFolder, $folder, $this->settings['recursion']));
         $this->view->assign('files', $this->fileRepository->findFilesForFolder($startFolder, $configuration['view']['pluginNamespace']));
         $this->view->assign('content_uid', $contentUid);
+        if ($this->request->hasArgument('massdownload')) {
+            $this->view->assign('massdownload', '/typo3temp/' . $this->request->getArgument('massdownload'));
+        }
 
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
             && $contentUid == GeneralUtility::_POST('ameos_filemanager_content')) {
@@ -215,34 +218,60 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . uniqid() . '.zip';
         $filePath = PATH_site . 'fileadmin' . $folder->getGedPath();
 
-        $zip = new \ZipArchive();
-        $zip->open($zipPath, \ZipArchive::CREATE);
-        DownloadUtility::addFolderToZip(
-            $filePath,
-            $folder,
-            $zip,
-            $this->settings['startFolder'],
-            (bool)$this->settings['displayArchive'],
-            ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
-            FilemanagerUtility::calculRecursion($rootFolder, $folder)
-        );
-        $zip->close();
-        if (file_exists($zipPath)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: ' . mime_content_type($zipPath));
-            header('Content-Disposition: attachment; filename="' . $folder->getTitle() . '.zip"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            
-            ob_clean();
-            flush();
-            readfile($zipPath);
-            unlink($zipPath);
-            die();
+        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+        if ($configuration['use_ziparchive']) {
+            $zip = new \ZipArchive();
+            $zip->open($zipPath, \ZipArchive::CREATE);
+            DownloadUtility::addFolderToZip(
+                $filePath,
+                $folder,
+                $zip,
+                $this->settings['startFolder'],
+                (bool)$this->settings['displayArchive'],
+                ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
+                FilemanagerUtility::calculRecursion($rootFolder, $folder)
+            );
+            $zip->close();
+            if (file_exists($zipPath)) {
+                $filesize = filesize($zipPath);
+                header('Content-Type: ' . mime_content_type($zipPath));
+                header('Content-Transfer-Encoding: Binary');             
+                header('Content-Length: ' . $filesize);
+                header('Content-Disposition: attachment; filename="' . basename($zipPath) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                
+                ob_clean();
+                flush();
+                readfile($zipPath);
+                die();
+            } else {
+                $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
+                $this->redirect('index');
+            }
+        } else {
+            $files = DownloadUtility::getFilesToAdd(
+                $filePath,
+                $folder,
+                $zip,
+                $this->settings['startFolder'],
+                (bool)$this->settings['displayArchive'],
+                ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
+                FilemanagerUtility::calculRecursion($rootFolder, $folder)
+            );
+            $command = 'cd ' . $filePath . '; zip  ' . $zipPath . ' ' . implode(' ', $files) . ';';
+            exec($command, $output);
+            if (file_exists($zipPath)) {            
+                $this->redirect('index', null, null, [
+                    'folder'       => $folderId,
+                    'massdownload' => basename($zipPath)
+                ]);
+            } else {
+                $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
+                $this->redirect('index');
+            }
         }
-        $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
-        $this->redirect('index');
     }
 
     /**

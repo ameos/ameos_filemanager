@@ -6,6 +6,10 @@
 
             <f:flashMessages />
 
+            <f:if condition="{massdownload}">
+                <p><a href="{massdownload}">{f:translate(key:"download_generated_zip")}</a></p>
+            </f:if>
+            
             <f:render partial="FileManager/Toolbar" arguments="{_all}" />
 
 			<p class="breadcrumb"><custom:breadcrumb folder="{folder}" startFolder="{settings.startFolder}" separator=" / " contentUid="{content_uid}" /></p>

@@ -50,7 +50,7 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
      * @return void
      */
     public function preProcess(PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
-        if ($row['CType'] === 'list' && $row['list_type'] == 'ameosfilemanager_fe_filemanager') {
+        if ($row['CType'] === 'list' && ($row['list_type'] == 'ameosfilemanager_fe_filemanager' || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat')) {
             $this->initialize($row);
 
             $drawItem = false;
@@ -64,7 +64,16 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
             ];
             $url = BackendUtility::getModuleUrl('record_edit', $urlParameters);
-            $title = LocalizationUtility::translate('LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title', 'AmeosFilemanager');
+
+            $llprefix = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:';
+            switch ($row['list_type']) {
+                case 'ameosfilemanager_fe_filemanager':
+                    $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager.title', 'AmeosFilemanager');
+                    break;
+                case 'ameosfilemanager_fe_filemanager_flat': 
+                    $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_flat.title', 'AmeosFilemanager');
+                    break;
+            }
             $headerContent = '<strong><a href="' . $url . '">'  . $title . '</a></strong><br/>';
 
             $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
@@ -96,5 +105,4 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
         $flexFormService = GeneralUtility::makeInstance(ObjectManager::class)->get(FlexFormService::class);
         $this->flexFormData = $flexFormService->convertFlexFormContentToArray($this->row['pi_flexform']);
     }
-
 }

@@ -36,6 +36,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * find files for a folder
+     * @param mixed $folder 
      */ 
 	public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
     {
@@ -44,9 +45,13 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 		}
 
 		$fields = 'sys_file.*'; 
-		$from = 'sys_file, sys_file_metadata
-            LEFT JOIN fe_users ON sys_file_metadata.fe_user_id = fe_users.uid';
-		$where = "sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = " . (int)$folder;
+		$from = 'sys_file, sys_file_metadata LEFT JOIN fe_users ON sys_file_metadata.fe_user_id = fe_users.uid';
+        if (is_array($folder)) {
+            $folders = array_map('intval', $folder);
+            $where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid IN (' . implode(',', $folders) . ')';
+        } else {
+            $where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ' . (int)$folder;    
+        }
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);

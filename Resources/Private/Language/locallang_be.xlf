@@ -8,6 +8,7 @@
             <trans-unit id="plugin.fe_filemanager.label.folder" xml:space="preserve"><source>Folder</source></trans-unit>
             <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source></trans-unit>
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source></trans-unit>
+            <trans-unit id="plugin.fe_filemanager_flat.title" xml:space="preserve"><source>File Manager > Flat list</source></trans-unit>
             
             <trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source></trans-unit>
             <trans-unit id="flexform.title" xml:space="preserve"><source>Title</source></trans-unit>
@@ -41,7 +42,8 @@
             <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source></trans-unit>
             <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
             <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source></trans-unit>
-            <trans-unit id="flexform.recursion" xml:space="preserve"><source>Limiting the number of levels (No limit if empty)</source></trans-unit>
+            <trans-unit id="flexform.recursion" xml:space="preserve"><source>Limiting the number of levels</source></trans-unit>
+            <trans-unit id="flexform.recursion.nolimit" xml:space="preserve"><source>No limit</source></trans-unit>
             <trans-unit id="flexform.pluginNamespace" xml:space="preserve"><source>Namespace (Can be changed if there are more than 2 plugin in the same page)</source></trans-unit>
             <trans-unit id="flexform.remotePluginNamespace" xml:space="preserve"><source>Namespace of the remote plugin</source></trans-unit>
             <trans-unit id="flexform.displayArchive" xml:space="preserve"><source>Display archived files and folders</source></trans-unit>

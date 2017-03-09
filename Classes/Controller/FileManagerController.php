@@ -115,9 +115,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         }
         // Setting feUser Repository
         if ($this->settings['stockageGroupPid'] != '') {
-              $querySettings = $this->feGroupRepository->createQuery()->getQuerySettings();
-              $querySettings->setStoragePageIds(array($this->settings['stockageGroupPid']));
-              $this->feGroupRepository->setDefaultQuerySettings($querySettings);
+            $querySettings = $this->feGroupRepository->createQuery()->getQuerySettings();
+            $querySettings->setStoragePageIds(array($this->settings['stockageGroupPid']));
+            $this->feGroupRepository->setDefaultQuerySettings($querySettings);
         } else {
             throw new \Exception('The user folder was not configured. Please add it in plugin configuration.');
         }
@@ -311,6 +311,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         }
         $this->view->assign('feGroup', $feGroup);
         $this->view->assign('categories', $categories);
+
+        $controllerBack = $this->request->getPluginName() == 'fe_filemanager_flat' ? 'FlatList' : 'FileManager';
+        $this->view->assign('controller_back', $controllerBack);
     }
 
     /**
@@ -659,7 +662,8 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         } else {
             $this->view->assign('error', LocalizationUtility::translate('fileNotFound', 'ameos_filemanager'));
         }
-        
+        $controllerBack = $this->request->getPluginName() == 'fe_filemanager_flat' ? 'FlatList' : 'FileManager';
+        $this->view->assign('controller_back', $controllerBack);
     }
 
 

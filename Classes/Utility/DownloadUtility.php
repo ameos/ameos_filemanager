@@ -2,7 +2,11 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
+use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
+use Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository;
+use Ameos\AmeosFilemanager\Domain\Model\Filedownload;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -32,7 +36,7 @@ class DownloadUtility
 	public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
     {
         $user = ($GLOBALS['TSFE']->fe_user->user);
-        $fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
             if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
@@ -62,7 +66,7 @@ class DownloadUtility
 	 */
 	public static function downloadFile($uidFile, $folderRoot = null)
     {
-		$fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
+		$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
 		$file = $fileRepository->findByUid($uidFile);
 		$user = ($GLOBALS['TSFE']->fe_user->user);
 
@@ -74,12 +78,12 @@ class DownloadUtility
 
 			if (file_exists($filename)) {
 				// We register who downloaded the file and when
-				$filedownloadRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository');
-				$filedownload = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Model\Filedownload');
+				$filedownloadRepository = GeneralUtility::makeInstance(FiledownloadRepository::class);
+				$filedownload = GeneralUtility::makeInstance(Filedownload::class);
 				$filedownload->setFile($file);
 				$filedownload->setUserDownload($user['uid']);
 				$filedownloadRepository->add($filedownload);
-				$persitenceManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
+				$persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 				$persitenceManager->persistAll();
 
 			    // Download of the file

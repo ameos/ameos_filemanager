@@ -38,20 +38,20 @@
             <td>
                 <f:for each="{settings.actionDetail}" as="action">
                     <f:if condition="{action} == 'download'">
-                        <f:link.action action="index" addQueryString="1" arguments="{file: fi.uid}">
+                        <f:link.action argumentsToBeExcludedFromQueryString="{0:'id'}" action="index" addQueryString="1" arguments="{file: fi.uid}">
                             <f:translate key="download"/>
                         </f:link.action>
                     </f:if>
 
                     <f:if condition="{action} == 'detail'">
-                        <f:link.action action="detail" addQueryString="1" arguments="{file: fi.uid}">
+                        <f:link.action argumentsToBeExcludedFromQueryString="{0:'id'}" action="detail" controller="FileManager" addQueryString="1" arguments="{file: fi.uid}">
                             <f:translate key="detail"/>
                         </f:link.action>
                     </f:if>
 
                     <f:if condition="{action} == 'edit'">
                         <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:settings.startFolder}">
-                            <f:link.action action="formFile" addQueryString="1" arguments="{newFile: fi.uid}">
+                            <f:link.action argumentsToBeExcludedFromQueryString="{0:'id'}" action="formFile" controller="FileManager" addQueryString="1" arguments="{newFile: fi.uid}">
                                 <f:translate key="edit"/>
                             </f:link.action>
                         </custom:checkAccess>
@@ -59,7 +59,7 @@
 
                     <f:if condition="{action} == 'delete'">
                         <custom:checkAccess file="{fi}" right="w" arguments="{folderRoot:settings.startFolder}">
-                            <f:link.action onclick="return confirm('Are you sure?')" action="deleteFile" addQueryString="1" arguments="{file: fi.uid}">
+                            <f:link.action onclick="return confirm('Are you sure?')" controller="FileManager" action="deleteFile" addQueryString="1" arguments="{file: fi.uid}">
                                 <f:translate key="delete"/>
                             </f:link.action>
                         </custom:checkAccess>

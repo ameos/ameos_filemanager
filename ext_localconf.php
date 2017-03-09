@@ -22,6 +22,10 @@ ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
     ['Search' => 'index'],
     ['Search' => 'index']
 );
+ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',
+    ['FlatList' => 'index', 'FileManager' => 'list, detail, deleteFile, formFile, createFile'],
+    ['FlatList' => 'index', 'FileManager' => 'list, detail, deleteFile, formFile, createFile']
+);
 
 // xclass
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][FileList::class] = ['className' => XClassFileList::class];

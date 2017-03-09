@@ -11,7 +11,7 @@
         <br/>
         <f:image src="{file.uid}" alt="{file.title}" width="150" treatIdAsReference="0" />
         <p>
-            <f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: file.parentFolder}">
+            <f:link.action addQueryString="0" controller="{controller_back}" action="index" arguments="{folder: file.parentFolder}">
                 <f:translate key="back"/>
             </f:link.action>
         </p>
@@ -20,11 +20,10 @@
             <f:translate key="description"/> : {file.description}<br/>
             <f:translate key="keywords"/> : {file.keywords}<br/>
             <f:translate key="category"/> :  
-                <f:for each="{file.categories}" as="category" iteration="itemIteration">
-                    {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
-                </f:for>
-                <br/>
-
+            <f:for each="{file.categories}" as="category" iteration="itemIteration">
+                {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+            </f:for>
+            <br/>
             <f:link.action arguments="{file: file.uid}" addQueryString="0">
                 <f:translate key="download"/>
             </f:link.action>

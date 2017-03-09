@@ -8,6 +8,7 @@
             <trans-unit id="plugin.fe_filemanager.label.folder" xml:space="preserve"><source>Folder</source><target>Dossier</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source><target>Gestion de fichier > Export</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source><target>Gestion de fichier > Recherche</target></trans-unit>
+            <trans-unit id="plugin.fe_filemanager_flat.title" xml:space="preserve"><source>File Manager > Flat list</source><target>Gestion de fichier > Liste à plat</target></trans-unit>
             
             <trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source><target>Icône</target></trans-unit>
             <trans-unit id="flexform.title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>

@@ -1,7 +1,8 @@
 {namespace custom=Ameos\AmeosFilemanager\ViewHelpers}
 <div class="ameos_file_manager">
+    
 	<p>
-		<f:link.action class="grad-btn" addQueryString="0" action="index" arguments="{folder: parentFolder}">
+		<f:link.action addQueryString="0" controller="{controller_back}" action="index" arguments="{folder: parentFolder}">
 			<f:translate key="back"/>
 		</f:link.action>
 	</p>

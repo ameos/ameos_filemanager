@@ -15,6 +15,7 @@ use Ameos\AmeosFilemanager\Slots\Slot;
 ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
 ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
 ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',   'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_flat.title');
 
 //Flexform
 $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager'] = 'layout,select_key,recursive';
@@ -28,6 +29,10 @@ ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_
 $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_search'] = 'layout,select_key,recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_search']     = 'pi_flexform';
 ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_search', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/search.xml');
+
+$TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_flat'] = 'layout,select_key,recursive';
+$TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_flat']     = 'pi_flexform';
+ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_flat', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/flatlist.xml');
 
 // Typoscript
 ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'File manager > Default');

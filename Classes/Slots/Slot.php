@@ -34,7 +34,7 @@ class Slot
 	public function postFolderRename($folder,$newName)
     {
 		$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $folder->getIdentifier()) {
 				$folderRepository->requestUpdate($row['uid'], ['title' => $newName]);
@@ -53,7 +53,7 @@ class Slot
 	public function postFolderAdd($folder) {
 		if ($folder->getParentFolder() && $folder->getParentFolder()->getName() != '') {
 			$inserted = false;
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getParentFolder()->getName() . '\'');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getParentFolder()->getName() . '\'');
             while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 				if (FilemanagerUtility::getFolderPathFromUid($row['uid']).'/' == $folder->getParentFolder()->getIdentifier()) {
 					$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
@@ -74,7 +74,7 @@ class Slot
 				$this->postFolderAdd($folder);
 			}
 		} else {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getName() . '\'');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getName() . '\'');
 			if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === false) {
                 $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
                 $folderRepository->requestInsert([
@@ -101,14 +101,14 @@ class Slot
     {
 		$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $targetFolder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $targetFolder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $targetFolder->getIdentifier()) {
 				$uid_parent = $row['uid'];
 				break;
 			}
 		}
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $folder->getIdentifier()) {
 				$folderRepository->requestUpdate($row['uid'], ['uid_parent' => $uid_parent, 'title' => $newName]);
@@ -129,7 +129,7 @@ class Slot
 	public function postFolderCopy($folder, $targetFolder, $newName)
     {
 		$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $targetFolder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $targetFolder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $targetFolder->getIdentifier()) {
 				$uid_parent = $row['uid'];
@@ -147,7 +147,7 @@ class Slot
 	public function setDatabaseForFolder($folder, $uidParent = 0)
     {
 		$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getName() . '\'');
 		$exist = false;
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			// Si il n'existe on ne fait rien
@@ -200,7 +200,7 @@ class Slot
 	public function postFolderDelete($folder)
     {
 		$folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $folder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $folder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $folder->getIdentifier()) {
 				$folderRepository->requestDelete($row['uid']);
@@ -218,7 +218,7 @@ class Slot
 	 */
 	public function postFileAdd($file, $targetFolder)
     {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $targetFolder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $targetFolder->getName() . '\'');
 
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $targetFolder->getIdentifier()) {
@@ -247,7 +247,7 @@ class Slot
 	 */
 	public function postFileCopy($file, $targetFolder)
     {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $targetFolder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $targetFolder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $targetFolder->getIdentifier()) {
 				$newFile = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'sys_file', 'identifier = \'' . $targetFolder->getIdentifier().$file->getName() . '\'');
@@ -276,7 +276,7 @@ class Slot
 	 */
 	public function postFileMove($file, $targetFolder)
     {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'tx_ameosfilemanager_domain_model_folder.title like \'' . $targetFolder->getName() . '\'');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'deleted = 0 AND title like \'' . $targetFolder->getName() . '\'');
 		while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {
 			if (FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $targetFolder->getIdentifier()) {
 				$meta = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'sys_file_metadata', 'file = ' . $file->getUid());

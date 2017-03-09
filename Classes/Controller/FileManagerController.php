@@ -187,8 +187,10 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $this->view->assign('is_last_recursion', FilemanagerUtility::isTheLastRecursion($rootFolder, $folder, $this->settings['recursion']));
         $this->view->assign('files', $this->fileRepository->findFilesForFolder($startFolder, $configuration['view']['pluginNamespace']));
         $this->view->assign('content_uid', $contentUid);
-        if ($this->request->hasArgument('massdownload')) {
-            $this->view->assign('massdownload', '/typo3temp/' . $this->request->getArgument('massdownload'));
+
+        if (($massdownload = $GLOBALS['TSFE']->fe_user->getKey('ses', 'massdownload')) !== null) {
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'massdownload', null);
+            $this->view->assign('massdownload', '/typo3temp/' . $massdownload);
         }
 
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
@@ -204,10 +206,6 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
      */
     protected function massDownloadAction()
     {
-        if (!class_exists('ZipArchive')) {
-            throw new \Exception('ZipArchive is not installed on your server : see http://php.net/ZipArchive');
-        }
-
         $rootFolder = $this->folderRepository->findByUid((int)$this->settings['startFolder']);
         $folderId = $this->request->hasArgument('folder') ? $this->request->getArgument('folder') : $this->settings['startFolder'];
         $folder = $this->folderRepository->findByUid((int)$folderId);
@@ -220,6 +218,10 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 
         $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
         if ($configuration['use_ziparchive']) {
+            if (!class_exists('ZipArchive')) {
+                throw new \Exception('ZipArchive is not installed on your server : see http://php.net/ZipArchive');
+            }
+        
             $zip = new \ZipArchive();
             $zip->open($zipPath, \ZipArchive::CREATE);
             DownloadUtility::addFolderToZip(
@@ -262,11 +264,10 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             );
             $command = 'cd ' . $filePath . '; zip  ' . $zipPath . ' ' . implode(' ', $files) . ';';
             exec($command, $output);
-            if (file_exists($zipPath)) {            
-                $this->redirect('index', null, null, [
-                    'folder'       => $folderId,
-                    'massdownload' => basename($zipPath)
-                ]);
+            if (file_exists($zipPath)) {
+                $GLOBALS['TSFE']->fe_user->setKey('ses', 'massdownload', basename($zipPath));
+
+                $this->redirect('index', null, null, ['returnfolder' => (int)$this->request->getArgument('returnfolder')]);
             } else {
                 $this->addFlashMessage(LocalizationUtility::translate('empty_folder', 'ameos_filemanager'), '', FlashMessage::WARNING);
                 $this->redirect('index');
@@ -528,7 +529,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         
         $this->view->assign('categories',$categories);
         $this->view->assign('feGroup',$feGroup);
-        $this->view->assign('returnFolder',$args['returnFolder']);
+        $this->view->assign('returnFolder', $args['returnfolder']);
 
     }
 
@@ -580,8 +581,12 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $resultUri = $this->uriBuilder
                 ->reset()
                 ->setCreateAbsoluteUri(true)
-                ->setArguments(array('tx_ameos_filemanager' => array('newFolder' => $fileArgs['uidFile'], 'errors' => $errors,'folder' => $fileArgs['uidParent'], 'currentState' => $fileArgs)))
-                ->uriFor('formFolder');
+                ->setArguments(['tx_ameos_filemanager' => [
+                    'newFolder'    => $fileArgs['uidFile'],
+                    'errors'       => $errors,
+                    'folder'       => $fileArgs['returnFolder'],
+                    'currentState' => $fileArgs
+                ]])->uriFor('formFolder');
             
             $this->redirectToUri($resultUri);
         }
@@ -611,35 +616,15 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $storageFolder = $storage->getFolder($newFolder->getParent()->getGedPath().'/'.$exFolderQuery['title'].'/');
             $storageFolder->rename($newFolder->getTitle());
 
-            if ($fileArgs['returnFolder'] != '') {
-                $resultUri = $this->uriBuilder
-                   ->setCreateAbsoluteUri(true)
-                   ->setArguments(array('tx_ameos_filemanager' => array('folder' => $fileArgs['returnFolder'])))
-                   ->buildFrontendUri();
-            } else {
-                $resultUri = $this->uriBuilder
-                   ->setCreateAbsoluteUri(true)
-                   ->setArguments(array('tx_ameos_filemanager' => array('folder' => $fileArgs['uidFolder'])))
-                   ->buildFrontendUri();
-            }
+            $returnfolder = $fileArgs['returnFolder'] != '' ? $fileArgs['returnFolder'] : $fileArgs['uidFolder'];
         } else {
             $storageFolder = $storage->getFolder($parent->getGedPath().'/');
             $storageFolder->createFolder($newFolder->getTitle());
-            
-            if ($fileArgs['returnFolder'] != '') {
-                $resultUri = $this->uriBuilder
-                    ->setCreateAbsoluteUri(true)
-                    ->setArguments(array('tx_ameos_filemanager' => array('folder' => $fileArgs['returnFolder'])))
-                    ->buildFrontendUri();
-            } else {
-                $resultUri = $this->uriBuilder
-                    ->setCreateAbsoluteUri(true)
-                    ->setArguments(array('tx_ameos_filemanager' => array('folder' => $parent->getUid())))
-                    ->buildFrontendUri();
-            }
+
+            $returnfolder = $fileArgs['returnFolder'] != '' ? $fileArgs['returnFolder'] : $parent->getUid();
         }
         
-        $this->redirectToUri($resultUri);
+        $this->redirect('index', null, null, ['folder' => $returnfolder]);
     }
 
     /**

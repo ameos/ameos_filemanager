@@ -2,7 +2,7 @@
 <p class="toolbar">
     
 <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-    <f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid}" >
+    <f:link.action action="formFolder" addQueryString="1" title="edit" class="edit" arguments="{newFolder: folder.uid, returnfolder: folder.uid}" >
         &nbsp;<f:translate key="edit"/>&nbsp;
     </f:link.action>
 </custom:checkAccess>
@@ -20,13 +20,13 @@
 </custom:canAddFile>
 
 <custom:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
-    <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}">
+    <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid, returnfolder: folder.uid}">
         &nbsp;<f:translate key="createFolder"/>&nbsp;
     </f:link.action>
 </custom:canAddFolder>
 
 <custom:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
-    <f:link.action action="massDownload" arguments="{folder: folder.uid}">
+    <f:link.action action="massDownload" arguments="{folder: folder.uid, returnfolder: folder.uid}">
         &nbsp;<f:translate key="massDownload"/>&nbsp;
     </f:link.action>
 </custom:checkAccess>

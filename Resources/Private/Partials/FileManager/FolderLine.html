@@ -52,7 +52,7 @@
                 <f:for each="{settings.actionDetail}" as="action">
                     <f:if condition="{action} == 'edit'">
                         <custom:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-                            <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{newFolder: folder.uid,returnFolder:returnFolder}" >
+                            <f:link.action action="formFolder" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{newFolder: folder.uid, returnfolder: folder.parent.uid}" >
                                 <f:translate key="edit"/>
                             </f:link.action>
                         </custom:checkAccess>
@@ -69,7 +69,7 @@
                     </f:if>
                     
                     <f:if condition="{action} == 'massDownload'">
-                        <f:link.action action="massDownload" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid}"><f:translate key="massDownload"/></f:link.action>
+                        <f:link.action action="massDownload" argumentsToBeExcludedFromQueryString="{0:'id'}" addQueryString="1" arguments="{folder: folder.uid, returnfolder: folder.parent.uid}"><f:translate key="massDownload"/></f:link.action>
                     </f:if>
                     
                 </f:for>

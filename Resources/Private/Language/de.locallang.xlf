@@ -59,6 +59,7 @@
             <trans-unit id="search" xml:space="preserve"><source>Search</source><target>Suche</target></trans-unit>
             <trans-unit id="refresh" xml:space="preserve"><source>Reload</source><target>Neu laden</target></trans-unit>
             <trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source><target>Der Ordner leer ist</target></trans-unit>
+            <trans-unit id="download_generated_zip" xml:space="preserve"><source>The ZIP file has been generated. Download it !</source><target>Die ZIP-Datei generiert wurde. Laden Sie es!</target></trans-unit>
 
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Anzahl der Downloads</target></trans-unit>

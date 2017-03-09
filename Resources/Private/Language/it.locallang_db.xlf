@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2012-09-13T15:40:13Z" product-name="ameos_filemanager">
+        <header/>
+        <body>
+            <trans-unit id="tx_ameosfilemanager" xml:space="preserve" approved="yes"><source>EDM</source><target state="translated">EDM</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder" xml:space="preserve" approved="yes"><source>Folders</source><target state="translated">Cartelle</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filedownload" xml:space="preserve" approved="yes"><source>File download</source><target state="translated">Scarica il documento		</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.keywords" xml:space="preserve" approved="yes"><source>Keywords</source><target state="translated">Parole Chiave</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.description" xml:space="preserve" approved="yes"><source>Description</source><target state="translated">Descrizione</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.category" xml:space="preserve" approved="yes"><source>Category</source><target state="translated">Categoria</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.title" xml:space="preserve" approved="yes"><source>Title</source><target state="translated">Titolo</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.files" xml:space="preserve" approved="yes"><source>Files</source><target state="translated">Sottocartella</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.folders" xml:space="preserve" approved="yes"><source>SubFolder</source><target state="translated">Identificatore</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.identifier" xml:space="preserve" approved="yes"><source>Identifier</source><target state="translated">Cartella genitore</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.uidParent" xml:space="preserve" approved="yes"><source>Parent Folder</source><target state="translated">Cartella genitore</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_user_id" xml:space="preserve" approved="yes"><source>Owner</source><target state="translated">Proprietario</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_read" xml:space="preserve" approved="yes"><source>Groups allowed to read the folder</source><target state="translated">Gruppi con permessi di lettura</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_write" xml:space="preserve" approved="yes"><source>Groups allowed to edit the folder (rename)</source><target state="translated">Gruppi con permessi di modifica (rinominare)</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_addfile" xml:space="preserve" approved="yes"><source>Groups allowed to add file in the folder</source><target state="translated">Gruppi che possono aggiungere documenti nel folder</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.fe_group_addfolder" xml:space="preserve" approved="yes"><source>Groups allowed to add subfolder</source><target state="translated">Gruppi che possono aggiungere sottocartelle</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.no_read_access" xml:space="preserve" approved="yes"><source>Only owner can read the folder</source><target state="translated">Solo il proprietario può leggere la cartella</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.no_write_access" xml:space="preserve" approved="yes"><source>Only owner can edit the folder</source><target state="translated">Solo il proprietario può editare la cartella</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.status" xml:space="preserve" approved="yes"><source>Status</source><target state="translated">Stato</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.parent" xml:space="preserve"><source/><target></target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.ready" xml:space="preserve" approved="yes"><source>Ready</source><target state="translated">OK</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.status.archive" xml:space="preserve" approved="yes"><source>Archive</source><target state="translated">Il proprietario ha accesso in lettura</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_read_access" xml:space="preserve" approved="yes"><source>Owner has read access</source><target state="translated">Il proprietario ha accesso in lettura</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_write_access" xml:space="preserve" approved="yes"><source>Owner has write access</source><target state="translated">Il proprietario ha accesso in scrittura</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_user_id" xml:space="preserve" approved="yes"><source>Propriétaire front_end</source><target state="translated">Proprietario del front_end</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_read" xml:space="preserve" approved="yes"><source>Groups allowed to read the file</source><target state="translated">Gruppi che accedono in lettura</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_write" xml:space="preserve" approved="yes"><source>Groups allowed to edit the file</source><target state="translated">Gruppi che accedono in modifica ai documenti</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.no_read_access" xml:space="preserve" approved="yes"><source>Only owner can read the file</source><target state="translated">Solo il proprietario può leggere il documento</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.no_write_access" xml:space="preserve" approved="yes"><source>Only owner can edit the file</source><target state="translated">Solo il proprietario può modificare il documento</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_read_only" xml:space="preserve" approved="yes"><source>Owner can't edit his file (read only)</source><target state="translated">Il proprietario non può editare il file (sola lettura)</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.file_type" xml:space="preserve" approved="yes"><source>Type</source><target state="translated">Tipo</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.folder_uid" xml:space="preserve" approved="yes"><source>Folder</source><target state="translated">Cartella</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.file_category" xml:space="preserve" approved="yes"><source>Category</source><target state="translated">Categoria</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.status" xml:space="preserve" approved="yes"><source>Status</source><target state="translated">Stato</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.status.parent" xml:space="preserve"><source/><target></target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.status.ready" xml:space="preserve" approved="yes"><source>Ready</source><target state="translated">OK</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.status.archive" xml:space="preserve" approved="yes"><source>Archive</source><target state="translated">Archivio</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_read_access" xml:space="preserve" approved="yes"><source>Owner has read access</source><target state="translated">Il proprietario ha accesso in lettura</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_write_access" xml:space="preserve" approved="yes"><source>Owner has write access</source><target state="translated">Il proprietario ha accesso in scrittura</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve" approved="yes"><source>Category</source><target state="translated">Cartegoria</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve" approved="yes"><source>Title</source><target state="translated">Titolo</target></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_filetype" xml:space="preserve" approved="yes"><source>Type</source><target state="translated">Tipo</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_filetype.title" xml:space="preserve" approved="yes"><source>Title</source><target state="translated">Titolo</target></trans-unit>
+        </body>
+    </file>
+</xliff>

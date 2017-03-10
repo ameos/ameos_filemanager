@@ -147,6 +147,11 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	protected $identifier;
 
 	/**
+	 * @var int
+	 */
+	protected $storage;
+
+	/**
      * @return int
      */
 	public function getCrdate()
@@ -176,6 +181,14 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function getIdentifier()
     {
 		return $this->identifier;
+	}
+
+	/**
+     * @return int
+     */
+	public function getStorage()
+    {
+		return $this->storage;
 	}
 
 	/**
@@ -429,6 +442,17 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function setIdentifier($identifier)
     {
 		$this->identifier = $identifier;
+	}
+
+	/**
+	 * Setter for storage
+	 *
+	 * @param int $storage
+	 * @return void
+	 */
+	public function setStorage($storage)
+    {
+		$this->storage = $storage;
 	}
 
 	/**

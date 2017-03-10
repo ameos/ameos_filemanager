@@ -26,6 +26,7 @@
                     </settings.stockageGroupPid>
                     <settings.storage>
                         <TCEforms>
+                            <onChange>reload</onChange>
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.storage</label>
                             <config>
                                 <type>select</type>
@@ -92,6 +93,7 @@
                             <config>
                                 <type>select</type>
                                 <foreign_table>tx_ameosfilemanager_domain_model_folder</foreign_table>
+                                <itemsProcFunc>Ameos\AmeosFilemanager\Hooks\TreeFolder->renderFlexTreeFolder</itemsProcFunc>
                                 <size>30</size>
                                 <minitems>0</minitems>
                                 <maxitems>1</maxitems>

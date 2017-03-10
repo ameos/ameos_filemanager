@@ -208,8 +208,11 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
         }
 
+        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storage = $storageRepository->findByUid($this->storageUid);
+
         $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . uniqid() . '.zip';
-        $filePath = PATH_site . 'fileadmin' . $folder->getGedPath();
+        $filePath = PATH_site . trim($storage->getConfiguration()['basePath'], '/') . $folder->getGedPath();
 
         $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
         if ($configuration['use_ziparchive']) {

@@ -81,6 +81,11 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 'tx_ameosfilemanager_domain_model_folder',
                 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$this->flexFormData['settings']['startFolder']
             );
+            $storage = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+                'sys_file_storage.*',
+                'sys_file_storage',
+                'sys_file_storage.uid = ' . (int)$this->flexFormData['settings']['storage']
+            );
 
             $standaloneView = GeneralUtility::makeInstance(ObjectManager::class)->get(StandaloneView::class);
             $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($this->templatePathAndFile));
@@ -88,6 +93,7 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 'row'          => $row,
                 'flexFormData' => $this->flexFormData,
                 'folder'       => $folder,
+                'storage'      => $storage,
             ]);
             $itemContent = $standaloneView->render();            
         }

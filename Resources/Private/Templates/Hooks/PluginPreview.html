@@ -3,4 +3,7 @@
 <f:if condition="{folder}">
     <core:Icon identifier="extension-ameosfilemanager-main" />
     <f:translate key="LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.label.folder" /> : <f:if condition="{folder.identifier}"><f:then>{folder.identifier}</f:then><f:else>{folder.title}</f:else></f:if>
+    <br>
+    <core:Icon identifier="mimetypes-x-sys_file_storage" />
+    <f:translate key="LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.label.storage" /> : {storage.name}
 </f:if>

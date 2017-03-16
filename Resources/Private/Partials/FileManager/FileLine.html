@@ -38,7 +38,7 @@
             <td>
                 <f:for each="{settings.actionDetail}" as="action">
                     <f:if condition="{action} == 'download'">
-                        <f:link.action argumentsToBeExcludedFromQueryString="{0:'id'}" action="index" addQueryString="1" arguments="{file: fi.uid}">
+                        <f:link.action argumentsToBeExcludedFromQueryString="{0:'id'}" action="index" addQueryString="1" arguments="{file: fi.uid}" target="blank">
                             <f:translate key="download"/>
                         </f:link.action>
                     </f:if>

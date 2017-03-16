@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
@@ -24,15 +25,15 @@ use Ameos\AmeosFilemanager\Domain\Model\Filedownload;
 class DownloadUtility
 {
     /**
-	 * return files to add in zip
-	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-	 * @param ZipArchive $zip zip archive
-	 * @param int $rootFolder root folder uid
+     * return files to add in zip
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param ZipArchive $zip zip archive
+     * @param int $rootFolder root folder uid
      * @param int $includeArchive include archive file
      * @param int $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
-	 * @return void
-	 */
+     * @return void
+     */
     public static function getFilesToAdd($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
     {
         $filesToAdd = [];
@@ -42,7 +43,10 @@ class DownloadUtility
             if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
                 && ($includeArchive || $file->getRealstatus() != 2)) {
                     
-                $localFilepath = PATH_site . $file->getOriginalResource()->getPublicUrl();
+                $localFilepath =
+                    PATH_site .
+                    trim($file->getOriginalResource()->getStorage()->getConfiguration()['basePath'], '/') . '/' .
+                    trim($file->getOriginalResource()->getIdentifier(), '/');
                 $zipFilepath   = str_replace($rootPath, '', $localFilepath);
                 $filesToAdd[$zipFilepath] =  trim($zipFilepath, '/');
             }
@@ -64,16 +68,16 @@ class DownloadUtility
     }
     
     /**
-	 * add folder to zip
-	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-	 * @param ZipArchive $zip zip archive
-	 * @param int $rootFolder root folder uid
+     * add folder to zip
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param ZipArchive $zip zip archive
+     * @param int $rootFolder root folder uid
      * @param int $includeArchive include archive file
      * @param int $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
-	 * @return void
-	 */
-	public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
+     * @return void
+     */
+    public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
     {
         $user = ($GLOBALS['TSFE']->fe_user->user);
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
@@ -82,7 +86,10 @@ class DownloadUtility
             if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
                 && ($includeArchive || $file->getRealstatus() != 2)) {
                     
-                $localFilepath = PATH_site . $file->getOriginalResource()->getPublicUrl();
+                $localFilepath =
+                    PATH_site .
+                    trim($file->getOriginalResource()->getStorage()->getConfiguration()['basePath'], '/') . '/' .
+                    trim($file->getOriginalResource()->getIdentifier(), '/');
                 $zipFilepath   = str_replace($rootPath, '', $localFilepath);
                 $zip->addFile($localFilepath, $zipFilepath);
             }
@@ -99,52 +106,63 @@ class DownloadUtility
         }
     }
     
-	/**
-	 * download the file and log the download in the DB
-	 * @param integer $uidFile uid of the file
-	 * @return void
-	 */
-	public static function downloadFile($uidFile, $folderRoot = null)
+    /**
+     * download the file and log the download in the DB
+     * @param integer $uidFile uid of the file
+     * @return void
+     */
+    public static function downloadFile($uidFile, $folderRoot = null)
     {
-		$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-		$file = $fileRepository->findByUid($uidFile);
-		$user = ($GLOBALS['TSFE']->fe_user->user);
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+        $file = $fileRepository->findByUid($uidFile);
+        $user = ($GLOBALS['TSFE']->fe_user->user);
 
         // We check if the user has access to the file.
         if (AccessUtility::userHasFileReadAccess($user, $file, array('folderRoot' => $folderRoot))) {
-			if ($file) {
-				$filename = urldecode($file->getPublicUrl());
-			}
+            if ($file) {
+                $filename = urldecode($file->getPublicUrl());
+            }
 
-			if (file_exists($filename)) {
-				// We register who downloaded the file and when
-				$filedownloadRepository = GeneralUtility::makeInstance(FiledownloadRepository::class);
-				$filedownload = GeneralUtility::makeInstance(Filedownload::class);
-				$filedownload->setFile($file);
-				$filedownload->setUserDownload($user['uid']);
-				$filedownloadRepository->add($filedownload);
-				$persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-				$persitenceManager->persistAll();
+            if (ExtensionManagementUtility::isLoaded('fal_securedownload')
+                && $file->getOriginalResource()->getStorage()->getStorageRecord()['is_public'] == 0) {
 
-			    // Download of the file
-			    header('Content-Description: File Transfer');
-			    header('Content-Type: ' . mime_content_type($filename));
-			    header('Content-Disposition: attachment; filename='.basename($filename));
-			    header('Expires: 0');
-			    header('Cache-Control: must-revalidate');
-			    header('Pragma: public');
-			    // This line apparently causes trouble on some systems.
-			    // TODO : see why and patch it.
-			    //header('Content-Length: ' . filesize($filename));
-			    ob_clean();
-			    flush();
-			    readfile($filename);
-			    exit;
-			}
-		} else {
-			header('HTTP/1.1 403 Forbidden');
-			$message = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ameosfilemanager.']['settings.']['forbidden'] ?: 'Access denied';
-			exit($message);
-		}
-	}
+                $filedownloadRepository = GeneralUtility::makeInstance(FiledownloadRepository::class);
+                $filedownload = GeneralUtility::makeInstance(Filedownload::class);
+                $filedownload->setFile($file);
+                $filedownload->setUserDownload($user['uid']);
+                $filedownloadRepository->add($filedownload);
+                $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+                $persitenceManager->persistAll();
+
+                header('Location: ' . $filename);
+                exit;
+            
+            } elseif (file_exists($filename)) {
+                // We register who downloaded the file and when
+                $filedownloadRepository = GeneralUtility::makeInstance(FiledownloadRepository::class);
+                $filedownload = GeneralUtility::makeInstance(Filedownload::class);
+                $filedownload->setFile($file);
+                $filedownload->setUserDownload($user['uid']);
+                $filedownloadRepository->add($filedownload);
+                $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+                $persitenceManager->persistAll();
+
+                // Download of the file
+                header('Content-Description: File Transfer');
+                header('Content-Type: ' . mime_content_type($filename));
+                header('Content-Disposition: attachment; filename=' . basename($filename));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                ob_clean();
+                flush();
+                readfile($filename);
+                exit;
+            }
+        } else {
+            header('HTTP/1.1 403 Forbidden');
+            $message = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ameosfilemanager.']['settings.']['forbidden'] ?: 'Access denied';
+            exit($message);
+        }
+    }
 }

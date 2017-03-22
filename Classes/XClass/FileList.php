@@ -46,7 +46,13 @@ class FileList extends \TYPO3\CMS\FileList\FileList
 		}
 		
 		if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$fileOrFolderObject->getName()."'" );
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_ameosfilemanager_domain_model_folder.uid',
+                'tx_ameosfilemanager_domain_model_folder',
+                'tx_ameosfilemanager_domain_model_folder.deleted = 0
+                    AND tx_ameosfilemanager_domain_model_folder.storage = ' . $fileOrFolderObject->getStorage()->getUid() . '
+                    AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $fileOrFolderObject->getIdentifier() . '\''
+            );
 			if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === FALSE) {
 				$slot = GeneralUtility::makeInstance(Slot::class);
 				$slot->postFolderAdd($fileOrFolderObject);
@@ -70,7 +76,13 @@ class FileList extends \TYPO3\CMS\FileList\FileList
 		}
 		
 		if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$fileOrFolderObject->getName()."'" );
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_ameosfilemanager_domain_model_folder.uid',
+                'tx_ameosfilemanager_domain_model_folder',
+                'tx_ameosfilemanager_domain_model_folder.deleted = 0
+                    AND tx_ameosfilemanager_domain_model_folder.storage = ' . $fileOrFolderObject->getStorage()->getUid() . '
+                    AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $fileOrFolderObject->getIdentifier() . '\''
+            );
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				if(FilemanagerUtility::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
 				{

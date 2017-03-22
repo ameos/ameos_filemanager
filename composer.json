@@ -3,9 +3,9 @@
     "description": "This will allow you to fully handle file upload in FE context.",
     "type": "typo3-cms-extension",
     "homepage": "https://github.com/ameos/ameos_filemanager",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "require": {
-        "typo3/cms": ">=7.6.0,<8.6.99"
+        "typo3/cms": ">=7.6.0,<8.7.99"
     },
     "keywords": [
         "TYPO3",

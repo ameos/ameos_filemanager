@@ -31,7 +31,8 @@ ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][FileList::class] = ['className' => XClassFileList::class];
 
 // hooks
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][ProcessDatamap::class] = 'EXT:ameos_filemanager/Classes/Hooks/ProcessDatamap.php:' . ProcessDatamap::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][ProcessDatamap::class] =
+    'EXT:ameos_filemanager/Classes/Hooks/ProcessDatamap.php:' . ProcessDatamap::class;
 
 // scheduler
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CacheStatus::class] = [

@@ -10,6 +10,8 @@
             <trans-unit id="plugin.fe_filemanager_export.title" xml:space="preserve"><source>File Manager > Export</source><target>Dokumentenmanagement > Export</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source><target>Dokumentenmanagement > Suche</target></trans-unit>
             <trans-unit id="plugin.fe_filemanager_flat.title" xml:space="preserve"><source>File Manager > Flat list</source><target>Dokumentenmanagement > Flache Liste</target></trans-unit>
+
+            <trans-unit id="module.edit" xml:space="preserve"><source>Edit folder</source><target>Ordner bearbeiten</target></trans-unit>
             
             <trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source><target>Icon</target></trans-unit>
             <trans-unit id="flexform.title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>

@@ -12,12 +12,16 @@ use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use Ameos\AmeosFilemanager\Slots\Slot;
 
 // register plugin
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search', 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',   'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_flat.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export',
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_flat.title');
 
-//Flexform
+//Flexforms
 $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager'] = 'layout,select_key,recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager']     = 'pi_flexform';
 ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/filemanager.xml');
@@ -40,10 +44,12 @@ ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Aj
 
 // Register icons
 $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-$iconRegistry->registerIcon('extension-ameosfilemanager-main', SvgIconProvider::class, ['source' => 'EXT:ameos_filemanager/Resources/Public/IconsBackend/folder.svg']);
+$iconRegistry->registerIcon('extension-ameosfilemanager-main', SvgIconProvider::class, [
+    'source' => 'EXT:ameos_filemanager/Resources/Public/IconsBackend/folder.svg'
+]);
 
 /**
- * ContentElementWizard for Pi1
+ * ContentElementWizard
  */
 ExtensionManagementUtility::addPageTSConfig(
     '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:ameos_filemanager/Configuration/TSConfig/ContentElementWizard.tsconfig">'
@@ -51,21 +57,21 @@ ExtensionManagementUtility::addPageTSConfig(
 
 if (TYPO3_MODE == 'BE') {
 
-    //Slots
+    $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
+        'name' => 'Ameos\\AmeosFilemanager\\Hooks\\ClickMenuOptions'
+    );
+    
+    // Slots
     $dispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        
-    /*
-     * FOLDERS SLOTS
-     */
+
+    // Folders slots
     $dispatcher->connect(ResourceStorage::class, 'postFolderRename', Slot::class, 'postFolderRename');
     $dispatcher->connect(ResourceStorage::class, 'postFolderAdd',    Slot::class, 'postFolderAdd');
     $dispatcher->connect(ResourceStorage::class, 'postFolderMove',   Slot::class, 'postFolderMove');
     $dispatcher->connect(ResourceStorage::class, 'postFolderCopy',   Slot::class, 'postFolderCopy');
     $dispatcher->connect(ResourceStorage::class, 'postFolderDelete', Slot::class, 'postFolderDelete');
 
-    /*
-     * FILES SLOTS
-     */
+    // Files slots
     $dispatcher->connect(ResourceStorage::class, 'postFileAdd',  Slot::class, 'postFileAdd');
     $dispatcher->connect(ResourceStorage::class, 'postFileCopy', Slot::class, 'postFileCopy');
     $dispatcher->connect(ResourceStorage::class, 'postFileMove', Slot::class, 'postFileMove');

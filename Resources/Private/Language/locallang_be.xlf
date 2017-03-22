@@ -11,6 +11,8 @@
             <trans-unit id="plugin.fe_filemanager_search.title" xml:space="preserve"><source>File Manager > Search</source></trans-unit>
             <trans-unit id="plugin.fe_filemanager_flat.title" xml:space="preserve"><source>File Manager > Flat list</source></trans-unit>
             
+            <trans-unit id="module.edit" xml:space="preserve"><source>Edit folder</source></trans-unit>
+
             <trans-unit id="flexform.icon" xml:space="preserve"><source>Icon</source></trans-unit>
             <trans-unit id="flexform.title" xml:space="preserve"><source>Title</source></trans-unit>
             <trans-unit id="flexform.categories" xml:space="preserve"><source>Cateories</source></trans-unit>

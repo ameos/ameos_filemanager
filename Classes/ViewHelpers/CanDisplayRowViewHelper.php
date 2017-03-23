@@ -57,7 +57,7 @@ class CanDisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractC
                 } else {
                     $realstatus = FilemanagerUtility::updateFolderCacheStatus([
                         'uid'        => $arguments['folder']->getUid(),
-                        'uid_parent' => $arguments['folder']->getParent()->getUid(),
+                        'uid_parent' => $arguments['folder']->getParent() ? $arguments['folder']->getParent()->getUid() : 0,
                         'status'     => $arguments['folder']->getStatus(),
                         'realstatus' => $arguments['folder']->getRealstatus(),
                     ]);

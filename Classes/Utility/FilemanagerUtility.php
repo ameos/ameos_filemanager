@@ -232,11 +232,30 @@ class FilemanagerUtility
             $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_ameosfilemanager_domain_model_folder', 'uid = ' . (int)$folder);
         }
 
+        // if is root folder and no status set on this root folder : folder ready by default
+        if ((int)$folder['uid_parent'] === 0 && (int)$folder['status'] === 0 && (int)$folder['realstatus'] === 0) {
+            $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+                'tx_ameosfilemanager_domain_model_folder',
+                'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folder['uid'],
+                ['realstatus' => 1, 'status' => 1]
+            );
+            return 1;
+        }
+
         do {
             if ($folder['status'] > 0) {
                 return $folder['status'];
             }
             $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_ameosfilemanager_domain_model_folder', 'uid = ' . (int)$folder['uid_parent']);
+            // if is root folder and no status set on this root folder : folder ready by default
+            if ((int)$folder['uid_parent'] === 0 && (int)$folder['status'] === 0 && (int)$folder['realstatus'] === 0) {
+                $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+                    'tx_ameosfilemanager_domain_model_folder',
+                    'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folder['uid'],
+                    ['realstatus' => 1, 'status' => 1]
+                );
+                return 1;
+            }            
             if ($folder['realstatus'] > 0) {
                 return $folder['realstatus'];
             }

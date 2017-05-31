@@ -16,6 +16,7 @@
             <trans-unit id="feGroupAddfile" xml:space="preserve"><source>Groups with add files permissions</source><target>Groupe avec autorisation d'ajouter des fichiers</target></trans-unit>
 			<trans-unit id="fileNotUploaded" xml:space="preserve"><source>You must upload a file to create a document.</source><target>Vous devez choisir un fichier pour créer un document.</target></trans-unit>
 			<trans-unit id="fileUploadError" xml:space="preserve"><source>An error occured while loading the file. Please try again.</source><target>Problème lors de l'upload du fichier.</target></trans-unit>
+            <trans-unit id="notAllowedFileType" xml:space="preserve"><source>File type not allowed.</source><target>Type de fichier non autorisé.</target></trans-unit>
 			<trans-unit id="errors" xml:space="preserve"><source>Error(s) were detected, please fill the form correctly.</source><target>Des erreurs ont été détécté, merci de remplir le formulaire correctement.</target></trans-unit>
 			<trans-unit id="createFile" xml:space="preserve"><source>Submit file</source><target>Transférer un fichier</target></trans-unit>
 			<trans-unit id="createFolder" xml:space="preserve"><source>Create folder</source><target>Créer un nouveau dossier</target></trans-unit>

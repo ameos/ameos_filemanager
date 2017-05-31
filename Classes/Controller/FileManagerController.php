@@ -390,7 +390,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
                 if (file_exists($storage->getConfiguration()['basePath'].$fileModel->getParentFolder()->getGedPath().'/'.$fileArgs['file']['name'])) {
                     $errors['file'] = LocalizationUtility::translate('fileAlreadyExist', 'ameos_filemanager');    
                 } elseif (!in_array(pathinfo($fileArgs['file']['name'], PATHINFO_EXTENSION), $allowedFileExtension)) {
-                    $errors['file'] = LocalizationUtility::translate('fileUploadError', 'ameos_filemanager');
+                    $errors['file'] = LocalizationUtility::translate('notAllowedFileType', 'ameos_filemanager');
                 } elseif (!move_uploaded_file($fileArgs['file']['tmp_name'], $storage->getConfiguration()['basePath'].$folder->getGedPath().'/'.$fileArgs['file']['name'])) {
                     $errors['file'] = LocalizationUtility::translate('fileUploadError', 'ameos_filemanager');
                 } else {
@@ -407,25 +407,25 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             if ($fileArgs['file']['tmp_name'] == '') {
                 $errors['file'] = LocalizationUtility::translate('fileNotUploaded', 'ameos_filemanager');
             } elseif (!in_array(pathinfo($fileArgs['file']['name'], PATHINFO_EXTENSION), $allowedFileExtension)) {
-                $errors['file'] = LocalizationUtility::translate('fileUploadError', 'ameos_filemanager');
+                $errors['file'] = LocalizationUtility::translate('notAllowedFileType', 'ameos_filemanager');
             } elseif (file_exists($storage->getConfiguration()['basePath'].$folder->getGedPath().'/'.$fileArgs['file']['name'])) {
                 $errors['file'] = LocalizationUtility::translate('fileAlreadyExist', 'ameos_filemanager');
             } elseif (!move_uploaded_file($fileArgs['file']['tmp_name'], $storage->getConfiguration()['basePath'].$folder->getGedPath().'/'.$fileArgs['file']['name'])) {
                 $errors['file'] = LocalizationUtility::translate('fileUploadError', 'ameos_filemanager');
+            } else {
+                $someFileIdentifier = $folder->getGedPath().'/'.$fileArgs['file']['name'];
+                $fileObj = $storage->getFile($someFileIdentifier);
             }
-            $someFileIdentifier = $folder->getGedPath().'/'.$fileArgs['file']['name'];
-            $fileObj = $storage->getFile($someFileIdentifier);
         }
 
         // If errors, redirect to form with array erros.
         if (!empty($errors)) {
-            $resultUri = $this->uriBuilder
-                ->reset()
-                ->setCreateAbsoluteUri(true)
-                ->setArguments(array('tx_ameos_filemanager' => array('newFile' => $fileArgs['uidFile'], 'errors' => $errors,'folder' => $fileArgs['uidParent'], 'properties' => $fileArgs)))
-                ->uriFor('formFile');
-
-            $this->redirectToUri($resultUri);
+            $this->forward('formFile', null, null, [
+                'newFile'    => $fileArgs['uidFile'],
+                'errors'     => $errors,
+                'folder'     => $fileArgs['uidParent'],
+                'properties' => $fileArgs
+            ]);
         } else {
             $persitenceManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
             $persitenceManager->persistAll();

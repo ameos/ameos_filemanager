@@ -16,7 +16,7 @@
 	<f:form action="createFile" name="newFile" enctype="multipart/form-data">
 		<p>
 			<label for="file"><f:translate key="file"/> : </label><f:if condition="{errors.file}"><span class="error">{errors.file}</span></f:if>
-			<f:form.upload id="file" name="file" />
+			<f:form.upload id="file" name="file" additionalAttributes="{accept: '{settings.allowedFileExtension -> custom:acceptFileType()}'}" />
 			<f:if condition="{file.file}">
 				<f:image src="{file.file}" alt="" width="150c" height="150" />
 			</f:if>

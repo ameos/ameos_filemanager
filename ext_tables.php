@@ -56,10 +56,14 @@ ExtensionManagementUtility::addPageTSConfig(
 );
 
 if (TYPO3_MODE == 'BE') {
-
-    $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-        'name' => 'Ameos\\AmeosFilemanager\\Hooks\\ClickMenuOptions'
-    );
+    
+    if (version_compare(TYPO3_version, '8.0', '>=')) {
+        $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1496933853] = \Ameos\AmeosFilemanager\ContextMenu\ItemProviders\FileProvider::class;
+    } else {
+        $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
+            'name' => 'Ameos\\AmeosFilemanager\\Hooks\\ClickMenuOptions'
+        );        
+    }
     
     // Slots
     $dispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);

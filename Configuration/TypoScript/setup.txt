@@ -55,4 +55,4 @@ page.includeCSS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Publ
 #page.includeCSS.ameos_fontawesome = typo3conf/ext/ameos_filemanager/Resources/Public/Css/font-awesome.min.css
 
 
-page.includeJS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/Javascript/datepickr.min.js
+page.includeJS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/JavaScript/datepickr.min.js

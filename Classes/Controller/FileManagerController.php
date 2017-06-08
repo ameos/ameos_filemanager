@@ -473,14 +473,8 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
                 $fileModel->setCategories($fileArgs['categories']);
             }
         }
-        
-        $resultUri = $this->uriBuilder
-            ->reset()
-            ->setCreateAbsoluteUri(true)
-            ->setArguments(array('tx_ameos_filemanager' => array('folder' => $folder)))
-            ->uriFor('index');
-        
-        $this->redirectToUri($resultUri);
+
+        $this->redirect('index', null, null, ['folder' => $folder]);       
     }
 
     /**

@@ -608,6 +608,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         // Editing folder
         $newFolder->setTitle($localDriver->sanitizeFileName($fileArgs['title']));
         $newFolder->setDescription($fileArgs['description']);
+        $newFolder->setIdentifier($parent->getGedPath() . '/' . $newFolder->getTitle() . '/');
         $newFolder->setKeywords($fileArgs['keywords']);
         $newFolder->setNoReadAccess($fileArgs['noReadAccess']);
         $newFolder->setNoWriteAccess($fileArgs['noWriteAccess']);
@@ -623,12 +624,12 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $this->folderRepository->add($newFolder);
 
         if ($fileArgs['uidFolder'] != '') {
-            $storageFolder = $storage->getFolder($newFolder->getParent()->getGedPath().'/'.$exFolderQuery['title'].'/');
+            $storageFolder = $storage->getFolder($newFolder->getParent()->getGedPath() . '/' . $exFolderQuery['title'] . '/');
             $storageFolder->rename($newFolder->getTitle());
 
             $returnfolder = $fileArgs['returnFolder'] != '' ? $fileArgs['returnFolder'] : $fileArgs['uidFolder'];
         } else {
-            $storageFolder = $storage->getFolder($parent->getGedPath().'/');
+            $storageFolder = $storage->getFolder($parent->getGedPath() . '/');
             $storageFolder->createFolder($newFolder->getTitle());
 
             $returnfolder = $fileArgs['returnFolder'] != '' ? $fileArgs['returnFolder'] : $parent->getUid();

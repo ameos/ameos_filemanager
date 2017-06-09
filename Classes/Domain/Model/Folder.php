@@ -609,7 +609,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function getFileNumber()
     {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFilesForFolder($this->getUid());		
+		return $folderRepository->countFilesForFolder($this);		
 	}
 
     /**
@@ -619,7 +619,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 	public function getReadyFileNumber()
     {
 		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFilesForFolder($this->getUid(), false);		
+		return $folderRepository->countFilesForFolder($this, false);		
 	}
 
     /**

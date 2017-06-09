@@ -87,20 +87,25 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * count file for a folder
-     * @param int $folderUid
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @param bool $withArchive
      * @return int
      */ 
-	public function countFilesForFolder($folderUid, $withArchive = true)
+	public function countFilesForFolder($folder, $withArchive = true)
     {
-		if (empty($folderUid)) {
+		if (!$folder) {
 			return 0;
 		}
-		$where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ' . (int)$folderUid;
-        if (!$withArchive) {
-            $where .= ' AND sys_file_metadata.realstatus IN (0,1)';
-        }
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','sys_file, sys_file_metadata', $where)['count'];
+
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+            'count(*) as count',
+            'sys_file, sys_file_metadata, tx_ameosfilemanager_domain_model_folder',
+            'tx_ameosfilemanager_domain_model_folder.identifier LIKE \'' . $folder->getIdentifier() . '%\'
+                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
+                AND tx_ameosfilemanager_domain_model_folder.deleted = 0
+                AND sys_file_metadata.file = sys_file.uid
+                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid' . $addWhere
+        )['count'];        
 	}
 
     /**

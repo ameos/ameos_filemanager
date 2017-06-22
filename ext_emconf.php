@@ -21,8 +21,9 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder'     => false,
     'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version'          => '1.1.8',
+    'version'          => '1.1.9',
     'clearcacheonload' => false,
+    'autoload'         => ['psr-4' => ['Ameos\\AmeosFilemanager\\' => 'Classes']]
     'constraints'      => [
         'depends'   => ['typo3' => '7.6.0-8.7.99', 'php' => '5.5.0-7.0.99'],
         'conflicts' => [],

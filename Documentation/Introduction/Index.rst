@@ -24,12 +24,5 @@ The files and folders are the same in FE and BE. Therefore, a change in one cont
 Screenshots
 -----------
 
-.. figure:: ../Images/confTabs.png
-	:alt: Configuration tabs
-
-	In these tabs you'll be able to choose how your plugin will be display and what it'll display. More information about this can be fount in the :ref:`Administration manual <adminmanual>`
-
 .. figure:: ../Images/fullTab.png
-	:alt: Full tab
-
-	This is how the extension will look like if you select all tab items. :ref:`(See administration manual) <adminmanual>`
+	:alt: Frontend rendering

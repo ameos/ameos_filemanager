@@ -8,7 +8,7 @@ FileManager
 		ameos_filemanager
 
 	:Version:
-		1.0.0
+		1.1.9
 
 	:Language:
 		en
@@ -43,8 +43,6 @@ FileManager
 	:titlesonly:
 
 	Introduction/Index
-	UsersManual/Index
-	AdministratorManual/Index
+	Manual/Index
 	Faq/Index
-	Todo/Index
 

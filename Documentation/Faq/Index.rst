@@ -34,5 +34,5 @@ When you use the filelist in BE, the database is automatically updated. This opt
 
 .. answer
 
-*Yes, you just have to create multiple plugins and set the root folder for each one of them.*
+*Yes, you just have to create multiple plugins with different namespace in general tab and set the root folder for each one of them.*
 

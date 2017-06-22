@@ -1,6 +1,6 @@
 .. _adminmanual:
 
-Administrator manual
+Manual
 ====================
 
 .. only:: html
@@ -12,4 +12,6 @@ Administrator manual
 	:titlesonly:
 
 	Installation
-	UserRights
+	PluginConfiguration
+	FolderConfiguration
+	FileConfiguration

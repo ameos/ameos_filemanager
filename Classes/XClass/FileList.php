@@ -28,54 +28,24 @@ use Ameos\AmeosFilemanager\Slots\Slot;
 class FileList extends \TYPO3\CMS\FileList\FileList
 {
 
-	/**
-	 * indexFileOrFolder
-	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-	 */
-	protected function indexFileOrFolder($fileOrFolderObject)
+    /**
+     * indexFileOrFolder
+     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
+     */
+    protected function indexFileOrFolder($fileOrFolderObject)
     {
-		if (is_a($fileOrFolderObject, File::class) && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
-			$metaData = $fileOrFolderObject->_getMetaData();
-			if ($metaData['folder_uid'] == 0) {
-				$folder = $fileOrFolderObject->getStorage()->getFolder($fileOrFolderObject->getStorage()->getFolderIdentifierFromFileIdentifier($fileOrFolderObject->getIdentifier()));
-				if ($folder != null){
-					$slot = GeneralUtility::makeInstance(Slot::class);
-					$slot->postFileAdd($fileOrFolderObject, $folder);
-				}
-			}
-		}
-		
-		if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_ameosfilemanager_domain_model_folder.uid',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.deleted = 0
-                    AND tx_ameosfilemanager_domain_model_folder.storage = ' . $fileOrFolderObject->getStorage()->getUid() . '
-                    AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $fileOrFolderObject->getIdentifier() . '\''
-            );
-			if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === FALSE) {
-				$slot = GeneralUtility::makeInstance(Slot::class);
-				$slot->postFolderAdd($fileOrFolderObject);
-			}
-		}
-	}
-	
-	/**
-	 * additionnal cells
-	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-	 */
-	protected function addAdditionalCells($fileOrFolderObject)
-    {
-		$cells = array();
-		if (is_a($fileOrFolderObject, File::class) && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
-			$metaData = $fileOrFolderObject->_getMetaData();
-			$data = array('sys_file_metadata' => array($metaData['uid'] => 'edit'));
-			$editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $data), $GLOBALS['BACK_PATH'], $this->listUrl());
-			
-			$cells['editmetadata'] = '<a href="#" class="btn btn-default" onclick="' . htmlspecialchars($editOnClick) . '" title="Edit Metadata of this file">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';
-		}
-		
-		if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
+        if (is_a($fileOrFolderObject, File::class) && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
+            $metaData = $fileOrFolderObject->_getMetaData();
+            if ($metaData['folder_uid'] == 0) {
+                $folder = $fileOrFolderObject->getStorage()->getFolder($fileOrFolderObject->getStorage()->getFolderIdentifierFromFileIdentifier($fileOrFolderObject->getIdentifier()));
+                if ($folder != null){
+                    $slot = GeneralUtility::makeInstance(Slot::class);
+                    $slot->postFileAdd($fileOrFolderObject, $folder);
+                }
+            }
+        }
+        
+        if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
             $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_ameosfilemanager_domain_model_folder.uid',
                 'tx_ameosfilemanager_domain_model_folder',
@@ -83,35 +53,65 @@ class FileList extends \TYPO3\CMS\FileList\FileList
                     AND tx_ameosfilemanager_domain_model_folder.storage = ' . $fileOrFolderObject->getStorage()->getUid() . '
                     AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $fileOrFolderObject->getIdentifier() . '\''
             );
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if(FilemanagerUtility::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
-				{
-					$folder = array('tx_ameosfilemanager_domain_model_folder' => array($row['uid'] => 'edit'));
-					$editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $folder), $GLOBALS['BACK_PATH'], $this->listUrl());
-					
-					$cells['editmetadata'] = '<a href="#" class="btn btn-default" onclick="' . htmlspecialchars($editOnClick) . '" title="Edit Metadata of this folder">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';					
-				}
-			}
-		}
-		return $cells;
-	}
-
-	/**
-	 * Creates the edit control section
-	 *
-	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-	 * @return string HTML-table
-	 * @todo Define visibility
-	 */
-	public function makeEdit($fileOrFolderObject)
+            if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) === FALSE) {
+                $slot = GeneralUtility::makeInstance(Slot::class);
+                $slot->postFolderAdd($fileOrFolderObject);
+            }
+        }
+    }
+    
+    /**
+     * additionnal cells
+     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
+     */
+    protected function addAdditionalCells($fileOrFolderObject)
     {
-		$this->indexFileOrFolder($fileOrFolderObject);
+        $cells = array();
+        if (is_a($fileOrFolderObject, File::class) && $fileOrFolderObject->isIndexed() && $fileOrFolderObject->checkActionPermission('write')) {
+            $metaData = $fileOrFolderObject->_getMetaData();
+            $data = array('sys_file_metadata' => array($metaData['uid'] => 'edit'));
+            $editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $data), $GLOBALS['BACK_PATH'], $this->listUrl());
+            
+            $cells['editmetadata'] = '<a href="#" class="btn btn-default" onclick="' . htmlspecialchars($editOnClick) . '" title="Edit Metadata of this file">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';
+        }
+        
+        if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_ameosfilemanager_domain_model_folder.uid',
+                'tx_ameosfilemanager_domain_model_folder',
+                'tx_ameosfilemanager_domain_model_folder.deleted = 0
+                    AND tx_ameosfilemanager_domain_model_folder.storage = ' . $fileOrFolderObject->getStorage()->getUid() . '
+                    AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $fileOrFolderObject->getIdentifier() . '\''
+            );
+            while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+                if(FilemanagerUtility::getFolderPathFromUid($row['uid']).'/' == $fileOrFolderObject->getIdentifier())
+                {
+                    $folder = array('tx_ameosfilemanager_domain_model_folder' => array($row['uid'] => 'edit'));
+                    $editOnClick = BackendUtility::editOnClick(GeneralUtility::implodeArrayForUrl('edit', $folder), $GLOBALS['BACK_PATH'], $this->listUrl());
+                    
+                    $cells['editmetadata'] = '<a href="#" class="btn btn-default" onclick="' . htmlspecialchars($editOnClick) . '" title="Edit Metadata of this folder">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';                    
+                }
+            }
+        }
+        return $cells;
+    }
+
+    /**
+     * Creates the edit control section
+     *
+     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
+     * @return string HTML-table
+     * @todo Define visibility
+     */
+    public function makeEdit($fileOrFolderObject)
+    {
+        $this->indexFileOrFolder($fileOrFolderObject);
         if (version_compare(TYPO3_version, '8', '>=')) {            
             return $this->makeEdit8($fileOrFolderObject);
-		} elseif (version_compare(TYPO3_version, '7', '>=')) {
-			return $this->makeEdit7($fileOrFolderObject);
-		}
-	}
+        } elseif (version_compare(TYPO3_version, '7', '>=')) {
+            return $this->makeEdit7($fileOrFolderObject);
+        }
+    }
 
     /**
      * Creates the edit control section
@@ -224,17 +224,17 @@ class FileList extends \TYPO3\CMS\FileList\FileList
         $cells = array_merge($cells, $this->addAdditionalCells($fileOrFolderObject));
         return '<div class="btn-group">' . implode('', $cells) . '</div>';
     }
-	
-	/**
-	 * Creates the edit control section
-	 *
-	 * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-	 * @return string HTML-table
-	 * @todo Define visibility
-	 */
-	protected function makeEdit7($fileOrFolderObject)
+    
+    /**
+     * Creates the edit control section
+     *
+     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
+     * @return string HTML-table
+     * @todo Define visibility
+     */
+    protected function makeEdit7($fileOrFolderObject)
     {
-		$cells = [];
+        $cells = [];
         $fullIdentifier = $fileOrFolderObject->getCombinedIdentifier();
 
         // Edit file content (if editable)
@@ -331,9 +331,9 @@ class FileList extends \TYPO3\CMS\FileList\FileList
             }
             unset($cells['__fileOrFolderObject']);
         }
-		
-		$cells = array_merge($cells, $this->addAdditionalCells($fileOrFolderObject));
-		// Compile items into a DIV-element:
-		return '<div class="btn-group">' . implode('', $cells) . '</div>';
-	}
+        
+        $cells = array_merge($cells, $this->addAdditionalCells($fileOrFolderObject));
+        // Compile items into a DIV-element:
+        return '<div class="btn-group">' . implode('', $cells) . '</div>';
+    }
 }

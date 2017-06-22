@@ -20,352 +20,352 @@ use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 {
 
-	/**
-	 * @var string
-	 * *@validate NotEmpty
-	 */
-	protected $title;
-
-	/**
-	 * @var string
-	 */
-	protected $description;
-
-	/**
-	 * @var string
-	 */
-	protected $keywords;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
-	 */
-	protected $folders;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
-	 */
-	protected $files;
-
-	/**
-	 * @var \Ameos\AmeosFilemanager\Domain\Model\Folder
-	 */
-	protected $uidParent;
-
-	/**
-	 * @var string
-	 */
-	protected $feGroupRead;
-
-	/**
-	 * @var string
-	 */
-	protected $feGroupWrite;
-
-	/**
-	 * @var string
-	 */
-	protected $feGroupAddfile;
-
-	/**
-	 * @var string
-	 */
-	protected $feGroupAddfolder;
-	
-	/**
-	 * @var int
-	 */
-	protected $crdate;
-
-	/**
-	 * @var int
-	 */
-	protected $tstamp;
-
-	/**
-	 * @var integer
-	 */
-	protected $noReadAccess;
-
-	/**
-	 * @var integer
-	 */
-	protected $noWriteAccess;
-
-	/**
-	 * @var integer
-	 */
-	protected $ownerHasReadAccess;
-
-	/**
-	 * @var integer
-	 */
-	protected $ownerHasWriteAccess;
-
-	/**
-	 * @var integer
-	 */
-	protected $status;
+    /**
+     * @var string
+     * *@validate NotEmpty
+     */
+    protected $title;
 
     /**
-	 * @var integer
-	 */
-	protected $realstatus;
+     * @var string
+     */
+    protected $description;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
-	 */
-	protected $cruserId;
+    /**
+     * @var string
+     */
+    protected $keywords;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
-	 */
-	protected $feUserId;
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
+     */
+    protected $folders;
 
-	/**
-	 * @var array
-	 */
-	protected $arrayFeGroupRead;
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
+     */
+    protected $files;
 
-	/**
-	 * @var array
-	 */
-	protected $arrayFeGroupWrite;
+    /**
+     * @var \Ameos\AmeosFilemanager\Domain\Model\Folder
+     */
+    protected $uidParent;
 
-	/**
-	 * @var array
-	 */
-	protected $arrayFeGroupAddfile;
+    /**
+     * @var string
+     */
+    protected $feGroupRead;
 
-	/**
-	 * @var array
-	 */
-	protected $arrayFeGroupAddfolder;
+    /**
+     * @var string
+     */
+    protected $feGroupWrite;
 
-	/**
-	 * @var string
-	 */
-	protected $identifier;
+    /**
+     * @var string
+     */
+    protected $feGroupAddfile;
 
-	/**
-	 * @var int
-	 */
-	protected $storage;
+    /**
+     * @var string
+     */
+    protected $feGroupAddfolder;
+    
+    /**
+     * @var int
+     */
+    protected $crdate;
 
-	/**
+    /**
+     * @var int
+     */
+    protected $tstamp;
+
+    /**
+     * @var integer
+     */
+    protected $noReadAccess;
+
+    /**
+     * @var integer
+     */
+    protected $noWriteAccess;
+
+    /**
+     * @var integer
+     */
+    protected $ownerHasReadAccess;
+
+    /**
+     * @var integer
+     */
+    protected $ownerHasWriteAccess;
+
+    /**
+     * @var integer
+     */
+    protected $status;
+
+    /**
+     * @var integer
+     */
+    protected $realstatus;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
+     */
+    protected $cruserId;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     */
+    protected $feUserId;
+
+    /**
+     * @var array
+     */
+    protected $arrayFeGroupRead;
+
+    /**
+     * @var array
+     */
+    protected $arrayFeGroupWrite;
+
+    /**
+     * @var array
+     */
+    protected $arrayFeGroupAddfile;
+
+    /**
+     * @var array
+     */
+    protected $arrayFeGroupAddfolder;
+
+    /**
+     * @var string
+     */
+    protected $identifier;
+
+    /**
+     * @var int
+     */
+    protected $storage;
+
+    /**
      * @return int
      */
-	public function getCrdate()
+    public function getCrdate()
     {
-		return $this->crdate;
-	}
+        return $this->crdate;
+    }
 
-	/**
+    /**
      * @return int
      */
-	public function getTstamp()
+    public function getTstamp()
     {
-		return $this->tstamp;
-	}
+        return $this->tstamp;
+    }
 
-	/**
+    /**
      * @return string
      */
-	public function getTitle()
+    public function getTitle()
     {
-		return $this->title;
-	}
+        return $this->title;
+    }
 
-	/**
+    /**
      * @return string
      */
-	public function getIdentifier()
+    public function getIdentifier()
     {
-		return $this->identifier;
-	}
+        return $this->identifier;
+    }
 
-	/**
+    /**
      * @return int
      */
-	public function getStorage()
+    public function getStorage()
     {
-		return $this->storage;
-	}
+        return $this->storage;
+    }
 
-	/**
+    /**
      * @return string
      */
-	public function getDescription()
+    public function getDescription()
     {
-		return $this->description;
-	}
+        return $this->description;
+    }
 
-	/**
+    /**
      * @return string
      */
-	public function getKeywords()
+    public function getKeywords()
     {
-		return $this->keywords;
-	}	
+        return $this->keywords;
+    }    
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
-	 */
-	public function getFolders()
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
+     */
+    public function getFolders()
     {
-		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		$folders = $folderRepository->getSubFolderFromFolder($this->getUid());
-		return $folders;
-	}
+        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folders = $folderRepository->getSubFolderFromFolder($this->getUid());
+        return $folders;
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
-	 */
-	public function getFiles()
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
+     */
+    public function getFiles()
     {
-		return $this->files;
-	}
+        return $this->files;
+    }
 
-	/**
-	 * @return \Ameos\AmeosFilemanager\Domain\Model\Folder
-	 */
-	public function getParent($rootFolderUid = null)
+    /**
+     * @return \Ameos\AmeosFilemanager\Domain\Model\Folder
+     */
+    public function getParent($rootFolderUid = null)
     {
-		if ($this->getUid() && $rootFolderUid == $this->getUid()) {
-			return false;
-		} else {
-			return $this->uidParent;	
-		}
-	}
-	
-	/**
+        if ($this->getUid() && $rootFolderUid == $this->getUid()) {
+            return false;
+        } else {
+            return $this->uidParent;    
+        }
+    }
+    
+    /**
      * @return array
      */
-	public function getArrayFeGroupRead()
+    public function getArrayFeGroupRead()
     {
-		$res=array();
-		if ($this->feGroupRead) {
-			foreach (explode(',', $this->feGroupRead) as $feGroup) {
-				$res[] = $feGroup;
-			}
-		}
-		return $res;
-	}
+        $res=array();
+        if ($this->feGroupRead) {
+            foreach (explode(',', $this->feGroupRead) as $feGroup) {
+                $res[] = $feGroup;
+            }
+        }
+        return $res;
+    }
 
-	/**
+    /**
      * @return array
      */
-	public function getArrayFeGroupWrite()
+    public function getArrayFeGroupWrite()
     {
-		$res=array();
-		if ($this->feGroupWrite) {
-			foreach (explode(',',$this->feGroupWrite) as $feGroup) {
-				$res[] = $feGroup;
-			}
-		}
-		return $res;
-	}
+        $res=array();
+        if ($this->feGroupWrite) {
+            foreach (explode(',',$this->feGroupWrite) as $feGroup) {
+                $res[] = $feGroup;
+            }
+        }
+        return $res;
+    }
 
-	/**
+    /**
      * @return array
      */
-	public function getArrayFeGroupAddfolder()
+    public function getArrayFeGroupAddfolder()
     {
-		$res=array();
-		if ($this->feGroupAddfolder) {
-			foreach (explode(',',$this->feGroupAddfolder) as $feGroup) {
-				$res[] = $feGroup;
-			}
-		}
-		return $res;
-	}
+        $res=array();
+        if ($this->feGroupAddfolder) {
+            foreach (explode(',',$this->feGroupAddfolder) as $feGroup) {
+                $res[] = $feGroup;
+            }
+        }
+        return $res;
+    }
 
-	/**
+    /**
      * @return array
      */
-	public function getArrayFeGroupAddfile()
+    public function getArrayFeGroupAddfile()
     {
-		$res=array();
-		if ($this->feGroupAddfile) {
-			foreach (explode(',',$this->feGroupAddfile) as $feGroup) {
-				$res[] = $feGroup;
-			}
-		}
-		return $res;
-	}
+        $res=array();
+        if ($this->feGroupAddfile) {
+            foreach (explode(',',$this->feGroupAddfile) as $feGroup) {
+                $res[] = $feGroup;
+            }
+        }
+        return $res;
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUser
-	 */
-	public function getCruser()
+    /**
+     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUser
+     */
+    public function getCruser()
     {
-		return $this->cruserId;
-	}
+        return $this->cruserId;
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
-	 */
-	public function getFeUser()
+    /**
+     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     */
+    public function getFeUser()
     {
         return $this->feUserId;
     }
 
     /**
-	 * @return boolean
-	 */
-	public function getNoReadAccess()
+     * @return boolean
+     */
+    public function getNoReadAccess()
     {
-		return $this->noReadAccess;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function getNoWriteAccess()
-    {
-		return $this->noWriteAccess;
-	}
+        return $this->noReadAccess;
+    }
 
     /**
-	 * @return boolean
-	 */
-	public function getOwnerHasReadAccess()
+     * @return boolean
+     */
+    public function getNoWriteAccess()
     {
-		return $this->ownerHasReadAccess;
-	}
+        return $this->noWriteAccess;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function getOwnerHasWriteAccess()
+    /**
+     * @return boolean
+     */
+    public function getOwnerHasReadAccess()
     {
-		return $this->ownerHasWriteAccess;
-	}
+        return $this->ownerHasReadAccess;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getStatus()
+    /**
+     * @return boolean
+     */
+    public function getOwnerHasWriteAccess()
     {
-		return $this->status;
-	}
+        return $this->ownerHasWriteAccess;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getRealstatus()
+    /**
+     * @return int
+     */
+    public function getStatus()
     {
-		return $this->realstatus;
-	}
+        return $this->status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRealstatus()
+    {
+        return $this->realstatus;
+    }
 
     /**
      * @return string
      */
     public function getGedPath() {
-    	if($parent = $this->getParent())
+        if($parent = $this->getParent())
         {
-			return $parent->getGedPath().'/'.$this->title;
-		}
-		return '/'.$this->title;
+            return $parent->getGedPath().'/'.$this->title;
+        }
+        return '/'.$this->title;
     }
 
     /**
@@ -381,11 +381,11 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getRecursiveSubFolders()
     {
-    	$res = '';
+        $res = '';
         if ($folders = $this->folders) {
-        	foreach ($folders as $folder) {
-        		$res .= $folder->getRecursiveSubFolders();
-        	}
+            foreach ($folders as $folder) {
+                $res .= $folder->getRecursiveSubFolders();
+            }
         }
         $res .= $this->getUid().',';
 
@@ -397,259 +397,259 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getSubFolders()
     {
-    	return substr($this->getRecursiveSubFolders(), 0,-1);
+        return substr($this->getRecursiveSubFolders(), 0,-1);
     }
 
-	/**
-	 * Setter for title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title)
+    /**
+     * Setter for title
+     *
+     * @param string $title
+     * @return void
+     */
+    public function setTitle($title)
     {
-		$this->title = $title;
-	}
+        $this->title = $title;
+    }
 
-	/**
-	 * Setter for description
-	 *
-	 * @param string $description
-	 * @return void
-	 */
-	public function setDescription($description)
+    /**
+     * Setter for description
+     *
+     * @param string $description
+     * @return void
+     */
+    public function setDescription($description)
     {
-		$this->description = $description;
-	}
+        $this->description = $description;
+    }
 
-	/**
-	 * Setter for keywords
-	 *
-	 * @param string $keywords
-	 * @return void
-	 */
-	public function setKeywords($keywords)
+    /**
+     * Setter for keywords
+     *
+     * @param string $keywords
+     * @return void
+     */
+    public function setKeywords($keywords)
     {
-		$this->keywords = $keywords;
-	}
+        $this->keywords = $keywords;
+    }
 
-	/**
-	 * Setter for identifier
-	 *
-	 * @param string $identifier
-	 * @return void
-	 */
-	public function setIdentifier($identifier)
+    /**
+     * Setter for identifier
+     *
+     * @param string $identifier
+     * @return void
+     */
+    public function setIdentifier($identifier)
     {
-		$this->identifier = $identifier;
-	}
+        $this->identifier = $identifier;
+    }
 
-	/**
-	 * Setter for storage
-	 *
-	 * @param int $storage
-	 * @return void
-	 */
-	public function setStorage($storage)
+    /**
+     * Setter for storage
+     *
+     * @param int $storage
+     * @return void
+     */
+    public function setStorage($storage)
     {
-		$this->storage = $storage;
-	}
+        $this->storage = $storage;
+    }
 
-	/**
-	 * Setter for feUserId
-	 *
-	 * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUserId
-	 * @return void
-	 */
-	public function setFeUser($feUserId)
+    /**
+     * Setter for feUserId
+     *
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUserId
+     * @return void
+     */
+    public function setFeUser($feUserId)
     {
         $this->feUserId = $feUserId;
     }
 
     /**
-	 * Setter for cruserId
-	 *
-	 * @param \TYPO3\CMS\Extbase\Domain\Model\BackendUser $cruserId
-	 * @return void
-	 */
-	public function setCruser($cruserId)
+     * Setter for cruserId
+     *
+     * @param \TYPO3\CMS\Extbase\Domain\Model\BackendUser $cruserId
+     * @return void
+     */
+    public function setCruser($cruserId)
     {
-		$this->cruserId = $cruserId;
-	}
-
-	/**
-	 * Setter for noReadAccess
-	 *
-	 * @param boolean $noReadAccess
-	 * @return void
-	 */
-	public function setNoReadAccess($noReadAccess)
-    {
-		$this->noReadAccess = $noReadAccess;
-	}
-
-	/**
-	 * Setter for noWriteAccess
-	 *
-	 * @param boolean $noWriteAccess
-	 * @return void
-	 */
-	public function setNoWriteAccess($noWriteAccess)
-    {
-		$this->noWriteAccess = $noWriteAccess;
-	}
-
-	/**
-	 * Setter for ownerHasReadAccess
-	 *
-	 * @param boolean $ownerHasReadAccess
-	 * @return void
-	 */
-	public function setOwnerHasReadAccess($ownerHasReadAccess)
-    {
-		$this->ownerHasReadAccess = $ownerHasReadAccess;
-	}
-
-	/**
-	 * Setter for ownerHasWriteAccess
-	 *
-	 * @param boolean $ownerHasWriteAccess
-	 * @return void
-	 */
-	public function setOwnerHasWriteAccess($ownerHasWriteAccess)
-    {
-		$this->ownerHasWriteAccess = $ownerHasWriteAccess;
-	}
-
-	/**
-	 * Setter for status
-	 *
-	 * @param int $status
-	 * @return void
-	 */
-	public function setStatus($status)
-    {
-		$this->status = $status;
-	}
-
-	/**
-	 * Setter for realstatus
-	 *
-	 * @param int $realstatus
-	 * @return void
-	 */
-	public function setRealstatus($realstatus)
-    {
-		$this->realstatus = $realstatus;
-	}
-
-	/**
-	 * Setter for uidParent
-	 *
-	 * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
-	 * @return void
-	 */
-	public function setUidParent($uidParent)
-    {
-		$this->uidParent = $uidParent;
-	}
+        $this->cruserId = $cruserId;
+    }
 
     /**
-	 * Setter for arrayFeGroupRead
-	 *
-	 * @param array $arrayFeGroupRead
-	 * @return void
-	 */
+     * Setter for noReadAccess
+     *
+     * @param boolean $noReadAccess
+     * @return void
+     */
+    public function setNoReadAccess($noReadAccess)
+    {
+        $this->noReadAccess = $noReadAccess;
+    }
+
+    /**
+     * Setter for noWriteAccess
+     *
+     * @param boolean $noWriteAccess
+     * @return void
+     */
+    public function setNoWriteAccess($noWriteAccess)
+    {
+        $this->noWriteAccess = $noWriteAccess;
+    }
+
+    /**
+     * Setter for ownerHasReadAccess
+     *
+     * @param boolean $ownerHasReadAccess
+     * @return void
+     */
+    public function setOwnerHasReadAccess($ownerHasReadAccess)
+    {
+        $this->ownerHasReadAccess = $ownerHasReadAccess;
+    }
+
+    /**
+     * Setter for ownerHasWriteAccess
+     *
+     * @param boolean $ownerHasWriteAccess
+     * @return void
+     */
+    public function setOwnerHasWriteAccess($ownerHasWriteAccess)
+    {
+        $this->ownerHasWriteAccess = $ownerHasWriteAccess;
+    }
+
+    /**
+     * Setter for status
+     *
+     * @param int $status
+     * @return void
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Setter for realstatus
+     *
+     * @param int $realstatus
+     * @return void
+     */
+    public function setRealstatus($realstatus)
+    {
+        $this->realstatus = $realstatus;
+    }
+
+    /**
+     * Setter for uidParent
+     *
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
+     * @return void
+     */
+    public function setUidParent($uidParent)
+    {
+        $this->uidParent = $uidParent;
+    }
+
+    /**
+     * Setter for arrayFeGroupRead
+     *
+     * @param array $arrayFeGroupRead
+     * @return void
+     */
     public function setArrayFeGroupRead($arrayFeGroupRead)
     {
-		$arrayFeGroupRead = is_array($arrayFeGroupRead) ?  implode(',', $arrayFeGroupRead) : $arrayFeGroupRead;
-		$this->feGroupRead = $arrayFeGroupRead;
-	}
+        $arrayFeGroupRead = is_array($arrayFeGroupRead) ?  implode(',', $arrayFeGroupRead) : $arrayFeGroupRead;
+        $this->feGroupRead = $arrayFeGroupRead;
+    }
 
-	/**
-	 * Setter for arrayFeGroupWrite
-	 *
-	 * @param array $arrayFeGroupWrite
-	 * @return void
-	 */
-	public function setArrayFeGroupWrite($arrayFeGroupWrite)
+    /**
+     * Setter for arrayFeGroupWrite
+     *
+     * @param array $arrayFeGroupWrite
+     * @return void
+     */
+    public function setArrayFeGroupWrite($arrayFeGroupWrite)
     {
-		$arrayFeGroupWrite = is_array($arrayFeGroupWrite) ?  implode(',', $arrayFeGroupWrite) : $arrayFeGroupWrite;
-		$this->feGroupWrite = $arrayFeGroupWrite;
-	}
+        $arrayFeGroupWrite = is_array($arrayFeGroupWrite) ?  implode(',', $arrayFeGroupWrite) : $arrayFeGroupWrite;
+        $this->feGroupWrite = $arrayFeGroupWrite;
+    }
 
-	/**
-	 * Setter for arrayFeGroupAddfolder
-	 *
-	 * @param array $arrayFeGroupAddfolder
-	 * @return void
-	 */
-	public function setArrayFeGroupAddfolder($arrayFeGroupAddfolder)
+    /**
+     * Setter for arrayFeGroupAddfolder
+     *
+     * @param array $arrayFeGroupAddfolder
+     * @return void
+     */
+    public function setArrayFeGroupAddfolder($arrayFeGroupAddfolder)
     {
-		$arrayFeGroupAddfolder = is_array($arrayFeGroupAddfolder) ?  implode(',', $arrayFeGroupAddfolder) : $arrayFeGroupAddfolder;
-		$this->feGroupAddfolder = $arrayFeGroupAddfolder;
-	}
+        $arrayFeGroupAddfolder = is_array($arrayFeGroupAddfolder) ?  implode(',', $arrayFeGroupAddfolder) : $arrayFeGroupAddfolder;
+        $this->feGroupAddfolder = $arrayFeGroupAddfolder;
+    }
 
-	/**
-	 * Setter for arrayFeGroupAddfile
-	 *
-	 * @param array $arrayFeGroupAddfile
-	 * @return void
-	 */
-	public function setArrayFeGroupAddfile($arrayFeGroupAddfile)
+    /**
+     * Setter for arrayFeGroupAddfile
+     *
+     * @param array $arrayFeGroupAddfile
+     * @return void
+     */
+    public function setArrayFeGroupAddfile($arrayFeGroupAddfile)
     {
-		$arrayFeGroupAddfile = is_array($arrayFeGroupAddfile) ?  implode(',', $arrayFeGroupAddfile) : $arrayFeGroupAddfile;
-		$this->feGroupAddfile = $arrayFeGroupAddfile;
-	}
+        $arrayFeGroupAddfile = is_array($arrayFeGroupAddfile) ?  implode(',', $arrayFeGroupAddfile) : $arrayFeGroupAddfile;
+        $this->feGroupAddfile = $arrayFeGroupAddfile;
+    }
 
     /**
      * return number of files in the folder
      * @return int
      */ 
-	public function getFileNumber()
+    public function getFileNumber()
     {
-		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFilesForFolder($this);		
-	}
+        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        return $folderRepository->countFilesForFolder($this);        
+    }
 
     /**
      * return number of ready files in the folder
      * @return int
      */ 
-	public function getReadyFileNumber()
+    public function getReadyFileNumber()
     {
-		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFilesForFolder($this, false);		
-	}
+        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        return $folderRepository->countFilesForFolder($this, false);        
+    }
 
     /**
      * return number of subfolders in the folder
      * @return int
      */ 
-	public function getFolderNumber()
+    public function getFolderNumber()
     {
-		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFoldersForFolder($this->getUid());		
-	}
+        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        return $folderRepository->countFoldersForFolder($this->getUid());        
+    }
 
     /**
      * return number of ready subfolders in the folder
      * @return int
      */ 
-	public function getReadyFolderNumber()
+    public function getReadyFolderNumber()
     {
-		$folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
-		return $folderRepository->countFoldersForFolder($this->getUid(), false);		
-	}
+        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        return $folderRepository->countFoldersForFolder($this->getUid(), false);        
+    }
 
-	public function hasFolder($folderName, $uid=null)
+    public function hasFolder($folderName, $uid=null)
     {
-		foreach ($this->getFolders() as $child) {
-			if ($child->getTitle() == $folderName && $child->getUid() != $uid) {
-				return true;
-			}
-		}
-	}
+        foreach ($this->getFolders() as $child) {
+            if ($child->getTitle() == $folderName && $child->getUid() != $uid) {
+                return true;
+            }
+        }
+    }
 
 
     public function getCategories()
@@ -708,17 +708,17 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 
     public function isChildOf($uidFolder)
     {
-    	if ($this->getUid() == $uidFolder) {
-    		return true;
-    	} elseif ($this->getParent()){
-    		return $this->getParent()->isChildOf($uidFolder);
-    	} else {
-    		return false;
-    	}
+        if ($this->getUid() == $uidFolder) {
+            return true;
+        } elseif ($this->getParent()){
+            return $this->getParent()->isChildOf($uidFolder);
+        } else {
+            return false;
+        }
     }
 
     public function getIsEmpty()
     {
-    	return ( $this->getFileNumber() == 0 && $this->getFolderNumber() == 0 );
+        return ( $this->getFileNumber() == 0 && $this->getFolderNumber() == 0 );
     }
 }

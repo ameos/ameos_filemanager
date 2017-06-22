@@ -22,30 +22,30 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @var array
      */ 
-	protected $defaultOrderings = array('tstamp' => QueryInterface::ORDER_DESCENDING);
+    protected $defaultOrderings = array('tstamp' => QueryInterface::ORDER_DESCENDING);
 
-	/**
-	 * Initialization
-	 */
-	public function initializeObject()
+    /**
+     * Initialization
+     */
+    public function initializeObject()
     {
-		$querySettings = $this->createQuery()->getQuerySettings();
-		$querySettings->setRespectStoragePage(FALSE);
+        $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(FALSE);
         $this->setDefaultQuerySettings($querySettings);
-	}
+    }
 
     /**
      * find files for a folder
      * @param mixed $folder 
      */ 
-	public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
+    public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
     {
-		if (empty($folder)) {
-			return $this->findAll();
-		}
+        if (empty($folder)) {
+            return $this->findAll();
+        }
 
-		$fields = 'sys_file.*'; 
-		$from = 'sys_file, sys_file_metadata LEFT JOIN fe_users ON sys_file_metadata.fe_user_id = fe_users.uid';
+        $fields = 'sys_file.*'; 
+        $from = 'sys_file, sys_file_metadata LEFT JOIN fe_users ON sys_file_metadata.fe_user_id = fe_users.uid';
         if (is_array($folder)) {
             $folders = array_map('intval', $folder);
             $where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid IN (' . implode(',', $folders) . ')';
@@ -68,16 +68,16 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $order = $get['sort'] . ' ' . $direction;
         }
         
-		$query = $this->createQuery();
+        $query = $this->createQuery();
         $query->statement($GLOBALS['TYPO3_DB']->SELECTquery(
-			$fields, 
-			$from, 
-			$where,
+            $fields, 
+            $from, 
+            $where,
             '',
             $order
-		));
-		return $query->execute();
-	}
+        ));
+        return $query->execute();
+    }
 
     /**
      * return files identifiers for folder recursively
@@ -107,18 +107,18 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $files;
     }
 
-	/**
-	 * Return all filter by search criterias
-	 * @param array $criterias criterias
+    /**
+     * Return all filter by search criterias
+     * @param array $criterias criterias
      * @param int $rootFolder
      * @param string $pluginNamespace
      * @param int $recursiveLimit
-	 */
-	public function findBySearchCriterias($criterias, $rootFolder = null, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager', $recursiveLimit = 0)
+     */
+    public function findBySearchCriterias($criterias, $rootFolder = null, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager', $recursiveLimit = 0)
     {
         if (!is_array($criterias) || empty($criterias)) {
-			return $this->findAll();
-		}
+            return $this->findAll();
+        }
 
         $rootFolder = (!is_null($rootFolder) && is_object($rootFolder)) ? $rootFolder->getUid() : $rootFolder;
 
@@ -132,29 +132,29 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             }
         }
         
-		$fields = 'distinct sys_file.*'; 
-		$from = 'sys_file_metadata INNER JOIN sys_file  ON sys_file_metadata.file=sys_file.uid LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
-		$where = '1';
-		if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
-			$arrayKeywords = explode(' ', $criterias['keyword']);
-			$arrayCondition = array();
-			$where .= " AND (sys_category_record_mm.tablenames LIKE 'sys_file_metadata' OR sys_category_record_mm.tablenames IS NULL) ";
-			foreach ($arrayKeywords as $keyword) {
-				$where .= "AND ( ";
-				$where .= " sys_file_metadata.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-			    $where .= " OR sys_file_metadata.description LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata'); 
-			    $where .= " OR sys_file_metadata.keywords LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-			    $where .= " OR sys_file.name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file');
-			    $where .= " OR sys_category.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_category');
-			    $where .= " OR sys_file_metadata.fe_user_id IN (SELECT uid FROM fe_users WHERE
+        $fields = 'distinct sys_file.*'; 
+        $from = 'sys_file_metadata INNER JOIN sys_file  ON sys_file_metadata.file=sys_file.uid LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
+        $where = '1';
+        if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
+            $arrayKeywords = explode(' ', $criterias['keyword']);
+            $arrayCondition = array();
+            $where .= " AND (sys_category_record_mm.tablenames LIKE 'sys_file_metadata' OR sys_category_record_mm.tablenames IS NULL) ";
+            foreach ($arrayKeywords as $keyword) {
+                $where .= "AND ( ";
+                $where .= " sys_file_metadata.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
+                $where .= " OR sys_file_metadata.description LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata'); 
+                $where .= " OR sys_file_metadata.keywords LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
+                $where .= " OR sys_file.name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file');
+                $where .= " OR sys_category.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_category');
+                $where .= " OR sys_file_metadata.fe_user_id IN (SELECT uid FROM fe_users WHERE
                     deleted = 0
                     AND (name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
                     OR first_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
                     OR middle_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
                     OR last_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "))";
-			    $where .= ") ";
-			}
-		}
+                $where .= ") ";
+            }
+        }
 
         $where .= $additionnalWhereClause;
 
@@ -173,110 +173,71 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $order = $get['sort'] . ' ' . $direction;
         }
         
-		$query = $this->createQuery();
+        $query = $this->createQuery();
         $query->statement($GLOBALS['TYPO3_DB']->SELECTquery(
-			$fields, 
-			$from, 
-			$where,
+            $fields, 
+            $from, 
+            $where,
             '',
             $order
-		));
-		return $query->execute();
-	}
-
-	public function findAuthorizedFiles($user, $minDatetime = 0)
-    {
-		$query = $this->createQuery();
-
-		$fields       = 'distinct sys_file.uid, sys_file_metadata.folder_uid';
-		$tables       = 'sys_file_metadata, sys_file';		
-		$orderBy      = 'sys_file_metadata.datetime DESC';
-		$whereClauses = array();
-		$whereClauses[] = 'sys_file_metadata.file = sys_file.uid';
-		$whereClauses[] = 'sys_file_metadata.datetime >= ' . (int)$minDatetime;
-		$whereClauses[] = '(
-			sys_file_metadata.fe_user_id = ' . (int)$user['uid'] . ' OR
-			sys_file_metadata.no_read_access = 0
-		)';
-
-		$query->statement($GLOBALS['TYPO3_DB']->SELECTquery($fields, $tables, implode(' AND ', $whereClauses), '', $orderBy));
-		return $query->execute();
-	}
-
-	public function findAll()
-    {
-
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'distinct sys_file.uid', 
-			'sys_file_metadata INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid', 
-			'',
-			''
-		);
-		
-		$uid = array();
-		foreach($res as $r){
-			$uid[] = $r['uid'];
-		}
-		
-		$query = $this->createQuery();
-		$query->matching($query->in('uid', $uid));
-		return $query->execute();
-	}
+        ));
+        return $query->execute();
+    }
 
     /**
      * return file by uid
      * @param int $fileUid file uid
      * @param boolean $writeRight if true, use write access instead of read access
      */ 
-	public function findByUid($fileUid, $writeRight = false)
+    public function findByUid($fileUid, $writeRight = false)
     {
-		if (empty($fileUid)) {
-			return 0;
-		}
+        if (empty($fileUid)) {
+            return 0;
+        }
 
-		// filter by uid
-		$where = 'sys_file.uid = ' . (int)$fileUid;
+        // filter by uid
+        $where = 'sys_file.uid = ' . (int)$fileUid;
 
         // check group access 
         $column = $writeRight ? 'fe_group_write' : 'fe_group_read';
         $userGroups = $GLOBALS['TSFE']->gr_list;
-		$where .= ' AND (
+        $where .= ' AND (
             ( 
                 sys_file_metadata.' . $column . ' = \'\' 
                 OR sys_file_metadata.' . $column . ' IS NULL 
                 OR sys_file_metadata.' . $column . ' = 0';
 
         
-		foreach (explode(',', $userGroups) as $userGroup) {
-			$where .= ' OR FIND_IN_SET(' . $userGroup . ', sys_file_metadata.' . $column . ')';
-		}
+        foreach (explode(',', $userGroups) as $userGroup) {
+            $where .= ' OR FIND_IN_SET(' . $userGroup . ', sys_file_metadata.' . $column . ')';
+        }
         $where .= ')';
 
         // check owner access 
         if($GLOBALS['TSFE']->fe_user->user) {
             $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
-			$where .= ' OR (
+            $where .= ' OR (
                 sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . '
                 AND sys_file_metadata.' . $ownerAccessField . ' = 1
             )';
-		}
+        }
 
         // clause access right 
-		$where .= ')';
+        $where .= ')';
 
         $query = $this->createQuery();
-		$query->statement
-		(	'	SELECT distinct sys_file.uid, sys_file_metadata.folder_uid 
-				FROM sys_file_metadata
-				INNER JOIN sys_file 
-				ON sys_file_metadata.file=sys_file.uid
-				WHERE '.$where.'
-				ORDER BY sys_file_metadata.datetime DESC 
-			',
-			array()
-		);
-		
+        $query->statement
+        (    '    SELECT distinct sys_file.uid, sys_file_metadata.folder_uid 
+                FROM sys_file_metadata
+                INNER JOIN sys_file 
+                ON sys_file_metadata.file=sys_file.uid
+                WHERE '.$where.'
+                ORDER BY sys_file_metadata.datetime DESC 
+            ',
+            array()
+        );
+        
         $res = $query->execute()->getFirst();
-		return $res;
-	}
+        return $res;
+    }
 }

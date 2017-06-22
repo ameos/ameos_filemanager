@@ -21,15 +21,15 @@ class FiledownloadRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @var array
      */ 
-	protected $defaultOrderings = array('crdate' => QueryInterface::ORDER_DESCENDING);
-	
-	/**
-	 * Initialization
-	 */
-	public function initializeObject()
+    protected $defaultOrderings = array('crdate' => QueryInterface::ORDER_DESCENDING);
+    
+    /**
+     * Initialization
+     */
+    public function initializeObject()
     {
-		$querySettings = $this->createQuery()->getQuerySettings();
-		$querySettings->setRespectStoragePage(FALSE);
+        $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(FALSE);
         $this->setDefaultQuerySettings($querySettings);
-	}
+    }
 }

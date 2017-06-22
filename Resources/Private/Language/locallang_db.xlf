@@ -43,6 +43,7 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.archive" xml:space="preserve"><source>Archive</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_read_access" xml:space="preserve"><source>Owner has read access</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_write_access" xml:space="preserve"><source>Owner has write access</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve"><source>Category</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve"><source>Title</source></trans-unit>

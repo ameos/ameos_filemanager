@@ -36,6 +36,7 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.parent" xml:space="preserve"><source></source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.ready" xml:space="preserve"><source>Ready</source><target>Bereit</target></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.status.archive" xml:space="preserve"><source>Archive</source><target>Archiv</target></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.keywords" xml:space="preserve"><source>Keywords</source><target>Keywords</target></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve"><source>Category</source><target>Kategorie</target></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>

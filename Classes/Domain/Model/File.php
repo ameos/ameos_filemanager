@@ -69,14 +69,6 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
-     * @return int
-     */ 
-    public function getDatetime()
-    {
-        return $this->getMeta()['datetime'];
-    }
-
-    /**
      * @return integer
      */
     public function getCrdate()

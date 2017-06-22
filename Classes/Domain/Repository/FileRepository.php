@@ -232,7 +232,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 INNER JOIN sys_file 
                 ON sys_file_metadata.file=sys_file.uid
                 WHERE '.$where.'
-                ORDER BY sys_file_metadata.datetime DESC 
+                ORDER BY sys_file_metadata.uid DESC 
             ',
             array()
         );

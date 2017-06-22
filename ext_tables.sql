@@ -60,9 +60,7 @@ CREATE TABLE tx_ameosfilemanager_domain_model_filedownload (
     KEY user_download (user_download)
 );
 
-CREATE TABLE sys_file_metadata (
-    datetime int(11) unsigned DEFAULT '0' NOT NULL,
-    
+CREATE TABLE sys_file_metadata (   
     no_read_access tinyint(4) DEFAULT '0' NOT NULL,
     no_write_access tinyint(4) DEFAULT '0' NOT NULL,
     owner_has_read_access tinyint(4) DEFAULT '0' NOT NULL,

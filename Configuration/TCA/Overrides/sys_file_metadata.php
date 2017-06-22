@@ -111,18 +111,6 @@ $additionalColumnsMetadata = [
             'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
         ]
     ],
-    'datetime' => [
-        'exclude' => 1, 
-        'label'   => $ll . '.datetime',
-        'config'  => [
-            'type'     => 'input',
-            'size'     => '8',
-            'max'      => '20',
-            'eval'     => 'datetime',
-            'checkbox' => '0',
-            'default'  => '0',
-        ]
-    ],
     'status' => [
         'exclude' => 1,
         'label'   => $ll . '.status',
@@ -142,5 +130,5 @@ $additionalColumnsMetadata = [
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,datetime,fe_user_id,owner_has_read_access,no_read_access,fe_group_read,owner_has_write_access,no_write_access,fe_group_write,keywords,status');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,fe_user_id,owner_has_read_access,no_read_access,fe_group_read,owner_has_write_access,no_write_access,fe_group_write,keywords,status');
 

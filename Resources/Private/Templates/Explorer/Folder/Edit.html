@@ -1,0 +1,80 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<f:flashMessages />
+<p class="toolbar">
+<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: back}">
+    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
+</f:link.action>
+</p>
+
+<f:form action="edit">
+    <div class="form-group">
+        <label for="title"><f:translate key="title"/> : </label>
+        <f:form.textfield id="title" class="form-control" name="title" value="{folder.title}"/>
+    </div>
+    <div class="form-group">
+        <label for="description"><f:translate key="description"/> : </label>
+        <f:form.textarea id="description" class="form-control" name="description" value="{folder.description}" />
+    </div>
+    <div class="form-group">
+        <label for="keywords"><f:translate key="keyword"/> : </label>
+        <f:form.textfield id="keywords" class="form-control" name="keywords" value="{folder.keywords}" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_read"><f:translate key="feGroupRead"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_read" name="fe_group_read" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{folder.arrayFeGroupRead}" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <f:form.checkbox id="no_read_access" value="1" name="no_read_access" checked="{folder.noReadAccess}" />
+                <label for="no_read_access"><f:translate key="noReadAccess"/></label>        
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_write"><f:translate key="feGroupWrite"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_write" name="fe_group_write" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{folder.arrayFeGroupWrite}" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <f:form.checkbox id="no_write_access" value="1" name="no_write_access" checked="{folder.noWriteAccess}" />
+                <label for="no_write_access"><f:translate key="noWriteAccess"/></label>
+            </div>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_addfile"><f:translate key="feGroupAddfile"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_addfile" name="fe_group_addfile" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{folder.arrayFeGroupAddfile}"/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_addfolder"><f:translate key="feGroupAddfile"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_addfolder" name="fe_group_addfolder" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{folder.arrayFeGroupAddfolder}"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="categories"><f:translate key="categories"/> : </label>
+        <f:render partial="FileManager/CategoriesList" arguments="{categories: categories, objet: folder}" />
+    </div>
+    
+    <f:if condition="{folder.uid} > 0">
+        <f:then>
+            <f:form.hidden name="folder" value="{folder.uid}" />
+        </f:then>
+        <f:else>
+            <f:form.hidden name="folder" value="new" />
+            <f:form.hidden name="parentfolder" value="{parent}" />
+        </f:else>
+    </f:if>
+    <f:form.submit class="btn btn-primary" name="save" value="{f:translate(key:'form.submit')}" />
+</f:form>

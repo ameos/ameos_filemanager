@@ -14,6 +14,7 @@
 			<trans-unit id="feGroupWrite" xml:space="preserve"><source>Groups with write permissions</source></trans-unit>
             <trans-unit id="feGroupAddfolder" xml:space="preserve"><source>Groups with add folders permissions</source></trans-unit>
             <trans-unit id="feGroupAddfile" xml:space="preserve"><source>Groups with add files permissions</source></trans-unit>
+			<trans-unit id="fileMissing" xml:space="preserve"><source>You need select a file.</source></trans-unit>
 			<trans-unit id="fileNotUploaded" xml:space="preserve"><source>You must upload a file to create a document.</source></trans-unit>
 			<trans-unit id="fileUploadError" xml:space="preserve"><source>An error occured while loading the file. Please try again.</source></trans-unit>
             <trans-unit id="notAllowedFileType" xml:space="preserve"><source>File type not allowed.</source></trans-unit>
@@ -33,6 +34,8 @@
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source></trans-unit>
 			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source></trans-unit>
             <trans-unit id="tooMuchRecursion" xml:space="preserve"><source>Too much recursion.</source></trans-unit>
+            <trans-unit id="missingStartFolder" xml:space="preserve"><source>Select a root folder in plugin configuration.</source></trans-unit>
+            <trans-unit id="missingStorage" xml:space="preserve"><source>Select a storage in plugin configuration.</source></trans-unit>            
 			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source></trans-unit>
 			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source></trans-unit>
 			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source></trans-unit>
@@ -41,6 +44,7 @@
 			<trans-unit id="adviceInitialize" xml:space="preserve"><source>Now you can go in the "filelist" menu and start to set metadatas and permissions on your files and folders.</source></trans-unit>
 			<trans-unit id="searchResultFor" xml:space="preserve"><source>Results for</source></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source></trans-unit>
+			<trans-unit id="upload" xml:space="preserve"><source>Upload</source></trans-unit>
 			<trans-unit id="detail" xml:space="preserve"><source>Detail</source></trans-unit>
 			<trans-unit id="edit" xml:space="preserve"><source>Edit</source></trans-unit>
 			<trans-unit id="delete" xml:space="preserve"><source>Delete</source></trans-unit>
@@ -62,6 +66,14 @@
 			<trans-unit id="refresh" xml:space="preserve"><source>Reload</source></trans-unit>
 			<trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source></trans-unit>
             <trans-unit id="download_generated_zip" xml:space="preserve"><source>The ZIP file has been generated. Download it !</source></trans-unit>
+            <trans-unit id="upload_area" xml:space="preserve"><source>Click or drop your files on the box below</source></trans-unit>
+            <trans-unit id="missingFolderArgument" xml:space="preserve"><source>You must select a folder</source></trans-unit>
+            <trans-unit id="missingFileArgument" xml:space="preserve"><source>You must select a file</source></trans-unit>
+            <trans-unit id="fileRemoved" xml:space="preserve"><source>File removed</source></trans-unit>
+            <trans-unit id="folderRemoved" xml:space="preserve"><source>Folder removed</source></trans-unit>
+            <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source></trans-unit>
+            <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source></trans-unit>
+            <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source></trans-unit>
 
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
@@ -77,7 +89,10 @@
 			<trans-unit id="export.submit" xml:space="preserve"><source>Go !</source></trans-unit>
 			<trans-unit id="export.from" xml:space="preserve"><source>From</source></trans-unit>
 			<trans-unit id="export.to" xml:space="preserve"><source>To</source></trans-unit>
+			<trans-unit id="export.subfolders" xml:space="preserve"><source>Include sub-folders</source></trans-unit>
 			<trans-unit id="export.mainTitle" xml:space="preserve"><source>Export downloaded files (EDM)</source></trans-unit>
+            <trans-unit id="export.moduletitle"><source>Export downloaded files in folder %s</source></trans-unit>
+            <trans-unit id="export.submit"><source>Export</source></trans-unit>
 
 			<!-- Languages for datepiker-->
 			<trans-unit id="format" xml:space="preserve"><source>m/d/y</source></trans-unit>
@@ -102,7 +117,7 @@
 			<trans-unit id="october" xml:space="preserve"><source>October</source></trans-unit>
 			<trans-unit id="november" xml:space="preserve"><source>November</source></trans-unit>
 			<trans-unit id="december" xml:space="preserve"><source>December</source></trans-unit>
-
+            
 			<!-- Languages for constant categories -->
 			<trans-unit id="category.content" xml:space="preserve"><source>Page content</source></trans-unit>
 

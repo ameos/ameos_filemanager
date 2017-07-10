@@ -7,6 +7,8 @@ plugin.tx_ameosfilemanager {
 		parseFolderInFE = {$plugin.tx_ameosfilemanager.parseFolderInFE}
         allowedFileExtension = {$plugin.tx_ameosfilemanager.allowedFileExtension}
 
+        stockageGroupPid = {$plugin.tx_ameosfilemanager.stockageGroupPid}
+        
         newFile {
             owner_has_read_access = {$plugin.tx_ameosfilemanager.newFile.owner_has_read_access}
             owner_has_write_access = {$plugin.tx_ameosfilemanager.newFile.owner_has_write_access}
@@ -50,9 +52,14 @@ config.tx_extbase {
 	}
 }
 
-#page.includeCSS.tx_ameosfilemanager1 = typo3conf/ext/ameos_filemanager/Resources/Public/Css/style.css
-page.includeCSS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/Css/datepickr.css
-#page.includeCSS.ameos_fontawesome = typo3conf/ext/ameos_filemanager/Resources/Public/Css/font-awesome.min.css
+[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includejQuery}]
+page.includeJSLibs.filemanagerjQuery = EXT:ameos_filemanager/Resources/Public/JavaScript/jQuery/jquery.min.js
+[global]
 
+[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includeFontawesome}]
+page.includeCSS.filemanagerFontawesome = EXT:ameos_filemanager/Resources/Public/Css/font-awesome/css/font-awesome.min.css
+[global]
 
-page.includeJS.ameos_datepickr = typo3conf/ext/ameos_filemanager/Resources/Public/JavaScript/datepickr.min.js
+[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includeDefaultCss}]
+page.includeCSS.filemanagerDefaultCss = EXT:ameos_filemanager/Resources/Public/Css/style.css
+[global]

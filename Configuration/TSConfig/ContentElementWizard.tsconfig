@@ -1,12 +1,12 @@
 mod.wizards.newContentElement.wizardItems.plugins {
 	elements {
-		filemanager {
+        filemanager_explorer {
 			iconIdentifier = extension-ameosfilemanager-main
-			title = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title
-			description = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.description
+			title = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_explorer.title
+			description = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_explorer.description
 			tt_content_defValues {
 				CType = list
-				list_type = ameosfilemanager_fe_filemanager
+				list_type = ameosfilemanager_fe_filemanager_explorer
 			}
 		}
 	}

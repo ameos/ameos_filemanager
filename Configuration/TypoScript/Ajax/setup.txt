@@ -1,4 +1,4 @@
-page.includeJS.ajax_filemanager = EXT:ameos_filemanager/Resources/Public/JavaScript/ajax_filemanager.js
+page.includeJS.ajax_filemanager = EXT:ameos_filemanager/Resources/Public/JavaScript/FilemanagerAjax.js
 
 plugin.tx_ameosfilemanager {
     settings {

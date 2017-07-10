@@ -120,7 +120,7 @@ class FlatListController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         } else {
             throw new \Exception('The storage folder was not configured. Please add it in plugin configuration.');
         }
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $this->storage = $storageRepository->findByUid($this->storageUid);
         if ($this->storage == null) {
             throw new \Exception('Storage folder not found. Please check configuration');

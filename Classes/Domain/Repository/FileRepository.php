@@ -22,7 +22,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @var array
      */ 
-    protected $defaultOrderings = array('tstamp' => QueryInterface::ORDER_DESCENDING);
+    protected $defaultOrderings = ['tstamp' => QueryInterface::ORDER_DESCENDING];
 
     /**
      * Initialization
@@ -214,10 +214,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $where .= ')';
 
         // check owner access 
-        if($GLOBALS['TSFE']->fe_user->user) {
+        if ($GLOBALS['TSFE']->loginUser) {
             $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
             $where .= ' OR (
-                sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . '
+                sys_file_metadata.fe_user_id = '. (int)$GLOBALS['TSFE']->fe_user->user['uid'] . '
                 AND sys_file_metadata.' . $ownerAccessField . ' = 1
             )';
         }
@@ -226,15 +226,18 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $where .= ')';
 
         $query = $this->createQuery();
-        $query->statement
-        (    '    SELECT distinct sys_file.uid, sys_file_metadata.folder_uid 
-                FROM sys_file_metadata
-                INNER JOIN sys_file 
-                ON sys_file_metadata.file=sys_file.uid
-                WHERE '.$where.'
-                ORDER BY sys_file_metadata.uid DESC 
-            ',
-            array()
+        $query->statement('
+            SELECT
+                distinct sys_file.uid,
+                sys_file_metadata.folder_uid 
+            FROM
+                sys_file_metadata
+                INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid
+            WHERE
+                ' . $where . '
+            ORDER BY
+                sys_file_metadata.uid DESC ',
+            []
         );
         
         $res = $query->execute()->getFirst();

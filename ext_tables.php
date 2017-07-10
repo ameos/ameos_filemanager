@@ -11,28 +11,41 @@ use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use Ameos\AmeosFilemanager\Slots\Slot;
 
+$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+
 // register plugin
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',
-    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export',
-    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
-ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
-    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
+if ($configuration['enable_old_plugin']) {
+    ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',
+        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title');
+    ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export',
+        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_export.title');
+    ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
+        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_search.title');
+}
+
+ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer',
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_explorer.title');
 ExtensionUtility::registerPlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',
-    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_flat.title');
+        'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_flat.title');
 
 //Flexforms
-$TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager'] = 'layout,select_key,recursive';
-$TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager']     = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/filemanager.xml');
+if ($configuration['enable_old_plugin']) {
+    $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager'] = 'layout,select_key,recursive';
+    $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager']     = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/filemanager.xml');
 
-$TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_export'] = 'layout,select_key,recursive';
-$TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_export']     = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_export', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/export.xml');
+    $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_export'] = 'layout,select_key,recursive';
+    $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_export']     = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_export', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/export.xml');
 
-$TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_search'] = 'layout,select_key,recursive';
-$TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_search']     = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_search', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/search.xml');
+    $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_search'] = 'layout,select_key,recursive';
+    $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_search']     = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_search', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/search.xml');
+}
+
+$TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_explorer'] = 'layout,select_key,recursive';
+$TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_explorer']     = 'pi_flexform';
+ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_explorer', 'FILE:EXT:'. $_EXTKEY . '/Configuration/FlexForms/explorer.xml');
 
 $TCA['tt_content']['types']['list']['subtypes_excludelist']['ameosfilemanager_fe_filemanager_flat'] = 'layout,select_key,recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist']['ameosfilemanager_fe_filemanager_flat']     = 'pi_flexform';
@@ -58,10 +71,11 @@ ExtensionManagementUtility::addPageTSConfig(
 if (TYPO3_MODE == 'BE') {
     
     if (version_compare(TYPO3_version, '8.0', '>=')) {
-        $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1496933853] = \Ameos\AmeosFilemanager\ContextMenu\ItemProviders\FileProvider::class;
+        $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1496933853] =
+            \Ameos\AmeosFilemanager\ContextMenu\ItemProviders\FileProvider::class;
     } else {
         $GLOBALS['TBE_MODULES_EXT']['xMOD_alt_clickmenu']['extendCMclasses'][] = array(
-            'name' => 'Ameos\\AmeosFilemanager\\Hooks\\ClickMenuOptions'
+            'name' => \Ameos\AmeosFilemanager\Hooks\ClickMenuOptions::class
         );        
     }
     
@@ -79,4 +93,28 @@ if (TYPO3_MODE == 'BE') {
     $dispatcher->connect(ResourceStorage::class, 'postFileAdd',  Slot::class, 'postFileAdd');
     $dispatcher->connect(ResourceStorage::class, 'postFileCopy', Slot::class, 'postFileCopy');
     $dispatcher->connect(ResourceStorage::class, 'postFileMove', Slot::class, 'postFileMove');
+
+        
+    // Register backend ajax request
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+       'Filemanager::getFolderId',
+       \Ameos\AmeosFilemanager\Controller\Backend\AjaxController::class . '->getFolderId'
+    );
+
+    // Register backend module
+    if ($configuration['enable_export_module']) {
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            'Ameos.' . $_EXTKEY,
+            'file',
+            'filemanager_export',
+            'bottom',
+            ['Backend\\Export' => 'index, export'],
+            [
+                'access' => 'user, group',
+                'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.png',
+                'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_modexport.xlf'
+            ]
+        );
+    }
+    
 }

@@ -9,18 +9,35 @@ use Ameos\AmeosFilemanager\XClass\FileList as XClassFileList;
 use Ameos\AmeosFilemanager\ScheduledTasks\CacheStatus;
 use Ameos\AmeosFilemanager\Hooks\PluginPreview;
 
+
+$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+
 // plugin
-ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',
-    ['FileManager' => 'index, formFolder, formFile, createFolder, createFile, list, detail, deleteFolder, deleteFile, massDownload'],
-    ['FileManager' => 'index, formFolder, formFile, createFolder, createFile, list, detail, deleteFolder, deleteFile, massDownload']
-);
-ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export',
-    ['Export' => 'index, exportDownloads'],
-    ['Export' => 'index, exportDownloads']
-);
-ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
-    ['Search' => 'index'],
-    ['Search' => 'index']
+if ($configuration['enable_old_plugin']) {
+    ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager',
+        ['FileManager' => 'index, formFolder, formFile, createFolder, createFile, list, detail, deleteFolder, deleteFile, massDownload'],
+        ['FileManager' => 'index, formFolder, formFile, createFolder, createFile, list, detail, deleteFolder, deleteFile, massDownload']
+    );
+    ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_export',
+        ['Export' => 'index, exportDownloads'],
+        ['Export' => 'index, exportDownloads']
+    );
+    ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_search',
+        ['Search' => 'index'],
+        ['Search' => 'index']
+    );
+}
+ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer',
+    [
+        'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
+        'Explorer\\File'     => 'edit, download, info, upload, remove',
+        'Explorer\\Folder'   => 'edit, download, remove',
+    ],
+    [
+        'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
+        'Explorer\\File'     => 'edit, download, info, upload, remove',
+        'Explorer\\Folder'   => 'edit, download, remove',
+    ]
 );
 ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',
     ['FlatList' => 'index', 'FileManager' => 'list, detail, deleteFile, formFile, createFile'],
@@ -45,7 +62,3 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CacheStatus::cla
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem']['ameos_filemanager'] =
     ExtensionManagementUtility::extPath('ameos_filemanager') . 'Classes/Hooks/PluginPreview.php:' . PluginPreview::class;
 
-// TODO : replace ext_update 
-// SignalSlot to convert old tablenames to new tablenames automaticly after installing
-//$dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-//$dispatcher->connect(InstallUtility::class, 'afterExtensionInstall', AfterInstall::class, 'indexing');

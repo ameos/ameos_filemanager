@@ -1,2 +1,8 @@
 # cat=basic; type=boolean; label=Use ZIP Archive
 use_ziparchive = 0
+
+# cat=basic; type=boolean; label=Enable Old Plugin
+enable_old_plugin = 0
+
+# cat=basic; type=boolean; label=Enable Export Module
+enable_export_module = 1

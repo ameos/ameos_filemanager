@@ -212,7 +212,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getFolders()
     {
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         $folders = $folderRepository->getSubFolderFromFolder($this->getUid());
         return $folders;
     }
@@ -361,9 +361,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      * @return string
      */
     public function getGedPath() {
-        if($parent = $this->getParent())
-        {
-            return $parent->getGedPath().'/'.$this->title;
+        if ($parent = $this->getParent()) {
+            return $parent->getGedPath() . '/' . $this->title;
         }
         return '/'.$this->title;
     }
@@ -608,7 +607,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getFileNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         return $folderRepository->countFilesForFolder($this);        
     }
 
@@ -618,7 +617,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getReadyFileNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         return $folderRepository->countFilesForFolder($this, false);        
     }
 
@@ -628,7 +627,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getFolderNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         return $folderRepository->countFoldersForFolder($this->getUid());        
     }
 
@@ -638,7 +637,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getReadyFolderNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         return $folderRepository->countFoldersForFolder($this->getUid(), false);        
     }
 
@@ -654,22 +653,29 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 
     public function getCategories()
     {
-        $extbaseObjectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        $repo = $extbaseObjectManager->get('TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository');
+        if (!$this->getUid()) {
+            return [];
+        }
 
-        $uidsCat = $this->getCategoriesUids();
+        $uidsCategories = $this->getCategoriesUids();
 
-        if (!empty($uidsCat)) {
-            $categories = FilemanagerUtility::getByUids($repo, $uidsCat);
+        if (!empty($uidsCategories)) {
+            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+            $repository = $objectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
+            $categories = FilemanagerUtility::getByUids($repository, $uidsCategories);
             return $categories;
         } else {
-            return;
+            return [];
         }
     }
 
     public function getCategoriesUids()
     {
-        $test = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        if (!$this->getUid()) {
+            return [];
+        }
+
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid_local',
             'sys_category_record_mm',
             'tablenames like "tx_ameosfilemanager_domain_model_folder" AND fieldname like "cats" AND uid_foreign = ' . $this->getUid(),
@@ -679,7 +685,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 
         $uidsCat = array_map(function ($e) {
             return $e['uid_local'];
-        }, $test);
+        }, $result);
 
         return $uidsCat;
     }

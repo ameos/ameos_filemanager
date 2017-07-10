@@ -158,8 +158,8 @@ class FilemanagerUtility
      */ 
 	public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
-		$slot = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Slots\Slot');
-		$falFolder = GeneralUtility::makeInstance('TYPO3\CMS\Core\Resource\Folder', $storage, $folderIdentifier, $folderName);
+		$slot = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\Slot::class);
+		$falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
 		$subfolders = $falFolder->getSubfolders();
 		foreach ($subfolders as $folder) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getName()."'" );

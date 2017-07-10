@@ -60,7 +60,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      * @return array
      */
     protected function getAdditionalAttributes(string $itemName): array
-    {
+    {        
         if ($itemName == 'editFolder') {
             return [
                 'data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'

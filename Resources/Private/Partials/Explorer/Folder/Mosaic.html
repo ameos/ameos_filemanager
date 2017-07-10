@@ -1,0 +1,48 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<div class="col-md-2 item">
+    <f:link.action action="index" arguments="{folder: folder.uid}">
+        <i class="fa fa-2x fa-folder" aria-hidden="true"></i><br>
+        {folder.title}
+    </f:link.action>
+    <p class="toolbar-file">
+        <f:for each="{allowed_actions_folders}" as="action">
+            <f:if condition="{action} == 'edit'">
+                <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'edit')}">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:checkAccess>
+            </f:if>
+
+            <f:if condition="{action} == 'upload'">
+                <filemanager:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action action="upload" controller="Explorer\File" arguments="{folder: folder.uid}" title="{f:translate(key:'upload')}">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:canAddFile>
+            </f:if>
+
+            <f:if condition="{action} == 'addsubfolder'">
+                <filemanager:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: 'new', parentfolder: folder.uid}" title="{f:translate(key:'createFolder')}">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:canAddFolder>
+            </f:if>
+            
+            <f:if condition="{action} == 'download'">
+                <filemanager:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid, returnfolder: folder.uid}" title="{f:translate(key:'download')}">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:checkAccess>
+            </f:if>
+
+            <f:if condition="{action} == 'delete'">
+                <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'delete')}">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </f:link.action>
+            </f:if>
+        </f:for>
+    </p>   
+</div>

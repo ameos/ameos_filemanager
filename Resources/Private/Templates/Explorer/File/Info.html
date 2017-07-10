@@ -1,0 +1,63 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<h1>Information sur le fichier {file.title}</h1>
+<p class="toolbar">
+<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: file.parentFolder}">
+    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
+</f:link.action>
+<f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">
+    <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
+</f:link.action>
+<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}">
+        <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
+    </f:link.action>
+</filemanager:checkAccess>
+</p>
+
+<div class="row">
+    <f:if condition="{file.thumbnailAvailable}">
+        <div class="col-md-4"><f:image src="{file.uid}" alt="{file.title}" width="200" treatIdAsReference="0" /></div>
+    </f:if>
+    <div class="{f:if(condition: file.thumbnailAvailable, then: 'col-md-8', else: 'col-md-12')}">
+        <table class="table table-striped">
+            <tr>
+                <td>{f:translate(key: "title")}</td>
+                <td>{file.title}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "title")}</td>
+                <td>{file.title}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "owner")}</td>
+                <td>{file.ownerUsername}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "createdAt")}</td>
+                <td><f:format.date format="%d/%m/%Y">@{file.crdate}</f:format.date></td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "updatedAt")}</td>
+                <td><f:format.date format="%d/%m/%Y">@{file.tstamp}</f:format.date></td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "size")}</td>
+                <td>{filemanager:filesize(size: file.originalResource.size)}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "description")}</td>
+                <td>{file.description}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "keywords")}</td>
+                <td>{file.keywords}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "category")}</td>
+                <td><f:for each="{file.categories}" as="category" iteration="itemIteration">
+                {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+                </f:for></td>
+            </tr>
+        </table>
+    </div>
+</div>

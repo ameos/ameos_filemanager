@@ -20,7 +20,6 @@ $additionalColumnsMetadata = [
                 ['LLL:EXT:lang/locallang_general.xlf:LGL.any_login',  -2],
                 ['LLL:EXT:lang/locallang_general.xlf:LGL.usergroups', '--div--']
             ],
-            
         ]
     ],
     'keywords' => [      
@@ -28,8 +27,8 @@ $additionalColumnsMetadata = [
             'label'   => $ll . '.keywords',     
             'config'  => [
                 'type' => 'text', 
-                'cols' => '15',
-                'rows' => '5', 
+                'cols' => '40',
+                'rows' => '3', 
                 'eval' => 'trim', 
             ]
         ],
@@ -93,11 +92,12 @@ $additionalColumnsMetadata = [
         'exclude' => 1,
         'label'   => $ll . '.fe_user_id',
         'config'  => [
-            'type'          => 'select',
+            'type'          => 'group',
+            'internal_type' => 'db',
+            'allowed'       => 'fe_users',
             'maxitems'      => 1,
-            'items'         => [['', 0]],
             'size'          => 1,
-            'foreign_table' => 'fe_users',
+            'wizards'       => ['suggest' => ['type' => 'suggest']],
         ]
     ],
     'folder_uid' => [
@@ -129,6 +129,9 @@ $additionalColumnsMetadata = [
     'realstatus' => ['config' => ['type' => 'passthrough']]
 ];
 
+$GLOBALS['TCA']['sys_file_metadata']['palettes']['owner'] = ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'];
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager,fe_user_id,owner_has_read_access,no_read_access,fe_group_read,owner_has_write_access,no_write_access,fe_group_write,keywords,status');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', 'keywords,status', '', 'after:alternative');
 

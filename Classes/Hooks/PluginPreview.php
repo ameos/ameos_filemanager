@@ -50,7 +50,10 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
      * @return void
      */
     public function preProcess(PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
-        if ($row['CType'] === 'list' && ($row['list_type'] == 'ameosfilemanager_fe_filemanager' || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat')) {
+        if ($row['CType'] === 'list' && (
+            $row['list_type'] == 'ameosfilemanager_fe_filemanager'
+            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat'
+            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_explorer')) {
             $this->initialize($row);
 
             $drawItem = false;
@@ -72,6 +75,9 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                     break;
                 case 'ameosfilemanager_fe_filemanager_flat': 
                     $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_flat.title', 'AmeosFilemanager');
+                    break;
+                case 'ameosfilemanager_fe_filemanager_explorer': 
+                    $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_explorer.title', 'AmeosFilemanager');
                     break;
             }
             $headerContent = '<strong><a href="' . $url . '">'  . $title . '</a></strong><br/>';

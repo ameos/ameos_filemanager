@@ -1,0 +1,64 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<f:flashMessages />
+<p class="toolbar">
+<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: folder}">
+    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
+</f:link.action>
+</p>
+<f:form action="edit" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="upload"><f:translate key="file"/> : </label>
+        <f:form.upload id="upload" name="upload" additionalAttributes="{accept: '{settings.allowedFileExtension -> custom:acceptFileType()}'}" />
+    </div>
+    <div class="form-group">
+        <label for="title"><f:translate key="title"/> : </label>
+        <f:form.textfield id="title" class="form-control" name="title" value="{file.title}" />
+    </div>
+    <div class="form-group">
+        <label for="description"><f:translate key="description"/> : </label>
+        <f:form.textarea id="description" class="form-control" name="description" value="{file.description}" />
+    </div>
+    <div class="form-group">
+        <label for="keywords"><f:translate key="keyword"/> : </label>
+        <f:form.textfield id="keywords" class="form-control" name="keywords" value="{file.keywords}" />
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_read"><f:translate key="feGroupRead"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_read" name="fe_group_read" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupRead}" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <f:form.checkbox id="no_read_access" value="1" name="no_read_access" checked="{file.noReadAccess}" />
+                <label for="no_read_access"><f:translate key="noReadAccess"/></label>        
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fe_group_write"><f:translate key="feGroupWrite"/></label>
+                <f:form.select class="form-control" multiple="1" id="fe_group_write" name="fe_group_write" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupWrite}" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <f:form.checkbox id="no_write_access" value="1" name="no_write_access" checked="{file.noWriteAccess}" />
+                <label for="no_write_access"><f:translate key="noWriteAccess"/></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="categories"><f:translate key="categories"/> : </label>
+        <f:render partial="FileManager/CategoriesList" arguments="{categories: categories, objet: file}" />
+    </div>
+
+    <f:form.hidden name="folder" value="{folder}" />
+    <f:if condition="{file.uid} > 0">
+        <f:then><f:form.hidden name="file" value="{file.uid}" /></f:then>
+        <f:else><f:form.hidden name="file" value="new" /></f:else>
+    </f:if>
+    <f:form.submit class="btn btn-primary" name="save" value="{f:translate(key:'form.submit')}" />
+</f:form>

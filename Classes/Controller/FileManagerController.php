@@ -116,7 +116,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         // Setting feUser Repository
         if ($this->settings['stockageGroupPid'] != '') {
             $querySettings = $this->feGroupRepository->createQuery()->getQuerySettings();
-            $querySettings->setStoragePageIds(array($this->settings['stockageGroupPid']));
+            $querySettings->setStoragePageIds([$this->settings['stockageGroupPid']]);
             $this->feGroupRepository->setDefaultQuerySettings($querySettings);
         } else {
             throw new \Exception('The user folder was not configured. Please add it in plugin configuration.');
@@ -127,7 +127,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         } else {
             throw new \Exception('The storage folder was not configured. Please add it in plugin configuration.');
         }
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $this->storage = $storageRepository->findByUid($this->storageUid);
         if ($this->storage == null) {
             throw new \Exception('Storage folder not found. Please check configuration');
@@ -208,7 +208,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
         }
 
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storage = $storageRepository->findByUid($this->storageUid);
 
         $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . uniqid() . '.zip';
@@ -302,13 +302,13 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $folder = $args['folder'] ?: $this->settings['startFolder'];
         $editFileUid = $args['newFile'];
         if ($editFileUid != '' && $newFile = $this->fileRepository->findByUid($editFileUid)) {
-            if (!AccessUtility::userHasFileWriteAccess($this->user, $newFile, array('folderRoot' => $this->settings['startFolder']))) {
+            if (!AccessUtility::userHasFileWriteAccess($this->user, $newFile, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
-            $metaDataRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+            $metaDataRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
             $meta = $metaDataRepository->findByFileUid($newFile->getUid());
 
-            $fileArgs = array();
+            $fileArgs = [];
             $fileArgs['title'] = $meta['title'];
             $fileArgs['arrayFeGroupRead'] = explode(',', $meta['fe_group_read']);
             $fileArgs['arrayFeGroupWrite'] = explode(',', $meta['fe_group_write']);
@@ -331,14 +331,14 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         if ($this->authorizedGroups!='') {
             $feGroup = FilemanagerUtility::getByUids($this->feGroupRepository, $this->authorizedGroups)->toArray();
             if (GeneralUtility::inList($this->authorizedGroups,-2)) {
-                $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
+                $temp = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup::class);
                 $temp->_setProperty('uid', -2);
                 $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
                 $feGroup[] = $temp;    
             }
         } else {
             $feGroup = $this->feGroupRepository->findAll()->toArray();
-            $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
+            $temp = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup::class);
             $temp->_setProperty('uid', -2);
             $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
             $feGroup[] = $temp;
@@ -376,14 +376,14 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $fileArgs = $this->request->getArguments();
         $folder = $this->folderRepository->findByUid($fileArgs['uidParent']);
         $allowedFileExtension = explode(',', $this->settings["allowedFileExtension"]);
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storage = $storageRepository->findByUid($this->storageUid);
-        $properties = array();
-        $errors = array();
+        $properties = [];
+        $errors = [];
         //if an uid is sent, we update an existing file, if not we create a new one.
         if ($fileArgs['uidFile'] != '') {
             $fileModel = $this->fileRepository->findByUid($fileArgs['uidFile']);
-            if (!AccessUtility::userHasFileWriteAccess($this->user, $fileModel,array('folderRoot' => $this->settings['startFolder']))) {
+            if (!AccessUtility::userHasFileWriteAccess($this->user, $fileModel, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
             if ($fileArgs['file']['tmp_name'] != '') {
@@ -400,7 +400,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
                 }
             }
         } else {
-            if (!AccessUtility::userHasAddFileAccess($this->user, $folder,array('folderRoot' => $this->settings['startFolder']))) {
+            if (!AccessUtility::userHasAddFileAccess($this->user, $folder, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
             $properties['fe_user_id'] = $GLOBALS['TSFE']->fe_user->user['uid'];
@@ -427,7 +427,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
                 'properties' => $fileArgs
             ]);
         } else {
-            $persitenceManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
+            $persitenceManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
             $persitenceManager->persistAll();
             if(!isset($fileModel)) {
                 $fileModel = $this->fileRepository->findByUid($fileObj->getUid());
@@ -454,16 +454,16 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $properties['owner_has_write_access'] = isset($this->settings['newFile']['owner_has_write_access']) ? $this->settings['newFile']['owner_has_write_access'] : 1;
 
         if ($fileArgs['uidFile'] != '') {
-            $metaDataRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+            $metaDataRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
                 $metaDataRepository->update($fileModel->getUid(),$properties);
                 if ($fileArgs['categories']) {
                     $fileModel->setCategories($fileArgs['categories']);
                 }
         } else {
             $properties['folder_uid'] = $folder->getUid();
-            $metaDataRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+            $metaDataRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
             $metaDataRepository->update($fileObj->getUid(),$properties);
-            $persitenceManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
+            $persitenceManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
             $persitenceManager->persistAll();
             
             if (!isset($fileModel)) {
@@ -518,14 +518,14 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         if ($this->authorizedGroups!='') {
             $feGroup = FilemanagerUtility::getByUids($this->feGroupRepository,$this->authorizedGroups)->toArray();
             if (GeneralUtility::inList($this->authorizedGroups,-2)) {
-                $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
+                $temp = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup::class);
                 $temp->_setProperty('uid',-2);
                 $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
                 $feGroup[] = $temp;    
             }
         } else {
             $feGroup = $this->feGroupRepository->findAll()->toArray();
-            $temp = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup');
+            $temp = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup::class);
             $temp->_setProperty('uid',-2);
             $temp->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login',null));
             $feGroup[] = $temp;
@@ -556,14 +556,14 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         }
         $fileArgs = $this->request->getArguments();
         $parent = $this->folderRepository->findByUid($fileArgs['uidParent']);
-        $errors = array();
+        $errors = [];
 
         // No uid so we are in create mode
         if ($fileArgs['uidFolder'] == '') {
-            if (!AccessUtility::userHasAddFolderAccess($this->user, $parent,array('folderRoot' => $this->settings['startFolder']))) {
+            if (!AccessUtility::userHasAddFolderAccess($this->user, $parent, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
-            $newFolder = GeneralUtility::makeInstance('Ameos\\AmeosFilemanager\\Domain\\Model\\Folder');
+            $newFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Model\Folder::class);
             $newFolder->setFeUser($GLOBALS['TSFE']->fe_user->user['uid']);
             // Needed if an error is detected.
             $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
@@ -575,7 +575,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             
             //checking if user had the right to update this folder BEFORE the edition.
             $newFolder = $this->folderRepository->findByUid($fileArgs['uidFolder']);
-            if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder,array('folderRoot' => $this->settings['startFolder']))) {
+            if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
             if ($parent->hasFolder($newFolder->getTitle(),$newFolder->getUid())) {
@@ -601,9 +601,9 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $this->redirectToUri($resultUri);
         }
 
-        $storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storage = $storageRepository->findByUid($this->storageUid);
-        $localDriver = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Driver\\LocalDriver');
+        $localDriver = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Driver\LocalDriver::class);
 
         // Editing folder
         $newFolder->setTitle($localDriver->sanitizeFileName($fileArgs['title']));
@@ -701,7 +701,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
     {
         if ($this->request->hasArgument('folder')) {
             $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
-            if ($folder && AccessUtility::userHasFolderWriteAccess($this->user, $folder, array('folderRoot' => $this->startFolder))) {
+            if ($folder && AccessUtility::userHasFolderWriteAccess($this->user, $folder, ['folderRoot' => $this->startFolder])) {
                 if ($folder->getGedPath()) {
                     $ebFolder = $this->storage->getFolder($folder->getGedPath());
                     $this->storage->deleteFolder($ebFolder);
@@ -712,7 +712,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $resultUri = $this->uriBuilder
             ->reset()
             ->setCreateAbsoluteUri(true)
-            ->setArguments(array('tx_ameos_filemanager' => array('folder' => $folder->getParent())))
+            ->setArguments(['tx_ameos_filemanager' => ['folder' => $folder->getParent()]])
             ->uriFor('index');
         
         $this->redirectToUri($resultUri);
@@ -727,14 +727,14 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
     {
         if ($this->request->hasArgument('file')) {
             $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
-            if ($file && AccessUtility::userHasFileWriteAccess($this->user, $file, array('folderRoot' => $this->startFolder))) {
+            if ($file && AccessUtility::userHasFileWriteAccess($this->user, $file, ['folderRoot' => $this->startFolder])) {
                 $this->storage->deleteFile($file->getOriginalResource());
             }
         }
         $resultUri = $this->uriBuilder
             ->reset()
             ->setCreateAbsoluteUri(true)
-            ->setArguments(array('tx_ameos_filemanager' => array('folder' => $file->getParentFolder())))
+            ->setArguments(['tx_ameos_filemanager' => ['folder' => $file->getParentFolder()]])
             ->uriFor('index');
         
         $this->redirectToUri($resultUri);

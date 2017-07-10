@@ -4,8 +4,9 @@
         <header/>
         <body>
             <trans-unit id="tx_ameosfilemanager" xml:space="preserve"><source>EDM</source></trans-unit>
+
             <trans-unit id="tx_ameosfilemanager_domain_model_folder" xml:space="preserve"><source>Folders</source></trans-unit>
-            <trans-unit id="tx_ameosfilemanager_domain_model_filedownload" xml:space="preserve"><source>File download</source></trans-unit>
+            <trans-unit id="tx_ameosfilemanager_domain_model_folder.accessright" xml:space="preserve"><source>Access right</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.description" xml:space="preserve"><source>Description</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.category" xml:space="preserve"><source>Category</source></trans-unit>
@@ -28,6 +29,7 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_read_access" xml:space="preserve"><source>Owner has read access</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_folder.owner_has_write_access" xml:space="preserve"><source>Owner has write access</source></trans-unit>
 
+            <trans-unit id="tx_ameosfilemanager_domain_model_file.accessright" xml:space="preserve"><source>Access right</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_user_id" xml:space="preserve"><source>Propriétaire front_end</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_read" xml:space="preserve"><source>Groups allowed to read the file</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.fe_groups_write" xml:space="preserve"><source>Groups allowed to edit the file</source></trans-unit>
@@ -44,6 +46,8 @@
             <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_read_access" xml:space="preserve"><source>Owner has read access</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.owner_has_write_access" xml:space="preserve"><source>Owner has write access</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_file.keywords" xml:space="preserve"><source>Keywords</source></trans-unit>
+
+            <trans-unit id="tx_ameosfilemanager_domain_model_filedownload" xml:space="preserve"><source>File download</source></trans-unit>
 
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory" xml:space="preserve"><source>Category</source></trans-unit>
             <trans-unit id="tx_ameosfilemanager_domain_model_filecategory.title" xml:space="preserve"><source>Title</source></trans-unit>

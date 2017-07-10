@@ -38,14 +38,9 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param integer $uid uid of the folder
      * @param array $field_values values to update
      */
-    public function requestUpdate($uid,$field_values)
+    public function requestUpdate($uid, $field_values)
     {
-        $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'tx_ameosfilemanager_domain_model_folder', 
-            'tx_ameosfilemanager_domain_model_folder.uid = '.$uid, 
-            $field_values, 
-            $no_quote_fields=FALSE
-        );
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = ' . $uid, $field_values, false);
     }
 
     /**
@@ -54,26 +49,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function requestDelete($uid)
     {
-        $update = array(
-            "deleted" => 1,
-        );
-        
-        // Deleting files in the folder
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'sys_file_reference', 
-            'sys_file_reference.uid_foreign = '.(int)$uid, 
-            $update, 
-            $no_quote_fields=FALSE
-        );
-        
-        // Deleting the folder itself
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'tx_ameosfilemanager_domain_model_folder', 
-            'tx_ameosfilemanager_domain_model_folder.uid = '.(int)$uid, 
-            $update, 
-            $no_quote_fields=FALSE
-        );
-
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'folder_uid = '. (int)$uid, ['deleted' => 1]);
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = '.(int)$uid, ['deleted' => 1]);
     }
 
     /**
@@ -148,14 +125,14 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     public function getModifiedEnabledFields($writeMode = false)
     {
-        $pageRepository = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Page\PageRepository');
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
         $enableFieldsWithFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['disabled' => 1]);
         $enableFieldsWithoutFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['fe_group' => 1]);
 
         $ownerOnlyField   = $writeMode ? 'no_write_access' : 'no_read_access';
         $ownerAccessField = $writeMode ? 'owner_has_write_access' : 'owner_has_read_access';
 
-        if ($GLOBALS['TSFE']->fe_user->user) {
+        if ($GLOBALS['TSFE']->loginUser) {
             $where = ' AND (';
             $where .= '(1 ' . $enableFieldsWithoutFeGroup  . ')'; // classic enable fields
 
@@ -211,13 +188,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query = $this->createQuery();        
         $where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
         $where .= $this->getModifiedEnabledFields($writeMode);
-        $query->statement
-        (    '    SELECT tx_ameosfilemanager_domain_model_folder.* 
-                FROM tx_ameosfilemanager_domain_model_folder 
-                WHERE '.$where.'
-            ',
-            array()
-        );
+        $query->statement('SELECT * FROM tx_ameosfilemanager_domain_model_folder WHERE ' . $where, []);
 
         // Don't forget to change back to read right once the deed is done
         $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group'] = 'fe_group_read';

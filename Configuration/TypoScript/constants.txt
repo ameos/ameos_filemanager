@@ -21,4 +21,12 @@ plugin.tx_ameosfilemanager {
     newFolder.owner_has_read_access = 1
     # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_write_access
     newFolder.owner_has_write_access = 1
+    # cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.stockageGroupPid
+    stockageGroupPid = 
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includejQuery
+    includejQuery = 1
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includeFontawesome
+    includeFontawesome = 1
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includeDefaultCss
+    includeDefaultCss = 1
 }

@@ -8,7 +8,7 @@ FileManager
 		ameos_filemanager
 
 	:Version:
-		1.1.9
+		1.2.0
 
 	:Language:
 		en

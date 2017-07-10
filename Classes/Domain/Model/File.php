@@ -46,7 +46,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getMeta($reload = false)
     {
         if ($this->meta === FALSE || $reload) {
-            $metaDataRepository = GeneralUtility::makeInstance('TYPO3\CMS\Core\Resource\Index\MetaDataRepository');
+            $metaDataRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
             $this->meta = $metaDataRepository->findByFileUid($this->getUid());
         }
         return $this->meta;
@@ -109,6 +109,31 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
+     * return true if thumbnail are available
+     * @return bool
+     */
+    public function getThumbnailAvailable()
+    {
+        return $this->thumbnailAvailable();
+    }
+
+    /**
+     * return true if thumbnail are available
+     * @return bool
+     */
+    public function thumbnailAvailable()
+    {
+        return in_array($this->getOriginalResource()->getProperty('mime_type'), [
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/bmp',
+            'application/pdf',
+        ]);
+    }
+
+    /**
      * @return array
      */
     public function getArrayFeGroupRead()
@@ -142,7 +167,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getCruser()
     {
         if ($this->cruser === FALSE) {
-            $beUserRepository = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository');
+            $beUserRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository::class);
             $this->cruser = $beUserRepository->findByUid($this->getMeta()['cruser_id']);
         }
         return $this->cruser;
@@ -162,7 +187,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getFeUser()
     {
         if ($this->feuser === FALSE) {
-            $feUserRepository = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository');
+            $feUserRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository::class);
             $this->feuser = $feUserRepository->findByUid($this->getMeta()['fe_user_id']);
         }
         return $this->feuser;
@@ -190,7 +215,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getParentFolder()
     {
         if (!isset(self::$folders[$this->getMeta()['folder_uid']])) {
-            $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+            $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
             self::$folders[$this->getMeta()['folder_uid']] = $folderRepository->findByUid($this->getMeta()['folder_uid']);
         }        
         return self::$folders[$this->getMeta()['folder_uid']];
@@ -257,8 +282,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getCategories()
     {
-        $extbaseObjectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        $repo = $extbaseObjectManager->get('TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository');
+        $extbaseObjectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $repo = $extbaseObjectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
 
         $uidsCat = $this->getCategoriesUids();
         if (!empty($uidsCat)) {
@@ -302,13 +327,13 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             $i = 1;
             foreach ($categories as $category) {
                 $fields_values = array(
-                    "uid_local" => $category,
-                    "uid_foreign" => $this->getMeta()['uid'],
-                    "tablenames" => "sys_file_metadata",
-                    "fieldname" => "categories",
-                    "sorting_foreign" => $i,
+                    'uid_local'       => $category,
+                    'uid_foreign'     => $this->getMeta()['uid'],
+                    'tablenames'      => 'sys_file_metadata',
+                    'fieldname'       => 'categories',
+                    'sorting_foreign' => $i,
                 );
-                $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_category_record_mm', $fields_values, $no_quote_fields=FALSE);
+                $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_category_record_mm', $fields_values, false);
                 $i++;
             }
         }

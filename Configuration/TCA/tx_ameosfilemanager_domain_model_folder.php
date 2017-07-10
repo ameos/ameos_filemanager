@@ -23,9 +23,14 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'rootLevel'      => 1,
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
     ],
-    'feInterface' => ['fe_admin_fieldList' => 'title,description,keywords,fe_groups_access,file,folder,'],
-    'types' => ['0' => ['showitem' => 'description,keywords,fe_user_id,fe_group_read,owner_has_read_access,no_read_access,fe_group_write,owner_has_write_access,no_write_access,fe_group_addfolder,fe_group_addfile,status']],
-    'interface' => ['showRecordFieldList' => 'title,description,keywords,fe_groups_access,file,folders'],
+    'palettes' => [
+        'owner' => ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'],
+    ],
+    'types' => ['0' => [
+        'showitem' => 'description,keywords,status,
+            --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write,fe_group_addfolder,fe_group_addfile'
+    ]],
+    'interface' => ['showRecordFieldList' => 'title,description,keywords'],
     'columns' => [
         'hidden' => [        
             'exclude' => 1,
@@ -33,17 +38,17 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             'config'  => ['type' => 'check', 'default' => '0']
         ],
         'crdate' => [
-            'exclude' => 0, 
+            'exclude' => 1, 
             'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.crdate',
             'config'  => ['type' => 'input']
         ],
         'tstamp' => [
-            'exclude' => 0, 
+            'exclude' => 1, 
             'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.tstamp',
             'config'  => ['type' => 'input']
         ],
         'cruser_id' => [
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.be_user',
             'config'  => [
                 'type'                => 'select',
@@ -55,18 +60,19 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'fe_user_id' => [
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => $ll . '.fe_user_id',
             'config'  => [
-                'type'          => 'select',
-                'renderType'    => 'selectSingleBox',
+                'type'          => 'group',
+                'internal_type' => 'db',
+                'allowed'       => 'fe_users',
                 'maxitems'      => 1,
-                'size'          => 10,
-                'foreign_table' => 'fe_users',
+                'size'          => 1,
+                'wizards'       => ['suggest' => ['type' => 'suggest']],
             ]
         ],
         'title' => [
-            'exclude' => 0, 
+            'exclude' => 1, 
             'label' => $ll . '.title',
             'config' => [
                 'type' => 'input',
@@ -75,7 +81,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'no_read_access' => [
-            'exclude' => 0, 
+            'exclude' => 1, 
             'label' => $ll . '.no_read_access',
             'config' => [
                 'type'    => 'check',
@@ -83,7 +89,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'no_write_access' => [
-            'exclude' => 0, 
+            'exclude' => 1, 
             'label'   => $ll . '.no_write_access',
             'config'  => [
                 'type'    => 'check',
@@ -107,7 +113,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'description' => [      
-            'exclude' => 0,   
+            'exclude' => 1,   
             'label'   => $ll . '.description',     
             'config'  => [
                 'type' => 'text', 
@@ -117,7 +123,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'identifier' => [      
-            'exclude' => 0,   
+            'exclude' => 1,   
             'label'   => $ll . '.identifier',
             'config'  => [
                 'type' => 'text',
@@ -127,7 +133,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'storage' => [
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => 'LLL:EXT:lang/locallang_tca.xlf:sys_file.storage',
             'config'  => [
                 'readOnly'            => 1,
@@ -142,12 +148,12 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'keywords' => [      
-            'exclude' => 0,   
+            'exclude' => 1,   
             'label'   => $ll . '.keywords',     
             'config'  => [
                 'type' => 'text', 
-                'cols' => '15',
-                'rows' => '5', 
+                'cols' => '40',
+                'rows' => '3', 
                 'eval' => 'trim', 
             ]
         ],
@@ -226,7 +232,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'folders' => [ 
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => $ll . '.folders',
             'config'  => [
                 'maxitems'      => 500,
@@ -237,7 +243,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'uid_parent' => [
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => $ll . '.uid_parent',
             'config'  => [
                 'type'                => 'select',
@@ -249,23 +255,12 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
             ]
         ],
         'files' => [
-            'exclude' => 0,
+            'exclude' => 1,
             'label'   => $ll . '.files',
             'config'  => [
                 'maxitems'      => 500,
                 'type'          => 'inline',
                 'foreign_table' => 'sys_file',                
-            ]
-        ],
-        'fe_user_id' => [
-            'exclude' => 0,
-            'label'   => $ll . '.fe_user_id',
-            'config'  => [
-                'type'          => 'select',
-                'maxitems'      => 1,
-                'items'         => [['', 0]],
-                'size'          => 1,
-                'foreign_table' => 'fe_users',
             ]
         ],
         'status' => [

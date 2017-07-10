@@ -50,9 +50,10 @@ class SortlinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBas
      * Renders sort link
      *
      * @param string $column the column
+     * @param string $folder current folder id
      * @return string html
      */
-    public function render($column) 
+    public function render($column, $folder = 0) 
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
         $currentDirection = $this->controllerContext->getRequest()->hasArgument('direction')
@@ -68,9 +69,7 @@ class SortlinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBas
             $direction = 'DESC';
         }
         
-        $uri = $uriBuilder->reset()
-            ->setAddQueryString(true)
-            ->uriFor(null, ['sort' => $column, 'direction' => $direction]);
+        $uri = $uriBuilder->reset()->uriFor(null, ['folder' => $folder, 'sort' => $column, 'direction' => $direction]);
         $this->tag->addAttribute('href', $uri);
         $this->tag->setContent($this->renderChildren());
         $this->tag->forceClosingTag(true);

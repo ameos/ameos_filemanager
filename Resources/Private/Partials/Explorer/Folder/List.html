@@ -1,0 +1,85 @@
+{namespace filemanager=Ameos\Ameosfilemanager\ViewHelpers}
+<tr>
+    <f:for each="{columns_table}" as="column">
+        <f:if condition="{column} == 'icon'">
+            <td class="icone">
+                <f:link.action action="index" arguments="{folder: folder.uid}">
+                    <i class="fa fa-2x fa-folder" aria-hidden="true"></i>
+                </f:link.action> 
+            </td>
+        </f:if>
+        <f:if condition="{column} == 'title'">
+            <td><f:link.action action="index" arguments="{folder: folder.uid}">{folder.title}</f:link.action> </td>
+        </f:if>    
+        <f:if condition="{column} == 'createdAt'">
+            <td><f:format.date format="%d/%m/%Y">@{folder.crdate}</f:format.date></td>
+        </f:if>
+        <f:if condition="{column} == 'updatedAt'">
+            <td><f:format.date format="%d/%m/%Y">@{folder.tstamp}</f:format.date></td>
+        </f:if>
+        <f:if condition="{column} == 'categories'">
+            <td><f:for each="{folder.categories}" as="category" iteration="itemIteration">
+                {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+            </f:for></td>
+        </f:if>
+        <f:if condition="{column} == 'description'">
+            <td>{folder.description}</td>
+        </f:if>
+        <f:if condition="{column} == 'owner'">
+            <td>{folder.ownerUsername}</td>
+        </f:if>
+        <f:if condition="{column} == 'size'">
+            <f:if condition="{settings.displayArchive}">
+                <f:then><td>{folder.fileNumber} <f:translate key="folderFiles"/></td></f:then>
+                <f:else><td>{folder.readyFileNumber} <f:translate key="folderFiles"/></td></f:else>
+            </f:if>
+        </f:if>
+        <f:if condition="{column} == 'keywords'">
+            <td>{folder.keywords}</td>
+        </f:if>
+        <f:if condition="{column} == 'actions'">
+            <td>
+                <f:for each="{allowed_actions_folders}" as="action">
+                    <f:if condition="{action} == 'edit'">
+                        <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+                            <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'edit')}">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </f:link.action>
+                        </filemanager:checkAccess>
+                    </f:if>
+
+                    <f:if condition="{action} == 'upload'">
+                        <filemanager:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                            <f:link.action action="upload" controller="Explorer\File" arguments="{folder: folder.uid}" title="{f:translate(key:'upload')}">
+                                <i class="fa fa-upload" aria-hidden="true"></i>
+                            </f:link.action>
+                        </filemanager:canAddFile>
+                    </f:if>
+
+                    <f:if condition="{action} == 'addsubfolder'">
+                        <filemanager:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                            <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: 'new', parentfolder: folder.uid}" title="{f:translate(key:'createFolder')}">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </f:link.action>
+                        </filemanager:canAddFolder>
+                    </f:if>
+
+                    <f:if condition="{action} == 'delete'">
+                        <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\Folder" arguments="{folder: folder.uid}"  title="{f:translate(key:'delete')}">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </f:link.action>
+                    </f:if>
+                    
+                    <f:if condition="{action} == 'download'">
+                        <filemanager:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                            <f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid, returnfolder: folder.uid}" title="{f:translate(key:'download')}">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                            </f:link.action>
+                        </filemanager:checkAccess>
+                    </f:if>
+
+                </f:for>
+            </td>
+        </f:if>
+    </f:for>
+</tr>

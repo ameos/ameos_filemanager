@@ -21,7 +21,7 @@ class FiledownloadRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @var array
      */ 
-    protected $defaultOrderings = array('crdate' => QueryInterface::ORDER_DESCENDING);
+    protected $defaultOrderings = ['crdate' => QueryInterface::ORDER_DESCENDING];
     
     /**
      * Initialization

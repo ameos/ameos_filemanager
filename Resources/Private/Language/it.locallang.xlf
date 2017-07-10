@@ -33,6 +33,8 @@
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source><target>Solo il proprietarioi puà editare questo</target></trans-unit>
 			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source><target>Non ai accesso a questa sezione del sito.</target></trans-unit>
             <trans-unit id="tooMuchRecursion" xml:space="preserve"><source>Too much recursion.</source><target>Troppe ricusioni.</target></trans-unit>
+            <trans-unit id="missingStartFolder" xml:space="preserve"><source>Select a root folder in plugin configuration.</source><target>Select a root folder in plugin configuration.</target></trans-unit>
+            <trans-unit id="missingStorage" xml:space="preserve"><source>Select a storage in plugin configuration.</source><target>Select a storage in plugin configuration.</target></trans-unit>
 			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source><target>Inizializza il database.</target></trans-unit>
 			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source><target>Inizializzazione termnata correttamente.</target></trans-unit>
 			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source><target>Alcuni folders sono stati aggiunti al database</target></trans-unit>
@@ -41,6 +43,7 @@
 			<trans-unit id="adviceInitialize" xml:space="preserve"><source>Now you can go in the "filelist" menu and start to set metadatas and permissions on your files and folders.</source><target>Ora vai al menu "filelist" dal quale puoi caricare/modificare i permessi e i metadati per i documenti e folders.</target></trans-unit>
 			<trans-unit id="searchResultFor" xml:space="preserve"><source>Results for</source><target>Risultati trovati per</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Scarica</target></trans-unit>
+            <trans-unit id="upload" xml:space="preserve"><source>Upload</source><target>Upload</target></trans-unit>
 			<trans-unit id="detail" xml:space="preserve"><source>Detail</source><target>Dettagli</target></trans-unit>
 			<trans-unit id="edit" xml:space="preserve"><source>Edit</source><target>Edita</target></trans-unit>
 			<trans-unit id="delete" xml:space="preserve"><source>Delete</source><target>Cancella</target></trans-unit>
@@ -62,7 +65,15 @@
 			<trans-unit id="refresh" xml:space="preserve"><source>Reload</source><target>Ricarica</target></trans-unit>
 			<trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source><target>Il folder è vuoto</target></trans-unit>
             <trans-unit id="download_generated_zip" xml:space="preserve"><source>The ZIP file has been generated. Download it !</source><target>Il file ZIP è stato generato. Scaricalo!</target></trans-unit>
-
+            <trans-unit id="upload_area" xml:space="preserve"><source>Click or drop your files on the box below</source><target>Click or drop your files on the box below</target></trans-unit>
+            <trans-unit id="missingFolderArgument" xml:space="preserve"><source>You must select a folder</source><target>You must select a folder</target></trans-unit>
+            <trans-unit id="missingFileArgument" xml:space="preserve"><source>You must select a file</source><target>You must select a file</target></trans-unit>
+            <trans-unit id="fileRemoved" xml:space="preserve"><source>File removed</source><target>File removed</target></trans-unit>
+            <trans-unit id="folderRemoved" xml:space="preserve"><source>Folder removed</source><target>Folder removed</target></trans-unit>
+            <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source><target>Title required</target></trans-unit>
+            <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source><target>Folder %s created</target></trans-unit>
+            <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source><target>Folder %s updated</target></trans-unit>
+            
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>N.ro di scaricamenti</target></trans-unit>
 			<trans-unit id="export.title" xml:space="preserve"><source>Title</source><target>Titolo</target></trans-unit>

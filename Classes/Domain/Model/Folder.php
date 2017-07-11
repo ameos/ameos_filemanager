@@ -622,6 +622,26 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
+     * return number of files in the folder
+     * @return int
+     */ 
+    public function getFilesSize()
+    {
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
+        return $folderRepository->countFilesizeForFolder($this);        
+    }
+
+    /**
+     * return number of ready files in the folder
+     * @return int
+     */ 
+    public function getReadyFilesSize()
+    {
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
+        return $folderRepository->countFilesizeForFolder($this, false);        
+    }
+
+    /**
      * return number of subfolders in the folder
      * @return int
      */ 

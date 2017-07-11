@@ -53,7 +53,9 @@ ExtensionManagementUtility::addPiFlexFormValue('ameosfilemanager_fe_filemanager_
 
 // Typoscript
 ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'File manager > Default');
-ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Ajax/', 'File manager > Activate Ajax Mode (required jquery)');
+if ($configuration['enable_old_plugin']) {
+    ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Ajax/', 'File manager > Activate Ajax Mode (required jquery)');
+}
 
 // Register icons
 $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);

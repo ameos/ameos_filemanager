@@ -37,11 +37,21 @@
                     </f:link.action>
                 </filemanager:checkAccess>
             </f:if>
+                    
+            <f:if condition="{action} == 'detail'">
+                <filemanager:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action action="info" controller="Explorer\Folder" arguments="{folder: folder.uid, returnfolder: folder.uid}" title="{f:translate(key:'detail')}">
+                        <i class="fa fa-info" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:checkAccess>
+            </f:if>
 
             <f:if condition="{action} == 'delete'">
-                <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'delete')}">
-                    <i class="fa fa-trash-o" aria-hidden="true"></i>
-                </f:link.action>
+                <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+                    <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'delete')}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </f:link.action>
+                </filemanager:checkAccess>
             </f:if>
         </f:for>
     </p>   

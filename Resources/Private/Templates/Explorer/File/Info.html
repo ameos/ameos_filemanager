@@ -1,5 +1,5 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
-<h1>Information sur le fichier {file.title}</h1>
+<h1><f:translate key="infofile" arguments="{0: file.title}" /></h1>
 <p class="toolbar">
 <f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: file.parentFolder}">
     <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
@@ -58,6 +58,28 @@
                 {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
                 </f:for></td>
             </tr>
+            <f:if condition="{file_isimage} && {filemetadata_isloaded}">
+            <tr>
+                <td>{f:translate(key: "LLL:EXT:filemetadata/Resources/Private/Language/locallang_tca.xlf:sys_file_metadata.color_space")}</td>
+                <td>{file.meta.color_space}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "LLL:EXT:filemetadata/Resources/Private/Language/locallang_tca.xlf:sys_file_metadata.width")}</td>
+                <td>{file.meta.width}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "LLL:EXT:filemetadata/Resources/Private/Language/locallang_tca.xlf:sys_file_metadata.height")}</td>
+                <td>{file.meta.height}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "LLL:EXT:filemetadata/Resources/Private/Language/locallang_tca.xlf:sys_file_metadata.content_creation_date")}</td>
+                <td><f:format.date format="%d/%m/%Y">@{file.meta.content_creation_date}</f:format.date></td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "LLL:EXT:filemetadata/Resources/Private/Language/locallang_tca.xlf:sys_file_metadata.content_modification_date")}</td>
+                <td><f:format.date format="%d/%m/%Y">@{file.meta.content_modification_date}</f:format.date></td>
+            </tr>
+            </f:if>           
         </table>
     </div>
 </div>

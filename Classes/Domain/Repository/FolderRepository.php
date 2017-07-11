@@ -63,6 +63,34 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
+     * count total files size for a folder
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param bool $withArchive
+     * @return int
+     */ 
+    public function countFilesizeForFolder($folder, $withArchive = true)
+    {
+        if (!$folder) {
+            return 0;
+        }
+
+        $addWhere = '';
+        if (!$withArchive) {
+            $addWhere .= ' AND realstatus IN (0,1)';
+        }
+
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+            'SUM(sys_file.size) as total',
+            'sys_file, sys_file_metadata, tx_ameosfilemanager_domain_model_folder',
+            'tx_ameosfilemanager_domain_model_folder.identifier LIKE \'' . $folder->getIdentifier() . '%\'
+                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
+                AND tx_ameosfilemanager_domain_model_folder.deleted = 0
+                AND sys_file_metadata.file = sys_file.uid
+                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid' . $addWhere
+        )['total'];
+    }
+
+    /**
      * count file for a folder
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @param bool $withArchive
@@ -74,6 +102,11 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return 0;
         }
 
+        $addWhere = '';
+        if (!$withArchive) {
+            $addWhere .= ' AND realstatus IN (0,1)';
+        }
+
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
             'count(*) as count',
             'sys_file, sys_file_metadata, tx_ameosfilemanager_domain_model_folder',
@@ -82,7 +115,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 AND tx_ameosfilemanager_domain_model_folder.deleted = 0
                 AND sys_file_metadata.file = sys_file.uid
                 AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid' . $addWhere
-        )['count'];        
+        )['count'];
     }
 
     /**

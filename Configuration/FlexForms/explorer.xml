@@ -262,7 +262,7 @@
                                 <type>select</type>
                                 <size>5</size>
                                 <minitems>0</minitems>
-                                <maxitems>5</maxitems>
+                                <maxitems>6</maxitems>
                                 <items type="array">
                                     <numIndex index="1" type="array">
                                         <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.download</numIndex>
@@ -283,6 +283,10 @@
                                     <numIndex index="5" type="array">
                                         <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.delete</numIndex>
                                         <numIndex index="1">delete</numIndex>
+                                    </numIndex>
+                                    <numIndex index="6" type="array">
+                                        <numIndex index="0">LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.detail</numIndex>
+                                        <numIndex index="1">detail</numIndex>
                                     </numIndex>
                                 </items>
                                 <default>download,addsubfolder,upload,edit</default>

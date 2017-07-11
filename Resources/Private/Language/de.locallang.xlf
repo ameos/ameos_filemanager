@@ -7,6 +7,7 @@
 			<trans-unit id="title" xml:space="preserve"><source>Title</source><target>Titel</target></trans-unit>
 			<trans-unit id="categories" xml:space="preserve"><source>Categories</source><target>Kategorien</target></trans-unit>
 			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Beschreibung</target></trans-unit>
+            <trans-unit id="path" xml:space="preserve"><source>Path</source><target>Pfad</target></trans-unit>
 			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Keywords</target></trans-unit>
 			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Keyword</target></trans-unit>
 			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Suche</target></trans-unit>
@@ -25,6 +26,7 @@
 			<trans-unit id="updatedAt" xml:space="preserve"><source>Updated the</source><target>Aktualisiert am</target></trans-unit>
 			<trans-unit id="owner" xml:space="preserve"><source>Owner</source><target>Besitzer</target></trans-unit>
 			<trans-unit id="size" xml:space="preserve"><source>Size</source><target>Größe</target></trans-unit>
+            <trans-unit id="numberoffiles" xml:space="preserve"><source>Number of files</source><target>Anzahl der Dateien</target></trans-unit>
 			<trans-unit id="actions" xml:space="preserve"><source>Action</source><target>Aktion</target></trans-unit>
 			<trans-unit id="back" xml:space="preserve"><source>Back</source><target>Zurück</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Herunterladen</target></trans-unit>
@@ -73,6 +75,8 @@
             <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source><target>Title required</target></trans-unit>
             <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source><target>Folder %s created</target></trans-unit>
             <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source><target>Folder %s updated</target></trans-unit>
+            <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source><target>Information on folder %s</target></trans-unit>
+            <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source><target>Information on file %s</target></trans-unit>
             
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Anzahl der Downloads</target></trans-unit>

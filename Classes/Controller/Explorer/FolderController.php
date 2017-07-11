@@ -71,6 +71,7 @@ class FolderController extends AbstractController
 
                     $folder->setUidParent($parent->getUid());
                     $folder->setIdentifier($parent->getGedPath() . '/' . $title . '/');
+                    $folder->setStorage($this->settings['storage']);
                 } else {
                     $storageFolder = $storage->getFolder($folder->getGedPath() . '/');
                     $storageFolder->rename($this->request->getArgument('title'));
@@ -140,7 +141,7 @@ class FolderController extends AbstractController
         $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storage = $storageRepository->findByUid((int)$this->settings['storage']);
 
-        $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . uniqid() . '.zip';
+        $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . date('dmY_His') . '.zip';
         $filePath = PATH_site . trim($storage->getConfiguration()['basePath'], '/') . $folder->getGedPath();
 
         $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
@@ -245,5 +246,23 @@ class FolderController extends AbstractController
 
         $this->addFlashMessage(LocalizationUtility::translate('folderRemoved', 'AmeosFilemanager'));
         $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $parentFolder->getUid()]);
+    }
+
+    /**
+     * info folder
+     */
+    protected function infoAction()
+    {
+        if (!$this->settingsIsValid()) {
+            $this->forward('errors', 'Explorer\\Explorer');
+        }
+
+        if (!$this->request->hasArgument('folder') || (int)$this->request->getArgument('folder') === 0) {
+            $this->addFlashMessage(LocalizationUtility::translate('missingFolderArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
+            $this->forward('errors', 'Explorer\\Explorer');
+        }
+        
+        $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
+        $this->view->assign('folder', $folder);
     }
 }

@@ -2,7 +2,9 @@
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Resource\File as ResourceFile;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
@@ -182,6 +184,8 @@ class FileController extends AbstractController
         
         $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
         $this->view->assign('file', $file);
+        $this->view->assign('file_isimage', $file->getOriginalResource()->getType() == ResourceFile::FILETYPE_IMAGE);
+        $this->view->assign('filemetadata_isloaded', ExtensionManagementUtility::isLoaded('filemetadata'));
     }
 
     /**
@@ -272,12 +276,14 @@ class FileController extends AbstractController
                     }
 
                     $editUri = $this->uriBuilder->reset()->uriFor('edit', ['file' => $file->getUid()]);
+                    $infoUri = $this->uriBuilder->reset()->uriFor('info', ['file' => $file->getUid()]);
 
                     header('Content-Type: text/json');
                     echo json_encode([
                         'success' => true,
                         'file'    => $file->getUid(),
-                        'editUri' => $editUri
+                        'editUri' => $editUri,
+                        'infoUri' => $infoUri,
                     ], true);
                     exit;
                 } catch (\Exception $e) {
@@ -308,7 +314,8 @@ class FileController extends AbstractController
                 init: function() {
                     this.on("success", function (file, response) {
                         var response = eval("(" + response + ")");
-                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.editUri + "\">' . LocalizationUtility::translate('edit', 'AmeosFilemanager') . '</a>");
+                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.editUri + "\">' . LocalizationUtility::translate('edit', 'AmeosFilemanager') . '</a><br>");
+                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.infoUri + "\">' . LocalizationUtility::translate('detail', 'AmeosFilemanager') . '</a>");                        
                     });
                 }
             });

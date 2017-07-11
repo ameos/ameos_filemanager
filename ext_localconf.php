@@ -31,12 +31,12 @@ ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer'
     [
         'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
         'Explorer\\File'     => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'   => 'edit, download, remove',
+        'Explorer\\Folder'   => 'edit, download, info, remove',
     ],
     [
         'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
         'Explorer\\File'     => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'   => 'edit, download, remove',
+        'Explorer\\Folder'   => 'edit, download, info, remove',
     ]
 );
 ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',

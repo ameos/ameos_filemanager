@@ -53,7 +53,7 @@
 			<trans-unit id="fileAlreadyExist" xml:space="preserve"><source>A file with this name already exists.</source></trans-unit>
 			<trans-unit id="filecategory" xml:space="preserve"><source>Category</source></trans-unit>
 			<trans-unit id="category" xml:space="preserve"><source>Category</source></trans-unit>
-			<trans-unit id="filetype" xml:space="preserve"><source>Axe</source></trans-unit>
+			<trans-unit id="filetype" xml:space="preserve"><source>File type</source></trans-unit>
 			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source></trans-unit>
 			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source></trans-unit>
 			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source></trans-unit>

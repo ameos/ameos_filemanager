@@ -52,13 +52,13 @@
 			<trans-unit id="fileAlreadyExist" xml:space="preserve"><source>A file with this name already exists.</source><target>Un file con il medesimo nome già esiste</target></trans-unit>
 			<trans-unit id="filecategory" xml:space="preserve"><source>Category</source><target>Categoria</target></trans-unit>
 			<trans-unit id="category" xml:space="preserve"><source>Category</source><target>Categoria</target></trans-unit>
-			<trans-unit id="filetype" xml:space="preserve"><source>Axe</source><target></target></trans-unit>
-			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source><target></target></trans-unit>
-			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source><target></target></trans-unit>
-			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source><target></target></trans-unit>
-			<trans-unit id="filesizeGO" xml:space="preserve"><source>Go</source><target></target></trans-unit>
-			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source><target></target></trans-unit>
-			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source><target></target></trans-unit>
+			<trans-unit id="filetype" xml:space="preserve"><source>File type</source><target>Tipo di file</target></trans-unit>
+			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source><target>o</target></trans-unit>
+			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source><target>Ko</target></trans-unit>
+			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source><target>Mo</target></trans-unit>
+			<trans-unit id="filesizeGO" xml:space="preserve"><source>Go</source><target>Go</target></trans-unit>
+			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source><target>To</target></trans-unit>
+			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source><target>Po</target></trans-unit>
 			<trans-unit id="folderFiles" xml:space="preserve"><source>File(s)</source><target>Documento(i)</target></trans-unit>
 			<trans-unit id="massDownload" xml:space="preserve"><source>Download as ZIP archive</source><target>Scarica come archivio compresso ZIP</target></trans-unit>
 			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Cerca</target></trans-unit>

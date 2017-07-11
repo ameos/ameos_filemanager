@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -133,30 +134,53 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
         
         $fields = 'distinct sys_file.*'; 
-        $from = 'sys_file_metadata INNER JOIN sys_file  ON sys_file_metadata.file=sys_file.uid LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
-        $where = '1';
+        $from = 'sys_file_metadata
+            INNER JOIN sys_file  ON sys_file_metadata.file = sys_file.uid
+            LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign
+            LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
+        if (FilemanagerUtility::fileContentSearchEnabled()) {
+            $from .= ' LEFT JOIN tx_ameosfilemanager_domain_model_filecontent filecontent ON filecontent.file = sys_file_metadata.file';
+        }
+        $whereClauses = [];
         if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
             $arrayKeywords = explode(' ', $criterias['keyword']);
-            $arrayCondition = array();
-            $where .= " AND (sys_category_record_mm.tablenames LIKE 'sys_file_metadata' OR sys_category_record_mm.tablenames IS NULL) ";
+            $arrayCondition = [];
+
+            $whereClauses[]  = '(sys_category_record_mm.tablenames LIKE \'sys_file_metadata\' OR sys_category_record_mm.tablenames IS NULL)';
             foreach ($arrayKeywords as $keyword) {
-                $where .= "AND ( ";
-                $where .= " sys_file_metadata.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-                $where .= " OR sys_file_metadata.description LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata'); 
-                $where .= " OR sys_file_metadata.keywords LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-                $where .= " OR sys_file.name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file');
-                $where .= " OR sys_category.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_category');
-                $where .= " OR sys_file_metadata.fe_user_id IN (SELECT uid FROM fe_users WHERE
-                    deleted = 0
-                    AND (name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR first_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR middle_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR last_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "))";
-                $where .= ") ";
+                $whereClauseKeyword = [];
+                $keyword = $GLOBALS['TYPO3_DB']->quoteStr('%' . $keyword . '%', '');
+                
+                $whereClauseKeyword[] = 'sys_file_metadata.title LIKE \'' . $keyword . '\'';
+                $whereClauseKeyword[] = 'sys_file_metadata.description LIKE \'' . $keyword . '\''; 
+                $whereClauseKeyword[] = 'sys_file_metadata.keywords LIKE \'' . $keyword . '\'';
+                $whereClauseKeyword[] = 'sys_file.name LIKE \'' . $keyword . '\'';
+                $whereClauseKeyword[] = 'sys_category.title LIKE \'' . $keyword . '\'';
+
+                if (FilemanagerUtility::fileContentSearchEnabled()) {
+                    $whereClauseKeyword[] = 'filecontent.content LIKE \'' . $keyword . '\'';
+                }
+                
+                $whereClauseKeyword[] = 'sys_file_metadata.fe_user_id IN (
+                    SELECT
+                        uid
+                    FROM
+                        fe_users
+                    WHERE
+                        deleted = 0
+                        AND (
+                            name LIKE \'' . $keyword . '\'
+                            OR first_name LIKE \'' . $keyword . '\'
+                            OR middle_name LIKE \'' . $keyword . '\'
+                            OR last_name LIKE \'' . $keyword . '\'
+                        )
+                    )';
+
+                $whereClauses[] = '(' . implode(' OR ', $whereClauseKeyword) . ')';
             }
         }
 
-        $where .= $additionnalWhereClause;
+        $where = implode(' AND ', $whereClauses) . ' ' . $additionnalWhereClause;
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);

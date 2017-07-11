@@ -42,7 +42,6 @@ CREATE TABLE tx_ameosfilemanager_domain_model_folder (
     KEY realstatus (realstatus)
 );
 
-
 CREATE TABLE tx_ameosfilemanager_domain_model_filedownload (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
@@ -58,6 +57,12 @@ CREATE TABLE tx_ameosfilemanager_domain_model_filedownload (
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY user_download (user_download)
+);
+
+CREATE TABLE tx_ameosfilemanager_domain_model_filecontent (
+    file int(11) DEFAULT '0' NOT NULL,
+    content longtext,
+    PRIMARY KEY (file)
 );
 
 CREATE TABLE sys_file_metadata (   

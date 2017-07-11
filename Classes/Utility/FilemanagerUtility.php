@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 
 /*
@@ -287,5 +288,14 @@ class FilemanagerUtility
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid IN (' . implode(',', $childsFolders) . ')', ['realstatus' => $realstatus]);
             self::updateChildStatus($childsFolders, $realstatus);
         }
+    }
+
+    /**
+     * return true if file content search is enable and tika installed
+     */
+    public static function fileContentSearchEnabled()
+    {
+        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+        return $configuration['enable_filecontent_search'] == 1;
     }
 }

@@ -10,6 +10,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Domain\Model\File;
 
 /*
@@ -84,6 +85,7 @@ class FileController extends AbstractController
                 $this->addFlashMessage(LocalizationUtility::translate('fileAlreadyExist', 'AmeosFilemanager'), '', FlashMessage::ERROR);
             }
 
+            $newFileAdded = false;
             if (!$hasError) {
                 $fileIsMoved = move_uploaded_file(
                     $arguments['upload']['tmp_name'],
@@ -92,6 +94,8 @@ class FileController extends AbstractController
                 if ($arguments['upload']['name'] != '' && !$fileIsMoved) {
                     $hasError = true;
                     $this->addFlashMessage(LocalizationUtility::translate('fileUploadError', 'AmeosFilemanager'), '', FlashMessage::ERROR);
+                } else {
+                    $newFileAdded = true;
                 }
             }
 
@@ -137,6 +141,21 @@ class FileController extends AbstractController
                 }
                 $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
                 $metaDataRepository->update($file->getUid(), $properties);
+
+                if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
+                    $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                    try {
+                        $textExtractor = $textExtractorRegistry->getTextExtractor($file);
+                        if (!is_null($textExtractor)) {
+                            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
+                                'file'    => $file->getUid(),
+                                'content' => $textExtractor->extractText($file)
+                            ]);
+                        }    
+                    } catch (\Exception $e) {
+                        
+                    }
+                }
                 
                 $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
             }
@@ -236,6 +255,21 @@ class FileController extends AbstractController
                     $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
                     $metaDataRepository->update($file->getUid(), $properties);
                     $this->persistenceManager->persistAll();
+
+                    if (FilemanagerUtility::fileContentSearchEnabled()) {
+                        $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                        try {
+                            $textExtractor = $textExtractorRegistry->getTextExtractor($file);
+                            if (!is_null($textExtractor)) {
+                                $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
+                                    'file'    => $file->getUid(),
+                                    'content' => $textExtractor->extractText($file)
+                                ]);
+                            }    
+                        } catch (\Exception $e) {
+                            
+                        }
+                    }
 
                     $editUri = $this->uriBuilder->reset()->uriFor('edit', ['file' => $file->getUid()]);
 

@@ -77,6 +77,7 @@
             <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source><target>Dossier % créé</target></trans-unit>
             <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source><target>Dossier % mis à jour</target></trans-unit>
             <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source><target>Information sur le dossier %s</target></trans-unit>
+            <trans-unit id="uploadfolder" xml:space="preserve"><source>Upload on folder %s</source><target>Charger des fichiers dans le dossier %s</target></trans-unit>
             <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source><target>Information sur le fichier %s</target></trans-unit>
             
 			<!-- Languages for export controller -->

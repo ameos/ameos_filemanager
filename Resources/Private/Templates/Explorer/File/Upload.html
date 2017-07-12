@@ -1,5 +1,5 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
-<h1>Charger des fichiers sur {folder.title}</h1>
+<h1><f:translate key="uploadfolder" arguments="{0: folder.title}" /></h1>
 <p class="toolbar">
 <f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: folder.uid}">
     <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}

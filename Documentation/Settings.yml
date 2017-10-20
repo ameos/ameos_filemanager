@@ -10,8 +10,8 @@
 conf.py:
   copyright: 2015-2017
   project: Ameos File Manager
-  version: 1.2
-  release: 1.2.0
+  version: 1.3
+  release: 1.3.1
   html_theme_options:
     github_repository: ameos/ameos_filemanager
     github_branch: master

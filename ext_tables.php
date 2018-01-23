@@ -88,14 +88,14 @@ if (TYPO3_MODE == 'BE') {
 
         
     // Register backend ajax request
-    \TYPO3\CMS\Core\Utility\\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
        'Filemanager::getFolderId',
        \Ameos\AmeosFilemanager\Controller\Backend\AjaxController::class . '->getFolderId'
     );
 
     // Register backend module
     if ($configuration['enable_export_module']) {
-        \TYPO3\CMS\Extbase\Utility\\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             'Ameos.' . $_EXTKEY,
             'file',
             'filemanager_export',

@@ -51,5 +51,5 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Ameos\AmeosFile
 
 // Hook to show PluginInformation under a tt_content element
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem']['ameos_filemanager'] =
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ameos_filemanager') . 'Classes/Hooks/\Ameos\AmeosFilemanager\Hooks\PluginPreview.php:' . \Ameos\AmeosFilemanager\Hooks\PluginPreview::class;
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ameos_filemanager') . 'Classes/Hooks/PluginPreview.php:' . \Ameos\AmeosFilemanager\Hooks\PluginPreview::class;
 

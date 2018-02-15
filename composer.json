@@ -13,7 +13,7 @@
         "EDM",
         "File Manager"
     ],
-    "license": "GPL 2",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Ameos Team",

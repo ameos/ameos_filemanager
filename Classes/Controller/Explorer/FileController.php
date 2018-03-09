@@ -76,7 +76,7 @@ class FileController extends AbstractController
             }
 
             if ($arguments['upload']['name'] != ''
-                && !in_array(pathinfo($arguments['upload']['name'], PATHINFO_EXTENSION), $allowedFileExtension)) {
+                && !in_array(strtolower(pathinfo($arguments['upload']['name'], PATHINFO_EXTENSION)), $allowedFileExtension)) {
                 $hasError = true;
                 $this->addFlashMessage(LocalizationUtility::translate('notAllowedFileType', 'AmeosFilemanager'), '', FlashMessage::ERROR);
             }
@@ -217,7 +217,7 @@ class FileController extends AbstractController
             }
 
             $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
-            if (!in_array(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION), $allowedFileExtension)) {
+            if (!in_array(strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION)), $allowedFileExtension)) {
                 $errors[] = LocalizationUtility::translate('notAllowedFileType', 'AmeosFilemanager');
             }
 

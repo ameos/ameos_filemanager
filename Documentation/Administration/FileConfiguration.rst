@@ -7,11 +7,27 @@ File configuration
 
 You can edit files in the backend file list.
 
-Ameos FileManager add EDM Tab
+**General Tab** 
 
+Ameos FileManager add 2 fields in the General tab
 
-.. figure:: ../Screenshots/FolderGeneral.png
+.. figure:: ../Screenshots/FileGeneral.png
 	:alt: General Configuration
+    
++----------------------------------------------------+-------------------------------------------------------------------------------+
+| Field                                              | Description                                                                   |
++====================================================+===============================================================================+
+| Keywords                                           | File's keywords.                                                            |
++----------------------------------------------------+-------------------------------------------------------------------------------+
+| Status                                             | Status ready or achive. If empty, inherit the folder status.                  |
++----------------------------------------------------+-------------------------------------------------------------------------------+
+
+**Access right Tab**
+
+This tab is added by ameos_filemanager
+
+.. figure:: ../Screenshots/FileAccessRight.png
+	:alt: Access Right Configuration
 
 +----------------------------------------------------+-------------------------------------------------------------------------------+
 | Field                                              | Description                                                                   |
@@ -34,5 +50,4 @@ Ameos FileManager add EDM Tab
 +----------------------------------------------------+-------------------------------------------------------------------------------+
 | Groups allowed to add file in the folder           | Frontend Usergroup allow to upload files in the folder.                       |
 +----------------------------------------------------+-------------------------------------------------------------------------------+
-| Status                                             | Status ready or achive. If empty, inherit the folder status.                  |
-+----------------------------------------------------+-------------------------------------------------------------------------------+
+

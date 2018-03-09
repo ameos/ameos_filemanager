@@ -1,6 +1,6 @@
 .. _adminmanual:
 
-Manual
+Administration
 ====================
 
 .. only:: html
@@ -12,6 +12,8 @@ Manual
 	:titlesonly:
 
 	Installation
+	ExtensionConfiguration
 	PluginConfiguration
 	FolderConfiguration
 	FileConfiguration
+	Compatibility

@@ -14,7 +14,6 @@ ameos_filemanager need to include Static TypoScript for run properly.
 There are two static template
 
  * File Manager > Default : this one is mandatory
- * File Manager > Ajax Mode : you can add this one for have ajax refresh in the frontend plugin. Warning : you must include jQuery.
 
 
 Initialization
@@ -50,4 +49,12 @@ Many typoscript constants are available :
 | plugin.tx_ameosfilemanager.newFolder.owner_has_read_access    | If value is 1 : when user create a folder, he has the read access                                                                                                               |
 +---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | plugin.tx_ameosfilemanager.newFolder.owner_has_write_access   | If value is 1 : when user create a folder, he has the write access                                                                                                              |
++---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| plugin.tx_ameosfilemanager.stockageGroupPid                   | Storage folder that contains usergroups                                                                                                                                         |
++---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| plugin.tx_ameosfilemanager.includejQuery                      | If value is 1 : include jQuery in the website                                                                                                                                   |
++---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| plugin.tx_ameosfilemanager.includeFontawesome                 | If value is 1 : include fontawesome in the website                                                                                                                              |
++---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| plugin.tx_ameosfilemanager.includeDefaultCss                  | If value is 1 : include default ameos_filemanager css file                                                                                                                      |    
 +---------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+

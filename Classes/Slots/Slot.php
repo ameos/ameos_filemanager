@@ -44,7 +44,7 @@ class Slot
         $newIdentifier = dirname($folder->getIdentifier()) . '/' . $newName . '/';
 
         $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-        $folderRepository->requestUpdate($row['uid'], [
+        $folderRepository->requestUpdate($folderRecord['uid'], [
             'title'      => $newName,
             'identifier' => $newIdentifier
         ]);

@@ -147,11 +147,11 @@ class FileController extends AbstractController
                 if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
                     $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
                     try {
-                        $textExtractor = $textExtractorRegistry->getTextExtractor($file);
+                        $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
                         if (!is_null($textExtractor)) {
                             $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
                                 'file'    => $file->getUid(),
-                                'content' => $textExtractor->extractText($file)
+                                'content' => $textExtractor->extractText($file->getOriginalResource())
                             ]);
                         }    
                     } catch (\Exception $e) {

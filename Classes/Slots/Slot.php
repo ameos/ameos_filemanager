@@ -33,6 +33,15 @@ class Slot
      */
     public function postFolderRename($folder, $newName)
     {
+        $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
+        
+        $oldIdentifier = $folder->getIdentifier();
+        $newIdentifier = dirname($folder->getIdentifier()) == '/'
+            ? '/' . $newName . '/'
+            : dirname($folder->getIdentifier()) . '/' . $newName . '/';
+
+
+        // renamed folders
         $folderRecord = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
             'tx_ameosfilemanager_domain_model_folder.uid',
             'tx_ameosfilemanager_domain_model_folder',
@@ -40,14 +49,25 @@ class Slot
                 AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage()->getUid() . '
                 AND tx_ameosfilemanager_domain_model_folder.identifier like \'' . $folder->getIdentifier() . '\''
         );
-
-        $newIdentifier = dirname($folder->getIdentifier()) . '/' . $newName . '/';
-
-        $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
         $folderRepository->requestUpdate($folderRecord['uid'], [
             'title'      => $newName,
             'identifier' => $newIdentifier
         ]);
+
+        // subfolders
+        $folders = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'folder.uid, folder.identifier',
+            'tx_ameosfilemanager_domain_model_folder folder',
+            'folder.deleted = 0
+                AND folder.storage = ' . $folder->getStorage()->getUid() . '
+                AND folder.identifier like \'' . $folder->getIdentifier() . '%\''
+        );
+        while (($folderRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($folders)) !== false) {
+            $identifier = $newIdentifier . substr($folderRecord['identifier'], strlen($oldIdentifier));
+            $folderRepository->requestUpdate($folderRecord['uid'], [
+                'identifier' => $identifier
+            ]);
+        }
     }
 
     /**

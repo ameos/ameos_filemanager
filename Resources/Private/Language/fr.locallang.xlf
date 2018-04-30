@@ -6,11 +6,11 @@
             <trans-unit id="file" xml:space="preserve"><source>File</source><target>Fichier</target></trans-unit>
 			<trans-unit id="title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>
 			<trans-unit id="categories" xml:space="preserve"><source>Categories</source><target>Categories</target></trans-unit>
-			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Rechercher un fichier</target></trans-unit>
+			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Description</target></trans-unit>
             <trans-unit id="path" xml:space="preserve"><source>Path</source><target>Emplacement</target></trans-unit>
-			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Description</target></trans-unit>
-			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Mots-clés</target></trans-unit>
-			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Mot-clé</target></trans-unit>
+			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Mots-clés</target></trans-unit>
+			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Mot-clé</target></trans-unit>
+			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Rechercher</target></trans-unit>
 			<trans-unit id="feGroupRead" xml:space="preserve"><source>Groups with read permissions</source><target>Groupe avec autorisation de lecture</target></trans-unit>
 			<trans-unit id="feGroupWrite" xml:space="preserve"><source>Groups with write permissions</source><target>Groupe avec autorisation d'écriture</target></trans-unit>
             <trans-unit id="feGroupAddfolder" xml:space="preserve"><source>Groups with add folders permissions</source><target>Groupe avec autorisation d'ajouter des dossiers</target></trans-unit>

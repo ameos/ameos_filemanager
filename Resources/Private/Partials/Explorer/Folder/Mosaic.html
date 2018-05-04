@@ -5,6 +5,7 @@
         {folder.title}
     </f:link.action>
     <p class="toolbar-file">
+        <f:form.checkbox name="selectedfolders[]" value="{folder.uid}" />
         <f:for each="{allowed_actions_folders}" as="action">
             <f:if condition="{action} == 'edit'">
                 <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">

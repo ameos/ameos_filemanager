@@ -91,7 +91,12 @@ class ExplorerController extends AbstractController
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
         $this->view->assign('allowed_actions_files', GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFiles']));
         $this->view->assign('allowed_actions_folders', GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders']));
-        
+        $this->view->assign('massactions', ['' => '',
+            'move'   => LocalizationUtility::translate('massaction.move', 'AmeosFilemanager'),
+            'copy'   => LocalizationUtility::translate('massaction.copy', 'AmeosFilemanager'),
+            'remove' => LocalizationUtility::translate('massaction.remove', 'AmeosFilemanager'),
+        ]);
+        $this->view->assign('folders_options', ExplorerUtility::getFolderOptionTree([$rootFolder]));
     }
 
     /**

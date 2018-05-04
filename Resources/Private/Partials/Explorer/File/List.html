@@ -1,6 +1,9 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
 <tr>
-    <f:for each="{columns_table}" as="column">
+    <td>
+        <f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
+    </td>
+    <f:for each="{columns_table}" as="column">        
         <f:if condition="{column} == 'icon'">
             <td class="icone">
                 <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">

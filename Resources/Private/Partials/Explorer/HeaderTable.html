@@ -1,5 +1,7 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
-<tr><f:for each="{columns_table}" as="column">
+<tr>
+    <td></td>
+    <f:for each="{columns_table}" as="column">
     <f:if condition="{column} == 'icon'">
         <th></th>
     </f:if>
@@ -30,4 +32,5 @@
     <f:if condition="{column} == 'actions'">
         <th><f:translate key="actions"/></th>
     </f:if>
-</f:for></tr>
+    </f:for>
+</tr>

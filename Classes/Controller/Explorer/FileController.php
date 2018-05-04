@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
+use Ameos\AmeosFilemanager\Utility\FileUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Domain\Model\File;
 
@@ -352,15 +353,15 @@ class FileController extends AbstractController
             $this->forward('errors', 'Explorer\\Explorer');
         }
 
-        $storageRepository = $this->objectManager->get(StorageRepository::class);
-        $storage = $storageRepository->findByUid($this->settings['storage']);                
-
         $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
         $folder = $file->getParentFolder();
-        if ($file && AccessUtility::userHasFileWriteAccess($GLOBALS['TSFE']->fe_user->user, $file, ['folderRoot' => $this->settings['startFolder']])) {
-            $storage->deleteFile($file->getOriginalResource());
-        }
-        
+
+        FileUtility::remove(
+            $this->request->getArgument('file'),
+            $this->settings['storage'],
+            $this->settings['startFolder']
+        );
+
         $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', 'AmeosFilemanager'));
         $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
     }

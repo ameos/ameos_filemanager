@@ -1,5 +1,8 @@
 {namespace filemanager=Ameos\Ameosfilemanager\ViewHelpers}
 <tr>
+    <td>
+        <f:form.checkbox name="selectedfolders[]" value="{folder.uid}" />
+    </td>
     <f:for each="{columns_table}" as="column">
         <f:if condition="{column} == 'icon'">
             <td class="icone">

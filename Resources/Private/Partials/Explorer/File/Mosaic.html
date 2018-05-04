@@ -10,7 +10,8 @@
         </f:if>    
         {file.title}
     </f:link.action>
-    <p class="toolbar-file">
+    <p class="toolbar-file">    
+        <f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
         <f:for each="{allowed_actions_files}" as="action">
         <f:if condition="{action} == 'download'">
             <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">

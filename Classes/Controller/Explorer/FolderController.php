@@ -9,6 +9,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
+use Ameos\AmeosFilemanager\Utility\FolderUtility;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 
 /*
@@ -231,18 +232,14 @@ class FolderController extends AbstractController
             $this->forward('errors', 'Explorer\\Explorer');
         }
 
-        $storageRepository = $this->objectManager->get(StorageRepository::class);
-        $storage = $storageRepository->findByUid($this->settings['storage']);
-
         $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
         $parentFolder = $folder->getParent();
-        if ($folder && AccessUtility::userHasFolderWriteAccess($GLOBALS['TSFE']->fe_user->user, $folder, ['folderRoot' => $this->settings['startFolder']])) {
-            if ($folder->getGedPath()) {
-                $ebFolder = $storage->getFolder($folder->getGedPath());
-                $storage->deleteFolder($ebFolder, true);
-                $this->folderRepository->remove($folder);
-            }
-        }
+
+        FolderUtility::remove(
+            $this->request->getArgument('folder'),
+            $this->settings['storage'],
+            $this->settings['startFolder']
+        );
 
         $this->addFlashMessage(LocalizationUtility::translate('folderRemoved', 'AmeosFilemanager'));
         $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $parentFolder->getUid()]);

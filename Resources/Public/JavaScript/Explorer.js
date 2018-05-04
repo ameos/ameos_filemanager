@@ -39,7 +39,20 @@
         });
     }
 
+    $.fn.massactionToolbar = function () {
+        var massaction = $(this);
+        massaction.find("#targetfolder").hide();
+        massaction.find("#massaction").change(function(event) {
+            if (this.value == "copy" || this.value == "move") {
+                massaction.find("#targetfolder").show();
+            } else {
+                massaction.find("#targetfolder").hide();
+            }
+        });
+    }
+
     $(".tree").fileManagerTree();
     $(".toolbar").fileManagerToolbar();
+    $(".massaction-toolbar").massactionToolbar();
 
 }(jQuery));

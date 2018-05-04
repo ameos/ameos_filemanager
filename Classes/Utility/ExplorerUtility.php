@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the terms of the GNU General Public License, either version 2
  * of the License, or any later version.
  *
- * For the full copyright and license information, please read the
+ * F''or the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
@@ -51,4 +51,22 @@ class ExplorerUtility
     {
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'display_mode_' . $contentUid, $mode);
     }
+
+    /**
+     * return current display mode
+     * @param array|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $folders
+     * @param string $prefix
+     * @return string
+     */
+    public static function getFolderOptionTree($folders, $prefix = '')
+    {
+        $options = [];
+        foreach ($folders as $folder) {
+            $options[$folder->getUid()] = ($prefix == '' ? '' : $prefix . ' ') . $folder->getTitle();
+            $options = $options + static::getFolderOptionTree($folder->getFolders(), $prefix . '--');
+        }
+
+        return $options;
+    }
+    
 }

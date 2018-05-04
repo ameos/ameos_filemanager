@@ -20,14 +20,16 @@ if ($configuration['enable_old_plugin']) {
 }
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer',
     [
-        'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
-        'Explorer\\File'     => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'   => 'edit, download, info, remove',
+        'Explorer\\Explorer'   => 'index, search, updateDisplayMode, errors',
+        'Explorer\\File'       => 'edit, download, info, upload, remove',
+        'Explorer\\Folder'     => 'edit, download, info, remove',
+        'Explorer\\Massaction' => 'index',
     ],
     [
-        'Explorer\\Explorer' => 'index, search, updateDisplayMode, errors',
-        'Explorer\\File'     => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'   => 'edit, download, info, remove',
+        'Explorer\\Explorer'   => 'index, search, updateDisplayMode, errors',
+        'Explorer\\File'       => 'edit, download, info, upload, remove',
+        'Explorer\\Folder'     => 'edit, download, info, remove',
+        'Explorer\\Massaction' => 'index',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_flat',

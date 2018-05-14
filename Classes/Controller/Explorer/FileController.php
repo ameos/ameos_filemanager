@@ -308,19 +308,19 @@ class FileController extends AbstractController
         $uploadUri = $this->uriBuilder->reset()->uriFor('upload', ['folder' => $folder->getUid()]);
         $pageRenderer = $this->objectManager->get(PageRenderer::class);
         $pageRenderer->addCssFile('EXT:ameos_filemanager/Resources/Public/Css/dropzone/dropzone.css');
-        $pageRenderer->addJsFooterFile('EXT:ameos_filemanager/Resources/Public/JavaScript/dropzone/dropzone.js');
-        $pageRenderer->addJsFooterInlinecode('init-upload', '(function ($) {
+        $pageRenderer->addJsFooterLibrary('dropzone', 'EXT:ameos_filemanager/Resources/Public/JavaScript/dropzone/dropzone.js');
+        $pageRenderer->addJsFooterInlinecode('init-upload-' . time(), '(function ($) {
             $(".uploadarea").dropzone({
                 url: "' . $uploadUri . '",
                 init: function() {
                     this.on("success", function (file, response) {
                         var response = eval("(" + response + ")");
                         $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.editUri + "\">' . LocalizationUtility::translate('edit', 'AmeosFilemanager') . '</a><br>");
-                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.infoUri + "\">' . LocalizationUtility::translate('detail', 'AmeosFilemanager') . '</a>");                        
+                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.infoUri + "\">' . LocalizationUtility::translate('detail', 'AmeosFilemanager') . '</a>");
                     });
                 }
             });
-        }(jQuery));');
+        }(jQuery));', false);
 
         // assign to view        
         $this->view->assign('folder', $folder);

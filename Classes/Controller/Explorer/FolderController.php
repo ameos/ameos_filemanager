@@ -192,7 +192,7 @@ class FolderController extends AbstractController
                 ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
                 FilemanagerUtility::calculRecursion($rootFolder, $folder)
             );
-            $command = 'cd ' . $filePath . '; zip  ' . $zipPath . ' ' . implode(' ', $files) . ';';
+            $command = 'cd "' . $filePath . '"; zip  "' . $zipPath . '" "' . implode('" "', $files) . '";';
             exec($command, $output);
             if (file_exists($zipPath)) {
                 $filesize = filesize($zipPath);

@@ -88,16 +88,25 @@ class Slot
                     AND tx_ameosfilemanager_domain_model_folder.identifier like \'' . $folder->getParentFolder()->getIdentifier() . '\''
             );
             if ($folderParentRecord) {
-                $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-                $folderRepository->requestInsert([
-                    'tstamp'     => time(),
-                    'crdate'     => time(),
-                    'cruser_id'  => 1,
-                    'title'      => $folder->getName(),
-                    'uid_parent' => $folderParentRecord['uid'],
-                    'identifier' => $folder->getIdentifier(),
-                    'storage'    => $folder->getStorage()->getUid(),
-                ]);
+                $folderRecord = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+                    'tx_ameosfilemanager_domain_model_folder.uid',
+                    'tx_ameosfilemanager_domain_model_folder',
+                    'tx_ameosfilemanager_domain_model_folder.deleted = 0
+                        AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage()->getUid() . '
+                        AND tx_ameosfilemanager_domain_model_folder.identifier like \'' . $folder->getIdentifier() . '\''
+                );
+                if (!$folderRecord) {
+                    $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
+                    $folderRepository->requestInsert([
+                        'tstamp'     => time(),
+                        'crdate'     => time(),
+                        'cruser_id'  => 1,
+                        'title'      => $folder->getName(),
+                        'uid_parent' => $folderParentRecord['uid'],
+                        'identifier' => $folder->getIdentifier(),
+                        'storage'    => $folder->getStorage()->getUid(),
+                    ]);
+                }
                 $inserted = true;
             }
 

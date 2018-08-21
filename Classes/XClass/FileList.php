@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
+use TYPO3\CMS\Filelist\FileListEditIconHookInterface;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Slots\Slot;
 

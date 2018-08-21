@@ -274,10 +274,22 @@ class Slot
             try {
                 $textExtractor = $textExtractorRegistry->getTextExtractor($file);
                 if (!is_null($textExtractor)) {
-                    $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
-                        'file'    => $file->getUid(),
-                        'content' => $textExtractor->extractText($file)
-                    ]);
+                    $fileContent = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+                        'file',
+                        'tx_ameosfilemanager_domain_model_filecontent',
+                        'file = ' . $file->getUid()
+                    );
+                    if ($fileContent) {
+                        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', 'file = ' . $file->getUid(), [
+                            'file'    => $file->getUid(),
+                            'content' => $textExtractor->extractText($file)
+                        ]); 
+                    } else {
+                        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
+                            'file'    => $file->getUid(),
+                            'content' => $textExtractor->extractText($file)
+                        ]);  
+                    }
                 }    
             } catch (\Exception $e) {
                 

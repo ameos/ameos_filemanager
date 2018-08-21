@@ -2,13 +2,13 @@
 namespace Ameos\AmeosFilemanager\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *

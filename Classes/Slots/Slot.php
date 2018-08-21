@@ -244,8 +244,8 @@ class Slot
             'tx_ameosfilemanager_domain_model_folder.uid',
             'tx_ameosfilemanager_domain_model_folder',
             'tx_ameosfilemanager_domain_model_folder.deleted = 0
-                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $targetFolder->getStorage()->getUid() . '
-                AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $targetFolder->getIdentifier() . '\''
+                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage()->getUid() . '
+                AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $folder->getIdentifier() . '\''
         );
         $folderRepository->requestDelete($folderRecord['uid']);
     }

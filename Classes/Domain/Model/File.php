@@ -19,6 +19,17 @@ use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
  
 class File extends \TYPO3\CMS\Extbase\Domain\Model\File
 {
+    /**
+     * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository                                                                                           
+     * @inject
+     */
+    protected $folderRepository;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
+     * @inject
+     */
+    protected $frontendUserRepository;
 
     /**
      * @var array folders
@@ -46,7 +57,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getMeta($reload = false)
     {
         if ($this->meta === FALSE || $reload) {
-            $metaDataRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
+            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+            $metaDataRepository = $objectManager->get(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
             $this->meta = $metaDataRepository->findByFileUid($this->getUid());
         }
         return $this->meta;
@@ -182,13 +194,12 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
-     * @return Tx_Extbase_Domain_Model_FrontendUser
+     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function getFeUser()
     {
         if ($this->feuser === FALSE) {
-            $feUserRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository::class);
-            $this->feuser = $feUserRepository->findByUid($this->getMeta()['fe_user_id']);
+            $this->feuser = $this->frontendUserRepository->findByUid($this->getMeta()['fe_user_id']);
         }
         return $this->feuser;
     }
@@ -215,8 +226,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getParentFolder()
     {
         if (!isset(self::$folders[$this->getMeta()['folder_uid']])) {
-            $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-            self::$folders[$this->getMeta()['folder_uid']] = $folderRepository->findByUid($this->getMeta()['folder_uid']);
+            self::$folders[$this->getMeta()['folder_uid']] = $this->folderRepository->findByUid($this->getMeta()['folder_uid']);
         }        
         return self::$folders[$this->getMeta()['folder_uid']];
     }
@@ -282,8 +292,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getCategories()
     {
-        $extbaseObjectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $repo = $extbaseObjectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
+        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $repo = $objectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
 
         $uidsCat = $this->getCategoriesUids();
         if (!empty($uidsCat)) {

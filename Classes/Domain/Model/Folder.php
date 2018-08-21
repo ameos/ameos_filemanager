@@ -19,10 +19,15 @@ use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
  
 class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 {
+    /**
+     * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
+     * @inject
+     */
+    protected $folderRepository;
 
     /**
      * @var string
-     * *@validate NotEmpty
+     * @validate NotEmpty
      */
     protected $title;
 
@@ -212,9 +217,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getFolders()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        $folders = $folderRepository->getSubFolderFromFolder($this->getUid());
-        return $folders;
+        return $this->folderRepository->getSubFolderFromFolder($this->getUid());
     }
 
     /**
@@ -607,8 +610,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getFileNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFilesForFolder($this);        
+        return $this->folderRepository->countFilesForFolder($this);        
     }
 
     /**
@@ -617,8 +619,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getReadyFileNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFilesForFolder($this, false);        
+        return $this->folderRepository->countFilesForFolder($this, false);        
     }
 
     /**
@@ -627,8 +628,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getFilesSize()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFilesizeForFolder($this);        
+        return $this->folderRepository->countFilesizeForFolder($this);        
     }
 
     /**
@@ -637,8 +637,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getReadyFilesSize()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFilesizeForFolder($this, false);        
+        return $this->folderRepository->countFilesizeForFolder($this, false);        
     }
 
     /**
@@ -647,8 +646,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getFolderNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFoldersForFolder($this->getUid());        
+        return $this->folderRepository->countFoldersForFolder($this->getUid());        
     }
 
     /**
@@ -657,8 +655,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */ 
     public function getReadyFolderNumber()
     {
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        return $folderRepository->countFoldersForFolder($this->getUid(), false);        
+        return $this->folderRepository->countFoldersForFolder($this->getUid(), false);        
     }
 
     public function hasFolder($folderName, $uid=null)

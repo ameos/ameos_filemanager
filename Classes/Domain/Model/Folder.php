@@ -665,6 +665,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
                 return true;
             }
         }
+        return false;
     }
 
 

@@ -49,7 +49,6 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function requestDelete($uid)
     {
-        // TODO : recursive....
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'folder_uid = '. (int)$uid, ['deleted' => 1]);
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = '.(int)$uid, ['deleted' => 1]);
     }

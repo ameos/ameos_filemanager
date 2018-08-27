@@ -558,53 +558,15 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $parent = $this->folderRepository->findByUid($fileArgs['uidParent']);
         $errors = [];
 
-        // No uid so we are in create mode
-        if ($fileArgs['uidFolder'] == '') {
-            if (!AccessUtility::userHasAddFolderAccess($this->user, $parent, ['folderRoot' => $this->settings['startFolder']])) {
-                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
-            }
-            $newFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Model\Folder::class);
-            $newFolder->setFeUser($GLOBALS['TSFE']->fe_user->user['uid']);
-            // Needed if an error is detected.
-            $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
-            if ($parent->hasFolder($newFolder->getTitle())) {
-                $errors['title'] = "Folder already exists";
-            }
-        } else { // edit mode
-            $exFolderQuery = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow("*", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.uid = ".$fileArgs['uidFolder'] );
-            
-            //checking if user had the right to update this folder BEFORE the edition.
-            $newFolder = $this->folderRepository->findByUid($fileArgs['uidFolder']);
-            if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
-                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
-            }
-            if ($parent->hasFolder($newFolder->getTitle(),$newFolder->getUid())) {
-                $errors['title'] = "Folder already exists";
-            }
-        }
-        
-        if (empty($fileArgs['title'])) {
-            $errors['title'] = 'Folder title cannot be empty';
-        }
-
-        if (!empty($errors)) {
-            $resultUri = $this->uriBuilder
-                ->reset()
-                ->setCreateAbsoluteUri(true)
-                ->setArguments(['tx_ameos_filemanager' => [
-                    'newFolder'    => $fileArgs['uidFile'],
-                    'errors'       => $errors,
-                    'folder'       => $fileArgs['returnFolder'],
-                    'currentState' => $fileArgs
-                ]])->uriFor('formFolder');
-            
-            $this->redirectToUri($resultUri);
-        }
-
         $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
         $storage = $storageRepository->findByUid($this->storageUid);
         $localDriver = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Driver\LocalDriver::class);
 
+        if ($fileArgs['uidFolder'] == '') {
+            $newFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Model\Folder::class);
+        } else {
+            $newFolder = $this->folderRepository->findByUid($fileArgs['uidFolder']);
+        }
         // Editing folder
         $newFolder->setTitle($localDriver->sanitizeFileName($fileArgs['title']));
         $newFolder->setDescription($fileArgs['description']);
@@ -620,10 +582,52 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         $newFolder->setUidParent($parent);
         $newFolder->setOwnerHasReadAccess((isset($this->settings['newFolder']['owner_has_read_access']) ? $this->settings['newFolder']['owner_has_read_access'] : 1));
         $newFolder->setOwnerHasWriteAccess((isset($this->settings['newFolder']['owner_has_write_access']) ? $this->settings['newFolder']['owner_has_write_access'] : 1));
-        
+
+        // No uid so we are in create mode
+        if ($fileArgs['uidFolder'] == '') {
+            if (!AccessUtility::userHasAddFolderAccess($this->user, $parent, ['folderRoot' => $this->settings['startFolder']])) {
+                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
+            }
+            
+            $newFolder->setFeUser($GLOBALS['TSFE']->fe_user->user['uid']);
+            // Needed if an error is detected.
+            $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
+            if ($parent->hasFolder($newFolder->getTitle())) {
+                $errors['title'] = "Folder already exists";
+            }
+        } else { // edit mode
+            //checking if user had the right to update this folder BEFORE the edition.            
+            if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
+                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
+            }
+            if ($parent->hasFolder($newFolder->getTitle(),$newFolder->getUid())) {
+                $errors['title'] = "Folder already exists";
+            }
+        }
+
+        if (empty($fileArgs['title'])) {
+            $errors['title'] = 'Folder title cannot be empty';
+        }
+
+        if (!empty($errors)) {
+            $resultUri = $this->uriBuilder
+                ->reset()
+                ->setCreateAbsoluteUri(true)
+                ->setArguments(['tx_ameosfilemanager' => [
+                    'newFolder'    => $fileArgs['uidFile'],
+                    'errors'       => $errors,
+                    'folder'       => $fileArgs['returnFolder'],
+                    'currentState' => $fileArgs
+                ]])->uriFor('formFolder');
+            
+            $this->redirectToUri($resultUri);
+        }
+
+        // no error
         $this->folderRepository->add($newFolder);
 
         if ($fileArgs['uidFolder'] != '') {
+            $exFolderQuery = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow("*", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.uid = ".$fileArgs['uidFolder'] );
             $storageFolder = $storage->getFolder($newFolder->getParent()->getGedPath() . '/' . $exFolderQuery['title'] . '/');
             $storageFolder->rename($newFolder->getTitle());
 

@@ -491,6 +491,7 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         if ($editFolderUid != '') {
             if ($newFolder = $this->folderRepository->findByUid($editFolderUid,$writeRight=true)) {
                 $this->view->assign('folder',$newFolder);
+                $args['currentState']['uid'] = $newFolder->getUid();
                 if ($newFolder->getParent()){
                     $this->view->assign('parentFolder',$newFolder->getParent()->getUid());
                 } else {
@@ -593,33 +594,39 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             // Needed if an error is detected.
             $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
             if ($parent->hasFolder($newFolder->getTitle())) {
-                $errors['title'] = "Folder already exists";
+                $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
             }
         } else { // edit mode
             //checking if user had the right to update this folder BEFORE the edition.            
             if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
                 return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
             }
-            if ($parent->hasFolder($newFolder->getTitle(),$newFolder->getUid())) {
-                $errors['title'] = "Folder already exists";
+            if ($parent->hasFolder($newFolder->getTitle(), $newFolder->getUid())) {
+                $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
             }
         }
 
         if (empty($fileArgs['title'])) {
-            $errors['title'] = 'Folder title cannot be empty';
+            $errors['title'] = LocalizationUtility::translate('folderTitleEmpty', 'ameos_filemanager');
         }
 
         if (!empty($errors)) {
+            $arguments = [
+                'errors'       => $errors,
+                'currentState' => $fileArgs
+            ];
+            if ($fileArgs['uidFolder']) {
+                $arguments['newFolder'] = $fileArgs['uidFolder'];
+            }
+            if ($fileArgs['returnFolder']) {
+                $arguments['returnfolder'] = $fileArgs['returnFolder'];
+                $arguments['folder'] = $fileArgs['returnFolder'];
+            }
             $resultUri = $this->uriBuilder
                 ->reset()
                 ->setCreateAbsoluteUri(true)
-                ->setArguments(['tx_ameosfilemanager' => [
-                    'newFolder'    => $fileArgs['uidFile'],
-                    'errors'       => $errors,
-                    'folder'       => $fileArgs['returnFolder'],
-                    'currentState' => $fileArgs
-                ]])->uriFor('formFolder');
-            
+                ->setArguments(['tx_ameosfilemanager' => $arguments])
+                ->uriFor('formFolder');
             $this->redirectToUri($resultUri);
         }
 

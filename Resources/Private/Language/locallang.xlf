@@ -81,6 +81,8 @@
             <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source></trans-unit>
             <trans-unit id="uploadfolder" xml:space="preserve"><source>Upload on folder %s</source></trans-unit>
             <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source></trans-unit>
+            <trans-unit id="folderTitleEmpty" xml:space="preserve"><source>Folder title cannot be empty</source></trans-unit>
+            <trans-unit id="folderExist" xml:space="preserve"><source>Folder already exists</source></trans-unit>
 
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>

@@ -568,46 +568,47 @@ class FileManagerController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
         } else {
             $newFolder = $this->folderRepository->findByUid($fileArgs['uidFolder']);
         }
-        // Editing folder
-        $newFolder->setTitle($localDriver->sanitizeFileName($fileArgs['title']));
-        $newFolder->setDescription($fileArgs['description']);
-        $newFolder->setIdentifier($parent->getGedPath() . '/' . $newFolder->getTitle() . '/');
-        $newFolder->setKeywords($fileArgs['keywords']);
-        $newFolder->setNoReadAccess($fileArgs['noReadAccess']);
-        $newFolder->setNoWriteAccess($fileArgs['noWriteAccess']);
-        $newFolder->setArrayFeGroupRead($fileArgs['arrayFeGroupRead']);
-        $newFolder->setArrayFeGroupWrite($fileArgs['arrayFeGroupWrite']);
-        $newFolder->setArrayFeGroupAddfile($fileArgs['arrayFeGroupAddfile']);
-        $newFolder->setArrayFeGroupAddfolder($fileArgs['arrayFeGroupAddfolder']);
-        $newFolder->setCategories($fileArgs['categories']);
-        $newFolder->setUidParent($parent);
-        $newFolder->setOwnerHasReadAccess((isset($this->settings['newFolder']['owner_has_read_access']) ? $this->settings['newFolder']['owner_has_read_access'] : 1));
-        $newFolder->setOwnerHasWriteAccess((isset($this->settings['newFolder']['owner_has_write_access']) ? $this->settings['newFolder']['owner_has_write_access'] : 1));
-
-        // No uid so we are in create mode
-        if ($fileArgs['uidFolder'] == '') {
-            if (!AccessUtility::userHasAddFolderAccess($this->user, $parent, ['folderRoot' => $this->settings['startFolder']])) {
-                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
-            }
-            
-            $newFolder->setFeUser($GLOBALS['TSFE']->fe_user->user['uid']);
-            // Needed if an error is detected.
-            $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
-            if ($parent->hasFolder($newFolder->getTitle())) {
-                $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
-            }
-        } else { // edit mode
-            //checking if user had the right to update this folder BEFORE the edition.            
-            if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
-                return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
-            }
-            if ($parent->hasFolder($newFolder->getTitle(), $newFolder->getUid())) {
-                $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
-            }
-        }
 
         if (empty($fileArgs['title'])) {
             $errors['title'] = LocalizationUtility::translate('folderTitleEmpty', 'ameos_filemanager');
+        } else {
+            // Editing folder
+            $newFolder->setTitle($localDriver->sanitizeFileName($fileArgs['title']));
+            $newFolder->setDescription($fileArgs['description']);
+            $newFolder->setIdentifier($parent->getGedPath() . '/' . $newFolder->getTitle() . '/');
+            $newFolder->setKeywords($fileArgs['keywords']);
+            $newFolder->setNoReadAccess($fileArgs['noReadAccess']);
+            $newFolder->setNoWriteAccess($fileArgs['noWriteAccess']);
+            $newFolder->setArrayFeGroupRead($fileArgs['arrayFeGroupRead']);
+            $newFolder->setArrayFeGroupWrite($fileArgs['arrayFeGroupWrite']);
+            $newFolder->setArrayFeGroupAddfile($fileArgs['arrayFeGroupAddfile']);
+            $newFolder->setArrayFeGroupAddfolder($fileArgs['arrayFeGroupAddfolder']);
+            $newFolder->setCategories($fileArgs['categories']);
+            $newFolder->setUidParent($parent);
+            $newFolder->setOwnerHasReadAccess((isset($this->settings['newFolder']['owner_has_read_access']) ? $this->settings['newFolder']['owner_has_read_access'] : 1));
+            $newFolder->setOwnerHasWriteAccess((isset($this->settings['newFolder']['owner_has_write_access']) ? $this->settings['newFolder']['owner_has_write_access'] : 1));
+
+            // No uid so we are in create mode
+            if ($fileArgs['uidFolder'] == '') {
+                if (!AccessUtility::userHasAddFolderAccess($this->user, $parent, ['folderRoot' => $this->settings['startFolder']])) {
+                    return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
+                }
+                
+                $newFolder->setFeUser($GLOBALS['TSFE']->fe_user->user['uid']);
+                // Needed if an error is detected.
+                $fileArgs['feUser'] = $GLOBALS['TSFE']->fe_user->user['uid'];
+                if ($parent->hasFolder($newFolder->getTitle())) {
+                    $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
+                }
+            } else { // edit mode
+                //checking if user had the right to update this folder BEFORE the edition.            
+                if (!AccessUtility::userHasFolderWriteAccess($this->user, $newFolder, ['folderRoot' => $this->settings['startFolder']])) {
+                    return LocalizationUtility::translate('accessDenied', 'ameos_filemanager');
+                }
+                if ($parent->hasFolder($newFolder->getTitle(), $newFolder->getUid())) {
+                    $errors['title'] = LocalizationUtility::translate('folderExist', 'ameos_filemanager');
+                }
+            }            
         }
 
         if (!empty($errors)) {

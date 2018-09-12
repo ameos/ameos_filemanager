@@ -72,7 +72,7 @@ class FilemanagerUtility
 	public static function getImageIconeTagForType($type, $iconFolder)
     {
 		if(empty($iconFolder)) {
-			$iconFolder = 'typo3conf/ext/ameos_filemanager/Resources/Public/Icons/';
+			$iconFolder = '/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/';
 		}
 
 		switch ($type) {
@@ -114,7 +114,7 @@ class FilemanagerUtility
 		if (file_exists($iconFolder.'icon_default_file.png')) {
 			return '<img src="'.$iconFolder.'icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
 		} else {
-			return '<img src="typo3conf/ext/ameos_filemanager/Resources/Public/Icons/icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
+			return '<img src="/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
 		}
 	}
 

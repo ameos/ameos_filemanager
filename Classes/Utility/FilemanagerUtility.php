@@ -72,13 +72,13 @@ class FilemanagerUtility
 	public static function getImageIconeTagForType($type, $iconFolder)
     {
 		if(empty($iconFolder)) {
-			$iconFolder = '/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/';
+			$iconFolder = 'typo3conf/ext/ameos_filemanager/Resources/Public/Icons/';
 		}
 
 		switch ($type) {
 			case 'folder':
 				if(file_exists($iconFolder.'icon_folder.png')) {
-					return '<img src="'.$iconFolder.'icon_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
+					return '<img src="/'.$iconFolder.'icon_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
 				}
 				else {
 					return self::getDefaultIcon($iconFolder);
@@ -86,7 +86,7 @@ class FilemanagerUtility
 				break;
 			case 'previous_folder':
 				if(file_exists($iconFolder.'icon_previous_folder.png')) {
-					return '<img src="'.$iconFolder.'icon_previous_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
+					return '<img src="/'.$iconFolder.'icon_previous_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
 				}
 				else {
 					return self::getDefaultIcon($iconFolder);
@@ -94,7 +94,7 @@ class FilemanagerUtility
 				break;
 			default:
 				if(file_exists($iconFolder.'icon_'.$type.'.png')) {
-					return '<img src="'.$iconFolder.'icon_'.$type.'.png" alt="file" title="file" class="icone_file_manager" />';
+					return '<img src="/'.$iconFolder.'icon_'.$type.'.png" alt="file" title="file" class="icone_file_manager" />';
 				}
 				else {
 					return '<i class="fa fa-file-text-o" aria-hidden="true"></i>';
@@ -112,7 +112,7 @@ class FilemanagerUtility
 	public static function getDefaultIcon($iconFolder)
     {
 		if (file_exists($iconFolder.'icon_default_file.png')) {
-			return '<img src="'.$iconFolder.'icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
+			return '<img src="/'.$iconFolder.'icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
 		} else {
 			return '<img src="/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
 		}

@@ -150,7 +150,7 @@ class DownloadUtility
                 // Download of the file
                 header('Content-Description: File Transfer');
                 header('Content-Type: ' . mime_content_type($filename));
-                header('Content-Disposition: attachment; filename=' . basename($filename));
+                header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate');
                 header('Pragma: public');

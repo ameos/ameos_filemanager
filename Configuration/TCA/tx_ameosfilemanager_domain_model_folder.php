@@ -18,7 +18,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => ExtensionManagementUtility::extRelPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
+        'iconfile'       => ExtensionManagementUtility::extPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
         'searchFields'   => 'title, description, keywords',
         'rootLevel'      => 1,
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
@@ -27,7 +27,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
         'owner' => ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'],
     ],
     'types' => ['0' => [
-        'showitem' => 'description,keywords,status,
+        'showitem' => 'description,keywords,
             --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write,fe_group_addfolder,fe_group_addfile'
     ]],
     'interface' => ['showRecordFieldList' => 'title,description,keywords'],
@@ -263,22 +263,6 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
                 'foreign_table' => 'sys_file',                
             ]
         ],
-        'status' => [
-            'exclude' => 1,
-            'label'   => $ll . '.status',
-            'config'  => [
-                'type'          => 'select',
-                'maxitems'      => 1,
-                'minitems'      => 0,
-                'size'          => 1,
-                'items'         => [
-                    [$ll . '.status.parent',  0],
-                    [$ll . '.status.ready',   1],
-                    [$ll . '.status.archive', 2],
-                ],
-            ]
-        ],
-        'realstatus' => ['config' => ['type' => 'passthrough']]
     ],
 
 ];

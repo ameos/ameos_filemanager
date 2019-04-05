@@ -41,17 +41,11 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "numberoffiles")}</td>
-                <f:if condition="{settings.displayArchive}">
-                    <f:then><td>{folder.fileNumber} <f:translate key="folderFiles"/></td></f:then>
-                    <f:else><td>{folder.readyFileNumber} <f:translate key="folderFiles"/></td></f:else>
-                </f:if>
+                <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
             </tr>
             <tr>
                 <td>{f:translate(key: "size")}</td>
-                <f:if condition="{settings.displayArchive}">
-                    <f:then><td>{filemanager:filesize(size: folder.filesSize)}</td></f:then>
-                    <f:else><td>{filemanager:filesize(size: folder.readyFilesSize)}</td></f:else>
-                </f:if>
+                <td>{filemanager:filesize(size: folder.filesSize)}</td>
             </tr>
         </table>
     </div>

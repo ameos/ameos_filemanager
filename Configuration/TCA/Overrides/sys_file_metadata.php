@@ -111,27 +111,11 @@ $additionalColumnsMetadata = [
             'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
         ]
     ],
-    'status' => [
-        'exclude' => 1,
-        'label'   => $ll . '.status',
-        'config'  => [
-            'type'          => 'select',
-            'maxitems'      => 1,
-            'minitems'      => 0,
-            'size'          => 1,
-            'items'         => [
-                [$ll . '.status.parent',  0],
-                [$ll . '.status.ready',   1],
-                [$ll . '.status.archive', 2],
-            ],
-        ]
-    ],
-    'realstatus' => ['config' => ['type' => 'passthrough']]
 ];
 
 $GLOBALS['TCA']['sys_file_metadata']['palettes']['owner'] = ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', '--div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', 'keywords,status', '', 'after:alternative');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata', 'keywords', '', 'after:alternative');
 

@@ -3,6 +3,7 @@ namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 
 /*
@@ -143,15 +144,18 @@ class FilemanagerUtility
 	 */
 	public static function getFolderPathFromUid($uid)
     {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'uid_parent, title',
-			'tx_ameosfilemanager_domain_model_folder',
-			'tx_ameosfilemanager_domain_model_folder.uid = '.$uid
-		);
-		if ($res['uid_parent'] != '' && $res['uid_parent'] != 0) {
-			return self::getFolderPathFromUid($res['uid_parent']).'/'.$res['title'];
-		}
-		return '/'.$res['title'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+        $folder = $queryBuilder
+            ->select('uid_parent', 'title')
+            ->from('tx_ameosfilemanager_domain_model_folder', 'folder')
+            ->where($queryBuilder->expr()->eq('uid', (int)$uid))
+            ->execute()
+            ->fetch();
+        if ($folder && $folder['uid_parent'] > 0) {
+            return self::getFolderPathFromUid($folder['uid_parent']) . '/' . $folder['title'];
+        }
+        return '/' . $folder['title'];
 	}
 
     /**

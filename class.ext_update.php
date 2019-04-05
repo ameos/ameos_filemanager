@@ -3,6 +3,7 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -62,14 +63,18 @@ class ext_update
      */
     protected function initializeDatabase()
     {
-        $contenu = '';
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $storageRepository = $this->objectManager->get(StorageRepository::class);
         $storages = $storageRepository->findAll();
-        $i=0;
-
-        $GLOBALS['TYPO3_DB']->sql_query('DELETE FROM tx_ameosfilemanager_domain_model_folder WHERE identifier = \'\' OR identifier IS NULL');
-        $GLOBALS['TYPO3_DB']->sql_query('UPDATE tx_ameosfilemanager_domain_model_folder SET deleted = 1');
+        
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder');
+        $connection->executeQuery(
+            'DELETE FROM tx_ameosfilemanager_domain_model_folder WHERE identifier = \'\' OR identifier IS NULL'
+        );
+        $connection->executeQuery(
+            'UPDATE tx_ameosfilemanager_domain_model_folder SET deleted = 1'
+        );
         
         foreach ($storages as $storage) {
             $this->currentStorage = $storage;
@@ -109,6 +114,12 @@ class ext_update
      */
     protected function setDatabaseForFolder($storageFolderPath, $folder, $uidParent = 0, $storage)
     {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+
+        $folderConnection = $connectionPool->getConnectionForTable('tx_ameosfilemanager_domain_model_folder');        
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+        $queryBuilder->getRestrictions()->removeAll();
+
         $files = [];
         $this->countFolder++;
         if ($handle = opendir($folder)) {
@@ -116,43 +127,55 @@ class ext_update
                 if ($entry != '.' && $entry != '..') {
                     if (is_dir($folder . $entry)) {
                         $identifier = '/' . trim(str_replace($storageFolderPath, '', $folder . $entry), '/') . '/';
-                        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                            'tx_ameosfilemanager_domain_model_folder.uid, tx_ameosfilemanager_domain_model_folder.storage',
-                            'tx_ameosfilemanager_domain_model_folder',
-                            'tx_ameosfilemanager_domain_model_folder.identifier like \''. $identifier . '\'
-                                AND (
-                                    tx_ameosfilemanager_domain_model_folder.storage = 0
-                                    OR tx_ameosfilemanager_domain_model_folder.storage = ' . $storage . '
-                                )'
-                        );
+
+                        $qb = clone $queryBuilder;
+                        $res = $qb->select('uid', 'storage')
+                            ->from('tx_ameosfilemanager_domain_model_folder')
+                            ->where(
+                                $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage, \PDO::PARAM_INT)),
+                                $qb->expr()->like('identifier', $qb->createNamedParameter($identifier))
+                            )
+                            ->execute();
                         $exist = false;
-                        if (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) !== false) {                            
+                        if ($row = $res->fetch()) {
                             $exist = true;
                             $uid = $row['uid'];
 
-                            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = ' . $uid, [
-                                'storage'    => $storage,
-                                'deleted'    => 0,
-                                'uid_parent' => $uidParent,
-                            ]);
+                            $updateQb = clone $queryBuilder;
+                            $updateQb->update('tx_ameosfilemanager_domain_model_folder')
+                                ->where(
+                                    $updateQb->expr()->eq('uid', $updateQb->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+                                )
+                                ->set('deleted', 0)
+                                ->set('uid_parent', $uidParent)
+                                ->set('deleted', $storage)
+                                ->execute();
                         }
 
                         if (!$exist) {
                             $this->countAddedFolder ++;
-                            
-                            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_folder', [
-                                'title'      => $entry,
-                                'pid'        => 0,
-                                'cruser_id'  => $GLOBALS['BE_USER']->user['uid'],
-                                'uid_parent' => $uidParent,
-                                'crdate'     => time(),
-                                'tstamp'     => time(),
-                                'deleted'    => 0,
-                                'hidden'     => 0,
-                                'identifier' => $identifier,
-                                'storage'    => $storage,
-                            ]);                            
-                            $uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+
+                            $insertQb = clone $queryBuilder;
+                            $insertQb->insert('tx_ameosfilemanager_domain_model_folder')
+                                ->values([
+                                    'title'      => $entry,
+                                    'pid'        => 0,
+                                    'cruser_id'  => $GLOBALS['BE_USER']->user['uid'],
+                                    'uid_parent' => $uidParent,
+                                    'crdate'     => time(),
+                                    'tstamp'     => time(),
+                                    'deleted'    => 0,
+                                    'hidden'     => 0,
+                                    'identifier' => $identifier,
+                                    'storage'    => $storage,
+                                    'fe_group_read'      => '',
+                                    'fe_group_write'     => '',
+                                    'fe_group_addfile'   => '',
+                                    'fe_group_addfolder' => '',
+                                ])
+                                ->execute();
+
+                            $uid = $folderConnection->lastInsertId('tx_ameosfilemanager_domain_model_folder');
                             $this->countFolder++;                            
                         }
                         $this->setDatabaseForFolder($storageFolderPath, $folder . $entry . '/', $uid, $storage);
@@ -164,26 +187,57 @@ class ext_update
             closedir($handle);
 
             $currentFolderIdentifier = '/' . trim(str_replace($storageFolderPath, '', $folder), '/') . '/';
-            $currentFolderRecord = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'tx_ameosfilemanager_domain_model_folder.uid',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.identifier like \''. $currentFolderIdentifier . '\'
-                    AND (
-                        tx_ameosfilemanager_domain_model_folder.storage = 0
-                        OR tx_ameosfilemanager_domain_model_folder.storage = ' . $storage . '
-                    )'
-            );
+            $qb = clone $queryBuilder;
+            $qb->select('uid')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where(
+                    $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage, \PDO::PARAM_INT)),
+                    $qb->expr()->like('identifier', $qb->createNamedParameter($identifier))
+                )
+                ->execute()
+                ->fetch();
+
             if ($currentFolderRecord) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'sys_file_metadata.uid, sys_file_metadata.file, sys_file.identifier',
-                    'sys_file_metadata JOIN sys_file ON sys_file.uid = sys_file_metadata.file',
-                    'sys_file_metadata.folder_uid = ' . $currentFolderRecord['uid'] . '
-                        AND sys_file.storage = ' . $storage
-                );
-                while (($file = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) !== false) {
+                $qbfile = $connectionPool->getQueryBuilderForTable('sys_file_metadata');
+                $qbfile->getRestrictions()->removeAll();
+
+                $result = $qbfile->select('meta.uid', 'meta.file', 'file.identifier')
+                    ->from('sys_file_metadata', 'meta')
+                    ->join('meta', 'sys_file', 'file',
+                        $qbfile->expr()->eq('file.uid', $qbfile->quoteIdentifier('meta.file'))
+                    )
+                    ->where(
+                        $qbfile->expr()->eq(
+                            'meta.folder_uid', 
+                            $qbfile->createNamedParameter((int)$currentFolderIdentifier['uid'], \PDO::PARAM_INT)
+                        ),
+                        $qbfile->expr()->eq(
+                            'file.storage', 
+                            $qbfile->createNamedParameter((int)$storage, \PDO::PARAM_INT)
+                        )
+                    )
+                    ->execute();
+               if ($file = $result->fetch()) {
                     if (!file_exists($storageFolderPath . $file['identifier'])) {
-                        $GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_file', 'uid = ' . $file['file']);
-                        $GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_file_metadata', 'uid = ' . $file['uid']);
+                        $qbDelete = $connectionPool->getQueryBuilderForTable('sys_file');
+                        $qbDelete->getRestrictions()->removeAll();
+                        $qbDelete
+                            ->delete('sys_file')
+                            ->where($qbDelete->expr()->eq(
+                                'uid', 
+                                $qbDelete->createNamedParameter((int)$file['file'], \PDO::PARAM_INT)
+                            ))
+                            ->execute();
+
+                        $qbDelete = $connectionPool->getQueryBuilderForTable('sys_file_metadata');
+                        $qbDelete->getRestrictions()->removeAll();
+                        $qbDelete
+                            ->delete('sys_file_metadata')
+                            ->where($qbDelete->expr()->eq(
+                                'uid', 
+                                $qbDelete->createNamedParameter((int)$file['uid'], \PDO::PARAM_INT)
+                            ))
+                            ->execute();
                     }
                 }
             }
@@ -197,19 +251,36 @@ class ext_update
      */
     protected function setDatabaseForFile($storageFolderPath, $folderPath, $entry, $folderParentUid)
     {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $fileConnection = $connectionPool->getConnectionForTable('sys_file');
+        $metaConnection = $connectionPool->getConnectionForTable('sys_file_metadata');
+        $fileQueryBuilder = $connectionPool->getQueryBuilderForTable('sys_file');
+
         $filePath = $folderPath . $entry;
         $fileIdentifier = str_replace($storageFolderPath, '', $filePath);
         $infoFile = $this->currentStorage->getFileInfoByIdentifier($fileIdentifier, array());
 
         // Add file into sys_file if it doesn't exist
-        $file = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('uid', 'sys_file', 'identifier LIKE \'' . $fileIdentifier . '\'');
+        $file = $fileQueryBuilder->select('uid')
+            ->from('sys_file')
+            ->where(
+                $fileQueryBuilder->expr()->like('identifier', $fileQueryBuilder->createNamedParameter($fileIdentifier))
+            )
+            ->execute()
+            ->fetch();
+
         if ($file) {
             $fileUid = $file['uid'];
 
             // adding metadatas.
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'file = ' . $fileUid, ['folder_uid' => $folderParentUid]);
+            $metaConnection->update(
+                'sys_file_metadata',
+                ['folder_uid' => $folderParentUid],
+                ['file' => $fileUid]
+            );
+
         } else {
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_file', [
+            $fileConnection->insert('sys_file', [
                 'pid'               => 0,
                 'tstamp'            => time(),
                 'storage'           => $infoFile['storage'],
@@ -224,13 +295,15 @@ class ext_update
                 'modification_date' => $infoFile['mtime']
             ]);
 
-            $fileUid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+            $fileUid = $fileConnection->lastInsertId('sys_file');
 
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_file_metadata', [
+            $metaConnection->insert('sys_file_metadata', [
                 'pid'    => 0,
                 'tstamp' => time(),
                 'crdate' => time(),
                 'file'   => $fileUid,
+                'fe_group_read'  => '',
+                'fe_group_write' => '',
             ]);
         }
     }

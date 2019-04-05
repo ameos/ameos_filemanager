@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -40,7 +41,9 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function requestUpdate($uid, $field_values)
     {
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = ' . $uid, $field_values, false);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder')
+            ->update('tx_ameosfilemanager_domain_model_folder', $field_values, ['uid' => $uid]);
     }
 
     /**
@@ -49,8 +52,19 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function requestDelete($uid)
     {
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'folder_uid = '. (int)$uid, ['deleted' => 1]);
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = '.(int)$uid, ['deleted' => 1]);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('sys_file_metadata')
+            ->delete(
+                'sys_file_metadata',
+                ['folder_uid' => (int)$uid]
+            );
+
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder')
+            ->delete(
+                'tx_ameosfilemanager_domain_model_folder',
+                ['uid' => (int)$uid]
+            );
     }
 
     /**
@@ -59,24 +73,20 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function requestInsert($insertArray)
     {
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_folder', $insertArray);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder')
+            ->insert('tx_ameosfilemanager_domain_model_folder', $insertArray);
     }
 
     /**
      * count total files size for a folder
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-     * @param bool $withArchive
      * @return int
      */ 
-    public function countFilesizeForFolder($folder, $withArchive = true)
+    public function countFilesizeForFolder($folder)
     {
         if (!$folder) {
             return 0;
-        }
-
-        $addWhere = '';
-        if (!$withArchive) {
-            $addWhere .= ' AND realstatus IN (0,1)';
         }
 
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
@@ -86,25 +96,19 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
                 AND tx_ameosfilemanager_domain_model_folder.deleted = 0
                 AND sys_file_metadata.file = sys_file.uid
-                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid' . $addWhere
+                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid'
         )['total'];
     }
 
     /**
      * count file for a folder
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-     * @param bool $withArchive
      * @return int
      */ 
-    public function countFilesForFolder($folder, $withArchive = true)
+    public function countFilesForFolder($folder)
     {
         if (!$folder) {
             return 0;
-        }
-
-        $addWhere = '';
-        if (!$withArchive) {
-            $addWhere .= ' AND realstatus IN (0,1)';
         }
 
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
@@ -114,7 +118,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
                 AND tx_ameosfilemanager_domain_model_folder.deleted = 0
                 AND sys_file_metadata.file = sys_file.uid
-                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid' . $addWhere
+                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid'
         )['count'];
     }
 
@@ -124,15 +128,12 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param bool $withArchive
      * @return int
      */ 
-    public function countFoldersForFolder($folderUid, $withArchive = true)
+    public function countFoldersForFolder($folderUid)
     {
         if (empty($folderUid)) {
             return 0;
         }    
         $where = 'uid_parent = ' . (int)$folderUid;
-        if (!$withArchive) {
-            $where .= ' AND realstatus IN (0,1)';
-        }
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','tx_ameosfilemanager_domain_model_folder', $where)['count'];
     }
 
@@ -228,5 +229,21 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $res = $query->execute()->getFirst();
         return $res;
+    }
+
+    public function findRawByStorageAndIdentifier($storage, $identifier)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+
+        return $queryBuilder
+            ->select('*')
+            ->from('tx_ameosfilemanager_domain_model_folder')
+            ->where(
+                $queryBuilder->expr()->eq('storage', $queryBuilder->createNamedParameter($storage)),
+                $queryBuilder->expr()->eq('identifier', $queryBuilder->createNamedParameter($identifier))
+            )
+            ->execute()
+            ->fetch(); 
     }
 }

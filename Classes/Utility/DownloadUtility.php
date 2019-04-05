@@ -29,19 +29,17 @@ class DownloadUtility
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @param ZipArchive $zip zip archive
      * @param int $rootFolder root folder uid
-     * @param int $includeArchive include archive file
      * @param int $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
      * @return void
      */
-    public static function getFilesToAdd($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
+    public static function getFilesToAdd($rootPath, $folder, $zip, $rootFolderUid, $recursiveLimit = false, $recursiveOccurence = 1)
     {
         $filesToAdd = [];
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
-            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
-                && ($includeArchive || $file->getRealstatus() != 2)) {
+            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
                     
                 $localFilepath =
                     PATH_site .
@@ -54,12 +52,11 @@ class DownloadUtility
 
         if ($recursiveOccurence < (int)$recursiveLimit || $recursiveLimit === false) {
             foreach ($folder->getFolders() as $subFolder) {
-                if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])
-                    && ($includeArchive || $subFolder->getRealstatus() != 2)) {
+                if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])) {
                     $recursiveOccurence++;
                     $filesToAdd = array_merge(
                         $filesToAdd,
-                        self::getFilesToAdd($rootPath, $subFolder, $zip, $rootFolderUid, $includeArchive, $recursiveLimit, $recursiveOccurence)
+                        self::getFilesToAdd($rootPath, $subFolder, $zip, $rootFolderUid, $recursiveLimit, $recursiveOccurence)
                     );
                 }
             }
@@ -72,19 +69,17 @@ class DownloadUtility
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @param ZipArchive $zip zip archive
      * @param int $rootFolder root folder uid
-     * @param int $includeArchive include archive file
      * @param int $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
      * @return void
      */
-    public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid, $includeArchive = true, $recursiveLimit = false, $recursiveOccurence = 1)
+    public static function addFolderToZip($rootPath, $folder, $zip, $rootFolderUid, $recursiveLimit = false, $recursiveOccurence = 1)
     {
         $user = ($GLOBALS['TSFE']->fe_user->user);
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
-            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])
-                && ($includeArchive || $file->getRealstatus() != 2)) {
+            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
                     
                 $localFilepath =
                     PATH_site .
@@ -97,10 +92,9 @@ class DownloadUtility
 
         if ($recursiveOccurence < (int)$recursiveLimit || $recursiveLimit === false) {
             foreach ($folder->getFolders() as $subFolder) {
-                if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])
-                    && ($includeArchive || $subFolder->getRealstatus() != 2)) {
+                if (AccessUtility::userHasFolderReadAccess($user, $subFolder, ['folderRoot' => $rootFolderUid])) {
                     $recursiveOccurence++;
-                    self::addFolderToZip($rootPath, $subFolder, $zip, $rootFolderUid, $includeArchive, $recursiveLimit, $recursiveOccurence);
+                    self::addFolderToZip($rootPath, $subFolder, $zip, $rootFolderUid, $recursiveLimit, $recursiveOccurence);
                 }
             }
         }

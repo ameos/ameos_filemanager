@@ -632,30 +632,12 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
-     * return number of ready files in the folder
-     * @return int
-     */ 
-    public function getReadyFilesSize()
-    {
-        return $this->folderRepository->countFilesizeForFolder($this, false);        
-    }
-
-    /**
      * return number of subfolders in the folder
      * @return int
      */ 
     public function getFolderNumber()
     {
         return $this->folderRepository->countFoldersForFolder($this->getUid());        
-    }
-
-    /**
-     * return number of ready subfolders in the folder
-     * @return int
-     */ 
-    public function getReadyFolderNumber()
-    {
-        return $this->folderRepository->countFoldersForFolder($this->getUid(), false);        
     }
 
     public function hasFolder($folderName, $uid=null)

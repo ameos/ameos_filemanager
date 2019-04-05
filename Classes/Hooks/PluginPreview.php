@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Hooks;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -82,16 +83,21 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
             }
             $headerContent = '<strong><a href="' . $url . '">'  . $title . '</a></strong><br/>';
 
-            $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'tx_ameosfilemanager_domain_model_folder.*',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$this->flexFormData['settings']['startFolder']
-            );
-            $storage = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'sys_file_storage.*',
-                'sys_file_storage',
-                'sys_file_storage.uid = ' . (int)$this->flexFormData['settings']['storage']
-            );
+            $folder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder')
+                ->select('*')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where('uid = ' . (int)$this->flexFormData['settings']['startFolder'])
+                ->execute()
+                ->fetch();
+
+            $storage = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('sys_file_storage')
+                ->select('*')
+                ->from('sys_file_storage')
+                ->where('uid = ' . (int)$this->flexFormData['settings']['storage'])
+                ->execute()
+                ->fetch();
 
             $standaloneView = GeneralUtility::makeInstance(ObjectManager::class)->get(StandaloneView::class);
             $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($this->templatePathAndFile));

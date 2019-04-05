@@ -18,7 +18,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_filedownload'] = [
         'enablecolumns'  => ['disabled' => 'hidden'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => ExtensionManagementUtility::extRelPath('ameos_filemanager') . 'ext_icon.png',
+        'iconfile'       => ExtensionManagementUtility::extPath('ameos_filemanager') . 'ext_icon.png',
         'searchFields'   => 'file',
     ],    
     'types'       => ['0' => ['showitem' => 'file,crdate,cruser_id,']],

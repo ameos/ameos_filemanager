@@ -158,7 +158,6 @@ class FolderController extends AbstractController
                 $folder,
                 $zip,
                 $this->settings['startFolder'],
-                (bool)$this->settings['displayArchive'],
                 ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
                 FilemanagerUtility::calculRecursion($rootFolder, $folder)
             );
@@ -188,7 +187,6 @@ class FolderController extends AbstractController
                 $folder,
                 $zip,
                 $this->settings['startFolder'],
-                (bool)$this->settings['displayArchive'],
                 ($this->settings['recursion'] == '' ? false : (int)$this->settings['recursion']),
                 FilemanagerUtility::calculRecursion($rootFolder, $folder)
             );

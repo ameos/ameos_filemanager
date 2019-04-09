@@ -91,7 +91,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
         return $queryBuilder
-            ->select('SUM(file.size)')
+            ->addSelectLiteral($queryBuilder->expr()->sum('file.size', 'total_size'))
             ->from('sys_file', 'file')
             ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
             ->join('metadata', 'tx_ameosfilemanager_domain_model_folder', 'folder', 'metadata.folder_uid = folder.uid')

@@ -158,6 +158,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+        $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder
             ->select('sys_file.*')
             ->from('sys_file_metadata')
@@ -193,23 +194,13 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $rootFolder = (!is_null($rootFolder) && is_object($rootFolder)) ? $rootFolder->getUid() : $rootFolder;
 
-        $whereClauses = [];
-        if (!is_null($rootFolder) && (int)$rootFolder > 0) {
-            $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder, $recursiveLimit);
-            if (empty($availableFilesIdentifiers)) {
-                $whereClauses[] = $queryBuilder->expr()->eq('sys_file.uid', 0);
-            } else {
-                $whereClauses[] = $queryBuilder->expr()->in('sys_file.uid', $availableFilesIdentifiers);
-            }
-        }
-        
         if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
             $arrayKeywords = explode(' ', $criterias['keyword']);
             $arrayCondition = [];
 
             foreach ($arrayKeywords as $keyword) {
                 $whereClauseKeyword = [];
-                $keyword = '%' . $queryBuilder->escapeLikeWildcards($keyword) . '%';
+                $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
 
                 $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
                 $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
@@ -229,18 +220,24 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     WHERE
                         deleted = 0
                         AND (
-                            name LIKE \'' . $keyword . '\'
-                            OR first_name LIKE \'' . $keyword . '\'
-                            OR middle_name LIKE \'' . $keyword . '\'
-                            OR last_name LIKE \'' . $keyword . '\'
+                            name LIKE ' . $keyword . '
+                            OR first_name LIKE ' . $keyword . '
+                            OR middle_name LIKE ' . $keyword . '
+                            OR last_name LIKE ' . $keyword . '
                         )
-                    )';
-
-                $whereClauses[] = $queryBuilder->orWhere(...$whereClauseKeyword);
+                    )';                
             }
+            $queryBuilder->orWhere(...$whereClauseKeyword);
         }
 
-        $queryBuilder->where(...$whereClauses);
+        if (!is_null($rootFolder) && (int)$rootFolder > 0) {
+            $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder, $recursiveLimit);
+            if (empty($availableFilesIdentifiers)) {
+                $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_file.uid', 0));
+            } else {
+                $queryBuilder->andWhere($queryBuilder->expr()->in('sys_file.uid', $availableFilesIdentifiers));
+            }
+        }        
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);
@@ -257,9 +254,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $order = $get['sort'] . ' ' . $direction;
             $queryBuilder->orderBy($order);
         }
-        
+
+        $queryBuilder->orderBy('sys_file.uid');
+
         $query = $this->createQuery();
-        $query->statement($query->statement($queryBuilder->getSql()));
+        $query->statement($queryBuilder->getSQL());
         return $query->execute();
     }
 

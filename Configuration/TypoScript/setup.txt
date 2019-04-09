@@ -17,6 +17,9 @@ plugin.tx_ameosfilemanager {
             owner_has_read_access = {$plugin.tx_ameosfilemanager.newFolder.owner_has_read_access}
             owner_has_write_access = {$plugin.tx_ameosfilemanager.newFolder.owner_has_write_access}
         }
+
+        includeDefaultCss = {$plugin.tx_ameosfilemanager.includeDefaultCss}
+        includeFontawesome = {$plugin.tx_ameosfilemanager.includeFontawesome}
 	}
 	persistence {
 		classes {
@@ -51,15 +54,3 @@ config.tx_extbase {
 		}
 	}
 }
-
-[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includejQuery}]
-page.includeJSLibs.filemanagerjQuery = EXT:ameos_filemanager/Resources/Public/JavaScript/jQuery/jquery.min.js
-[global]
-
-[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includeFontawesome}]
-page.includeCSS.filemanagerFontawesome = EXT:ameos_filemanager/Resources/Public/Css/font-awesome/css/font-awesome.min.css
-[global]
-
-[globalVar = LIT:1 = {$plugin.tx_ameosfilemanager.includeDefaultCss}]
-page.includeCSS.filemanagerDefaultCss = EXT:ameos_filemanager/Resources/Public/Css/style.css
-[global]

@@ -52,7 +52,7 @@
     </div>
     <div class="form-group">
         <label for="categories"><f:translate key="categories"/> : </label>
-        <f:render partial="FileManager/CategoriesList" arguments="{categories: categories, objet: file}" />
+        <f:render partial="Form/CategoriesList" arguments="{categories: categories, objet: file}" />
     </div>
 
     <f:form.hidden name="folder" value="{folder}" />
@@ -62,3 +62,4 @@
     </f:if>
     <f:form.submit class="btn btn-primary" name="save" value="{f:translate(key:'form.submit')}" />
 </f:form>
+<f:render partial="Explorer/IncludeAssets" arguments="{_all}" />

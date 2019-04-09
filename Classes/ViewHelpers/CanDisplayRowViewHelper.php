@@ -48,44 +48,14 @@ class CanDisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractC
             throw new \Exception('DisplayRowViewHelper : Folder or File are required');
         }
 
-        $hasAccess = true;
-        if ($arguments['settings']['displayArchive'] != 1) {
-            
-            if (is_a($arguments['folder'], Folder::class)) {
-                if ($arguments['folder']->getRealstatus() > 0) {
-                    $hasAccess = $arguments['folder']->getRealstatus() == 1 ? true : false;
-                } else {
-                    $realstatus = FilemanagerUtility::updateFolderCacheStatus([
-                        'uid'        => $arguments['folder']->getUid(),
-                        'uid_parent' => $arguments['folder']->getParent() ? $arguments['folder']->getParent()->getUid() : 0,
-                        'status'     => $arguments['folder']->getStatus(),
-                        'realstatus' => $arguments['folder']->getRealstatus(),
-                    ]);
-                    $hasAccess = $realstatus == 1 ? true : false;
-                }
-            }
-
-            if (is_a($arguments['file'], File::class)) {
-                if ($arguments['file']->getRealstatus() > 0) {
-                    $hasAccess = $arguments['file']->getRealstatus() == 1 ? true : false;
-                } else {                
-                    $realstatus = FilemanagerUtility::updateFileCacheStatus($arguments['file']->getMeta());
-                    $hasAccess = $realstatus == 1 ? true : false;
-                }
-            }
+        // check read access
+        $user = ($GLOBALS['TSFE']->fe_user->user);
+        if (is_a($arguments['folder'], Folder::class)) {
+            return AccessUtility::userHasFolderReadAccess($user, $arguments['folder'], $arguments) ? true : false;
         }
-
-        if ($hasAccess) {
-            // check read access
-            $user = ($GLOBALS['TSFE']->fe_user->user);
-            if (is_a($arguments['folder'], Folder::class)) {
-                $hasAccess = AccessUtility::userHasFolderReadAccess($user, $arguments['folder'], $arguments) ? true : false;
-            }
-            if (is_a($arguments['file'], File::class)) {
-                $hasAccess = AccessUtility::userHasFileReadAccess($user, $arguments['file'], $arguments) ? true : false;
-            }
+        if (is_a($arguments['file'], File::class)) {
+            return AccessUtility::userHasFileReadAccess($user, $arguments['file'], $arguments) ? true : false;
         }
-        
-        return $hasAccess;
+        return false;
     }
 }

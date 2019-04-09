@@ -27,15 +27,6 @@ use Ameos\AmeosFilemanager\Utility\ExplorerUtility;
 class ExplorerController extends AbstractController
 {
     /**
-     * initialize action
-     */
-    protected function initializeAction()
-    {
-        $pageRenderer = $this->objectManager->get(PageRenderer::class);
-        $pageRenderer->addJsFooterFile('EXT:ameos_filemanager/Resources/Public/JavaScript/Explorer.js');
-    }
-
-    /**
      * Main explorer action
      */
     protected function indexAction()
@@ -76,7 +67,9 @@ class ExplorerController extends AbstractController
             );
         }
 
-        $availableMode = is_array($this->settings['availableMode']) ? $this->settings['availableMode'] : GeneralUtility::trimExplode(',', $this->settings['availableMode']);
+        $availableMode = is_array($this->settings['availableMode']) 
+            ? $this->settings['availableMode'] 
+            : GeneralUtility::trimExplode(',', $this->settings['availableMode']);
         if (is_array($this->settings['availableMode'])) {
             $this->settings['availableMode'] = implode(',', $this->settings['availableMode']);
         }
@@ -87,7 +80,10 @@ class ExplorerController extends AbstractController
         // assign data to the view
         $this->view->assign('root_folder', $rootFolder);
         $this->view->assign('current_folder', $currentFolder);
-        $this->view->assign('files', $this->fileRepository->findFilesForFolder($currentFolder->getUid(), $configuration['view']['pluginNamespace']));
+        $this->view->assign('files', $this->fileRepository->findFilesForFolder(
+            $currentFolder->getUid(), 
+            $configuration['view']['pluginNamespace']
+        ));
         $this->view->assign('has_many_display_mode', (count($availableMode) > 1));
         $this->view->assign('display_mode', $displayMode);        
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));

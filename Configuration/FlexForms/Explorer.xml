@@ -30,12 +30,12 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.startFolder</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectTree</renderType>
                                 <foreign_table>tx_ameosfilemanager_domain_model_folder</foreign_table>
-                                <itemsProcFunc>Ameos\AmeosFilemanager\Hooks\TreeFolder->renderFlexTreeFolder</itemsProcFunc>
                                 <minitems>1</minitems>
-                                <maxitems>1</maxitems>
-                                <renderMode>tree</renderMode>
+                                <maxitems>1</maxitems>                                
                                 <treeConfig>
+                                    <dataProvider>Ameos\AmeosFilemanager\DataProvider\FileTreeFolder</dataProvider>
                                     <expandAll>true</expandAll>
                                     <parentField>uid_parent</parentField>
                                     <appearance>
@@ -108,6 +108,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displayThumbnail</label>
                             <config>
                                 <type>check</type>
+                                <renderType>checkboxToggle</renderType>
                                 <default>1</default>
                             </config>
                         </TCEforms>
@@ -117,6 +118,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displayFolders</label>
                             <config>
                                 <type>check</type>
+                                <renderType>checkboxToggle</renderType>
                                 <default>0</default>
                             </config>
                         </TCEforms>
@@ -126,6 +128,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displaySearch</label>
                             <config>
                                 <type>check</type>
+                                <renderType>checkboxToggle</renderType>
                                 <default>1</default>
                             </config>
                         </TCEforms>
@@ -135,6 +138,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displayTree</label>
                             <config>
                                 <type>check</type>
+                                <renderType>checkboxToggle</renderType>
                                 <default>1</default>
                             </config>
                         </TCEforms>
@@ -352,6 +356,7 @@
                             <onChange>reload</onChange>
                             <config>
                                 <type>check</type>
+                                <renderType>checkboxToggle</renderType>
                             </config>
                         </TCEforms>
                     </settings.customTemplate>

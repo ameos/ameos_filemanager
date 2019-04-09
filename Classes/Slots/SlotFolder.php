@@ -200,8 +200,8 @@ class SlotFolder
         }
 
         foreach ($folder->getFiles() as $file) {
-            $queryBuilder = GeneralUtility::makeInstance(sys_file_metadata::class)
-                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('sys_file_metadata');
 
             $meta = $queryBuilder
                 ->select('*')
@@ -214,7 +214,7 @@ class SlotFolder
 
             if ($meta && isset($meta['uid'])) {
                 GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getConnectionForTable('TYPO3_DB')
+                    ->getConnectionForTable('sys_file_metadata')
                     ->update(
                         'sys_file_metadata',
                         ['folder_uid' => $folderuid],
@@ -222,7 +222,7 @@ class SlotFolder
                     );
             } else {        
                 GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getConnectionForTable('TYPO3_DB')
+                    ->getConnectionForTable('sys_file_metadata')
                     ->insert('sys_file_metadata', [
                         'file'       => $file->getUid(),
                         'folder_uid' => $folderuid,

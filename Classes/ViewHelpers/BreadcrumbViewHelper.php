@@ -1,6 +1,9 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +19,7 @@ namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+    use CompileWithRenderStatic;
 
     /**
      * @var boolean
@@ -26,21 +30,37 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * @var boolean
      */
     protected $escapeOutput = false;
-    
+
+    /**
+     * Arguments initialization
+     *
+     * @return void
+     */
+    public function initializeArguments() 
+    {
+        $this->registerArgument('folder', \Ameos\AmeosFilemanager\Domain\Model\Folder::class, 'Current folder', true);
+        $this->registerArgument('startFolder', 'int', 'Start folder', true);
+        $this->registerArgument('separator', 'string', 'separator', false, ' / ');
+        $this->registerArgument('contentUid', 'int', 'Content uid', false, 0);
+    }
+
     /**
      * Renders line for folder or file
      *
-     * @param Ameos\AmeosFilemanager\Domain\Model\Folder $folder 
-     * @param int $startFolder 
-     * @param string $separator 
-     * @param int $contentUid 
      * @return string 
      */
-    public function render($folder = null, $startFolder = null, $separator = ' / ', $contentUid = 0)
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-    	if ($folder != null) {
-            return $this->getBreadcrumb($folder, $startFolder, $separator, $contentUid);
+    	if ($arguments['folder'] != null) {
+            return static::getBreadcrumb(
+                $arguments['folder'],
+                $arguments['startFolder'],
+                $arguments['separator'],
+                $arguments['contentUid'],
+                $renderingContext
+            );
     	}
+        return '';
     }
 
     /**
@@ -49,11 +69,12 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * $param int $startFolder
      * @param string $separator
      * @param int $contentUid 
+     * @param RenderingContextInterface $renderingContext 
      * @return string
      */ 
-    public function getBreadcrumb($folder, $startFolder, $separator = ' / ', $contentUid)
+    protected static function getBreadcrumb($folder, $startFolder, $separator = ' / ', $contentUid = 0, $renderingContext)
     {
-        $uri = $this->controllerContext->getUriBuilder()->reset()
+        $uri = $renderingContext->getControllerContext()->getUriBuilder()->reset()
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString(['id'])
             ->uriFor('index', ['folder' => $folder->getUid()]);
@@ -61,7 +82,14 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
         $link = '<a href="' . $uri . '" data-ged-reload="1" data-ged-uid="' . $contentUid . '">' . $folder->getTitle() . '</a>';
     	
     	if ($folder->getParent() && $folder->getUid() != $startFolder) {
-    		return $this->getBreadcrumb($folder->getParent(), $startFolder, $separator, $contentUid) . $separator . $link;
+            $output = static::getBreadcrumb(
+                $folder->getParent(), 
+                $startFolder, 
+                $separator, 
+                $contentUid,
+                $renderingContext
+            );
+    		return $output . $separator . $link;
     	} else {
     		return $link;
     	}

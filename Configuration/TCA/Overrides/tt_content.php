@@ -15,5 +15,5 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']
     ['ameosfilemanager_fe_filemanager_explorer']  = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'ameosfilemanager_fe_filemanager_explorer',
-    'FILE:EXT:ameos_filemanager/Configuration/FlexForms/explorer.xml'
+    'FILE:EXT:ameos_filemanager/Configuration/FlexForms/Explorer.xml'
 );

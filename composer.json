@@ -7,6 +7,7 @@
         "typo3/cms-core": "^8.7 | ^9 | dev-master",
         "typo3/cms-fluid": "^8.7 | ^9 | dev-master",
         "typo3/cms-extbase": "^8.7 | ^9 | dev-master",
+        "fluidtypo3/vhs": "^5.1",
         "php": ">=7.0.0"
     },
     "keywords": [

@@ -1,58 +1,81 @@
-(function ($) {
+(function() {
 
-    $.fn.fileManagerTree = function () {
-        var tree = $(this);
+    FileManagerTree = (function(tree) {
+        if (tree) {
+            var parents = function(element, parentSelector) {
+                if (parentSelector === undefined) {
+                    parentSelector = document;
+                }
 
-        function loadEventListener() {
-            tree.find("a[data-action=expand]").unbind("click");
-            tree.find("a[data-action=expand]").click(function(event) {
-                $(this).parent().children("ul").toggleClass("active");
-                if ($(this).children("i.fa")) {
-                    if ($(this).parent().children("ul").hasClass("active")) {
-                        $(this).children("i.fa").removeClass("fa-folder");
-                        $(this).children("i.fa").addClass("fa-folder-open");
-                    } else {
-                        $(this).children("i.fa").removeClass("fa-folder-open");
-                        $(this).children("i.fa").addClass("fa-folder");
+                var parents = [];
+                var p = element.parentNode;
+                if (p) {
+                    while (p !== parentSelector) {
+                        var o = p;
+                        parents.push(o);
+                        p = o.parentNode;
                     }
-                }                
-                event.preventDefault();
-            });
-        }
+                    parents.push(parentSelector);
+                }
 
-        if (tree.find(".current")) {
-            tree.find(".current").parents("ul").addClass("active");
-            if (tree.find(".current").find("i.fa")) {
-                tree.find(".current").parents("li").each(function(key, element) {
-                    $(element).children("a").children("i.fa").addClass("fa-folder-open");
+                return parents;
+            };
+
+            var loadEventListener = function() {
+                var items = tree.querySelectorAll("a[data-action=expand]");
+                items.forEach(function(item, i) {
+                    item.addEventListener("click", function(event) {
+                        var ulparent = event.target.parentNode.parentNode.querySelector("ul");
+                        ulparent.classList.toggle("active");
+                        if (ulparent.classList.contains("active")) {
+                            event.target.classList.remove("fa-folder");
+                            event.target.classList.add("fa-folder-open");
+                        } else {
+                            event.target.classList.add("fa-folder");
+                            event.target.classList.remove("fa-folder-open");
+                        }                        
+                        event.preventDefault();
+                    });
+                });
+            };
+
+            if (tree.querySelector(".current")) {
+                parents(tree.querySelector(".current"), tree).forEach(function(item, i) {
+                    item.classList.add("active");
+                    item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
+                    item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
+                });
+            }
+            loadEventListener();
+        }
+    });
+    var tree = new FileManagerTree(document.querySelector('.tree'));
+
+
+    FileManagerToolbar = (function(toolbar) {
+        if (toolbar) {
+            var item = toolbar.querySelector("select[data-update-display]");
+            if (item) {
+                item.addEventListener("change", function(event) {
+                    event.target.parentNode.submit();
                 });
             }
         }
+    });
+    var toolbar = new FileManagerToolbar(document.querySelector('.toolbar'));
 
-        loadEventListener();        
-    }
+    FileManagerMassaction = (function(massaction) {
+        if (massaction) {
+            massaction.querySelector("#targetfolder").style.display = "none";
+            massaction.querySelector("#massaction").addEventListener("change", function(event) {
+                if (event.target.value == "copy" || event.target.value == "move") {
+                    massaction.querySelector("#targetfolder").style.display = "block";
+                } else {
+                    massaction.querySelector("#targetfolder").style.display = "none";
+                }
+            });
+        }
+    });
+    var massaction = new FileManagerMassaction(document.querySelector('.massaction-toolbar'));
 
-    $.fn.fileManagerToolbar = function () {
-        var toolbar = $(this);
-        toolbar.find("*[data-update-display=1]").change(function(event) {
-            $(this).parent('form').submit();
-        });
-    }
-
-    $.fn.massactionToolbar = function () {
-        var massaction = $(this);
-        massaction.find("#targetfolder").hide();
-        massaction.find("#massaction").change(function(event) {
-            if (this.value == "copy" || this.value == "move") {
-                massaction.find("#targetfolder").show();
-            } else {
-                massaction.find("#targetfolder").hide();
-            }
-        });
-    }
-
-    $(".tree").fileManagerTree();
-    $(".toolbar").fileManagerToolbar();
-    $(".massaction-toolbar").massactionToolbar();
-
-}(jQuery));
+}).call(this);

@@ -72,19 +72,20 @@ class FolderController extends AbstractController
 
                     $folder->setUidParent($parent->getUid());
                     $folder->setIdentifier($parent->getGedPath() . '/' . $title . '/');
-                    $folder->setStorage($this->settings['storage']);
+                    $folder->setStorage((int)$this->settings['storage']);
                 } else {
                     $storageFolder = $storage->getFolder($folder->getGedPath() . '/');
                     $storageFolder->rename($this->request->getArgument('title'));
 
                     $folder->setIdentifier($folder->getGedPath() . '/');
+                    $folder->setStorage((int)$this->settings['storage']);
                 }
 
                 $folder->setTitle($title);
                 $folder->setDescription($this->request->getArgument('description'));
                 $folder->setKeywords($this->request->getArgument('keywords'));                
-                $folder->setNoReadAccess($this->request->getArgument('no_read_access'));
-                $folder->setNoWriteAccess($this->request->getArgument('no_write_access'));
+                $folder->setNoReadAccess($this->request->getArgument('no_read_access') ? true : false);
+                $folder->setNoWriteAccess($this->request->getArgument('no_write_access') ? true : false);
                 $folder->setArrayFeGroupRead($this->request->getArgument('fe_group_read'));
                 $folder->setArrayFeGroupWrite($this->request->getArgument('fe_group_write'));
                 $folder->setArrayFeGroupAddfile($this->request->getArgument('fe_group_addfile'));
@@ -101,9 +102,21 @@ class FolderController extends AbstractController
                 $this->persistenceManager->persistAll();
 
                 if ($isNewFolder) {
-                    $this->addFlashMessage(LocalizationUtility::translate('folderCreated', 'AmeosFilemanager', [$this->request->getArgument('title')]));
+                    $this->addFlashMessage(
+                        LocalizationUtility::translate(
+                            'folderCreated',
+                            'AmeosFilemanager',
+                            [$this->request->getArgument('title')]
+                        )
+                    );
                 } else {
-                    $this->addFlashMessage(LocalizationUtility::translate('folderUpdated', 'AmeosFilemanager', [$this->request->getArgument('title')]));
+                    $this->addFlashMessage(
+                        LocalizationUtility::translate(
+                            'folderUpdated',
+                            'AmeosFilemanager',
+                            [$this->request->getArgument('title')]
+                        )
+                    );
                 }
                 
                 $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);

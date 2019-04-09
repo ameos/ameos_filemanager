@@ -3,7 +3,9 @@ namespace Ameos\AmeosFilemanager\Controller\Backend;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -27,6 +29,12 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     protected $fileRepository;
 
     /**
+     * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
+     * @inject
+     */
+    protected $folderRepository;
+
+    /**
      * index action
      */
     protected function indexAction()
@@ -34,12 +42,9 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $folderIdentifier = GeneralUtility::_GET('id');
         $folderResource = ResourceFactory::getInstance()->retrieveFileOrFolderObject($folderIdentifier);
 
-        $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-            'tx_ameosfilemanager_domain_model_folder.*',
-            'tx_ameosfilemanager_domain_model_folder',
-            'tx_ameosfilemanager_domain_model_folder.deleted = 0
-                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folderResource->getStorage()->getUid() . '
-                AND tx_ameosfilemanager_domain_model_folder.identifier = \'' . $folderResource->getIdentifier() . '\''
+        $folder = $this->folderRepository->findRawByStorageAndIdentifier(
+            $folderResource->getStorage()->getUid(),
+            $folderResource->getIdentifier()
         );
 
         $this->view->assign('folder', $folder);
@@ -72,43 +77,47 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $folders = [];
         $folders[] = (int)$this->request->getArgument('folder');
         if ($this->request->hasArgument('subfolders') && $this->request->getArgument('subfolders') == 1) {
-            $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'tx_ameosfilemanager_domain_model_folder.*',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.deleted = 0
-                    AND tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$this->request->getArgument('folder')
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+            $folder = $queryBuilder
+                ->select('*')
+                ->from('tx_ameosfilemanager_domain_model_folder', 'folder')
+                ->where($queryBuilder->expr()->eq('uid', (int)$this->request->getArgument('folder')))
+                ->execute()
+                ->fetch();
+
+            $subfolders = $this->folderRepository->findRawByStorageAndIdentifier(
+                $folder['storage'] ,
+                $folder['identifier'] . '%'
             );
-            $subfolders = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_ameosfilemanager_domain_model_folder.*',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.deleted = 0
-                    AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder['storage'] . '
-                    AND tx_ameosfilemanager_domain_model_folder.identifier LIKE \'' . $folder['identifier'] . '%\''
-            );
-            while (($subfolder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($subfolders)) !== false) {
+            foreach ($subfolders as $subfolder) {
                 $folders[] = $subfolder['uid'];
             }
         }
 
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'sys_file_metadata.*,
-                sys_file.name,
-                sys_file.size,
-                sys_file.extension,
-                sys_file.identifier,
-                fe_users.username',
-            'sys_file_metadata
-                JOIN sys_file ON sys_file.uid = sys_file_metadata.file
-                LEFT JOIN fe_users ON fe_users.uid = sys_file_metadata.fe_user_id',
-            'sys_file_metadata.folder_uid IN (' . implode(',', $folders) . ')'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('sys_file_metadata');
+        $queryBuilder->getRestrictions()->removeAll();
+        $statement = $queryBuilder
+            ->select('meta.*', 'file.size', 'file.extension', 'file.identifier', 'users.username')
+            ->from('sys_file_metadata', 'meta')
+            ->join('meta', 'sys_file', 'file', 'file.uid = meta.file')
+            ->leftJoin('meta', 'fe_users', 'users', 'users.uid = meta.fe_user_id')
+            ->where($queryBuilder->expr()->in('meta.folder_uid', $folders))
+            ->execute();
 
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $downloaded = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'count(*) as nb_downloads',
-                'tx_ameosfilemanager_domain_model_filedownload',
-                'tx_ameosfilemanager_domain_model_filedownload.file = ' . (int)$row['file']
-            );           
+        while ($row = $statement->fetch()) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_filedownload');
+            $downloaded = $queryBuilder
+                ->count('uid', 'nb_downloads')
+                ->from('tx_ameosfilemanager_domain_model_filedownload')
+                ->where(
+                    $queryBuilder->expr()->eq('file', $queryBuilder->createNamedParameter((int)$row['file'], \PDO::PARAM_INT))
+                )
+                ->execute()
+                ->fetchColumn(0);
+
             echo '"' . ($row['title'] ? $row['title'] : $row['name']) .  '";';
             echo '"' . strftime('%d/%m/%Y', $row['crdate']) . '";';
             echo '"' . strftime('%d/%m/%Y', $row['tstamp']) . '";';
@@ -117,8 +126,9 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             echo '"' . $row['size'] . '";';
             echo '"' . $row['keywords'] . '";';
             echo '"' . $row['identifier'] . '";';
-            echo '"' . (int)$downloaded['nb_downloads'] . '";';
-            echo '"' . $row['extension'] . '";' . "\n";            
+            echo '"' . (int)$downloaded . '";';
+            echo '"' . $row['extension'] . '";' . "\n";     
+               
         }
         exit;
     }

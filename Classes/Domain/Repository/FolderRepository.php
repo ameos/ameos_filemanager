@@ -89,15 +89,18 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return 0;
         }
 
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-            'SUM(sys_file.size) as total',
-            'sys_file, sys_file_metadata, tx_ameosfilemanager_domain_model_folder',
-            'tx_ameosfilemanager_domain_model_folder.identifier LIKE \'' . $folder->getIdentifier() . '%\'
-                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
-                AND tx_ameosfilemanager_domain_model_folder.deleted = 0
-                AND sys_file_metadata.file = sys_file.uid
-                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid'
-        )['total'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        return $queryBuilder
+            ->select('SUM(file.size)')
+            ->from('sys_file', 'file')
+            ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
+            ->join('metadata', 'tx_ameosfilemanager_domain_model_folder', 'folder', 'metadata.folder_uid = folder.uid')
+            ->where(
+                $queryBuilder->expr()->eq('file.storage', $folder->getStorage()),
+                $queryBuilder->expr()->like('file.identifier', $queryBuilder->createNamedParameter($folder->getIdentifier() . '%'))
+            )
+            ->execute()
+            ->fetchColumn(0);
     }
 
     /**
@@ -111,15 +114,18 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return 0;
         }
 
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-            'count(*) as count',
-            'sys_file, sys_file_metadata, tx_ameosfilemanager_domain_model_folder',
-            'tx_ameosfilemanager_domain_model_folder.identifier LIKE \'' . $folder->getIdentifier() . '%\'
-                AND tx_ameosfilemanager_domain_model_folder.storage = ' . $folder->getStorage() . '
-                AND tx_ameosfilemanager_domain_model_folder.deleted = 0
-                AND sys_file_metadata.file = sys_file.uid
-                AND sys_file_metadata.folder_uid = tx_ameosfilemanager_domain_model_folder.uid'
-        )['count'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        return $queryBuilder
+            ->count('file.uid')
+            ->from('sys_file', 'file')
+            ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
+            ->join('metadata', 'tx_ameosfilemanager_domain_model_folder', 'folder', 'metadata.folder_uid = folder.uid')
+            ->where(
+                $queryBuilder->expr()->eq('file.storage', $folder->getStorage()),
+                $queryBuilder->expr()->like('file.identifier', $queryBuilder->createNamedParameter($folder->getIdentifier() . '%'))
+            )
+            ->execute()
+            ->fetchColumn(0);
     }
 
     /**
@@ -132,9 +138,16 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     {
         if (empty($folderUid)) {
             return 0;
-        }    
-        $where = 'uid_parent = ' . (int)$folderUid;
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('count(*) as count','tx_ameosfilemanager_domain_model_folder', $where)['count'];
+        }
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+
+        return $queryBuilder
+            ->count('folder.*')
+            ->from('tx_ameosfilemanager_domain_model_folder', 'folder')
+            ->where($queryBuilder->expr()->eq('uid_parent', (int)$folderUid))
+            ->execute()
+            ->fetch();
     }
 
     public function getSubFolderFromFolder($folderUid)
@@ -146,7 +159,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $where = 'tx_ameosfilemanager_domain_model_folder.uid_parent = ' . (int)$folderUid;
         $where .= $this->getModifiedEnabledFields();
         $query->statement
-        (    '    SELECT tx_ameosfilemanager_domain_model_folder.* 
+        (    '  SELECT tx_ameosfilemanager_domain_model_folder.* 
                 FROM tx_ameosfilemanager_domain_model_folder 
                 WHERE '.$where.' 
                 ORDER BY tx_ameosfilemanager_domain_model_folder.title ASC 

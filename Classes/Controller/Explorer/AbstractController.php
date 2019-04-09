@@ -147,7 +147,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             $query = $this->categoryRepository->createQuery();
             $categories = $query->matching($query->in('uid', GeneralUtility::trimExplode(',', $this->settings['authorizedCategories'])))->execute();
         } else {
-            $categories = $this->categoryRepository->findAll();
+            $categories = $this->categoryRepository->findByParent(0);
         }
         return $categories;
     }

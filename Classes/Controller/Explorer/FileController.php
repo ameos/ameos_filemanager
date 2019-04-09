@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\DownloadUtility;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
@@ -135,25 +136,25 @@ class FileController extends AbstractController
                 $properties['owner_has_write_access'] = isset($this->settings['newFile']['owner_has_write_access'])
                     ? $this->settings['newFile']['owner_has_write_access'] : 1;
 
-                if ($arguments['categories']) {
-                    $file->setCategories($arguments['categories']);
-                }
-
                 if ($isNewFile) {
                     $properties['folder_uid'] = $folder->getUid();                    
                 }
                 $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
                 $metaDataRepository->update($file->getUid(), $properties);
+                $file->setCategories($arguments['categories']);
 
                 if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
                     $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
                     try {
                         $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
                         if (!is_null($textExtractor)) {
-                            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
-                                'file'    => $file->getUid(),
-                                'content' => $textExtractor->extractText($file->getOriginalResource())
-                            ]);
+                            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+                            $connectionPool
+                                ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
+                                ->insert('tx_ameosfilemanager_domain_model_filecontent', [
+                                    'file'    => $file->getUid(),
+                                    'content' => $textExtractor->extractText($file->getOriginalResource())
+                                ]);
                         }    
                     } catch (\Exception $e) {
                         
@@ -266,10 +267,13 @@ class FileController extends AbstractController
                         try {
                             $textExtractor = $textExtractorRegistry->getTextExtractor($file);
                             if (!is_null($textExtractor)) {
-                                $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_ameosfilemanager_domain_model_filecontent', [
-                                    'file'    => $file->getUid(),
-                                    'content' => $textExtractor->extractText($file)
-                                ]);
+                                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+                                $connectionPool
+                                    ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
+                                    ->insert('tx_ameosfilemanager_domain_model_filecontent', [
+                                        'file'    => $file->getUid(),
+                                        'content' => $textExtractor->extractText($file)
+                                    ]);
                             }    
                         } catch (\Exception $e) {
                             
@@ -304,26 +308,12 @@ class FileController extends AbstractController
             exit;
         }
 
-        // add js
-        $uploadUri = $this->uriBuilder->reset()->uriFor('upload', ['folder' => $folder->getUid()]);
-        $pageRenderer = $this->objectManager->get(PageRenderer::class);
-        $pageRenderer->addCssFile('EXT:ameos_filemanager/Resources/Public/Css/dropzone/dropzone.css');
-        $pageRenderer->addJsFooterLibrary('dropzone', 'EXT:ameos_filemanager/Resources/Public/JavaScript/dropzone/dropzone.js');
-        $pageRenderer->addJsFooterInlinecode('init-upload-' . time(), '(function ($) {
-            $(".uploadarea").dropzone({
-                url: "' . $uploadUri . '",
-                init: function() {
-                    this.on("success", function (file, response) {
-                        var response = eval("(" + response + ")");
-                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.editUri + "\">' . LocalizationUtility::translate('edit', 'AmeosFilemanager') . '</a><br>");
-                        $(file.previewElement).append("<a target=\"_blank\" href=\"" + response.infoUri + "\">' . LocalizationUtility::translate('detail', 'AmeosFilemanager') . '</a>");
-                    });
-                }
-            });
-        }(jQuery));', false);
-
         // assign to view        
         $this->view->assign('folder', $folder);
+        $this->view->assign('includeDropzone', true);
+        $this->view->assign('upload_uri', $this->uriBuilder->reset()->uriFor('upload', ['folder' => $folder->getUid()]));
+        $this->view->assign('upload_label_edit', LocalizationUtility::translate('edit', 'AmeosFilemanager'));
+        $this->view->assign('upload_label_detail', LocalizationUtility::translate('detail', 'AmeosFilemanager'));
     }
 
     /**

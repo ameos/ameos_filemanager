@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 /*
@@ -45,11 +46,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
      */
     protected $folders;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
-     */
-    protected $files;
 
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Model\Folder
@@ -105,16 +101,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      * @var integer
      */
     protected $ownerHasWriteAccess;
-
-    /**
-     * @var integer
-     */
-    protected $status;
-
-    /**
-     * @var integer
-     */
-    protected $realstatus;
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
@@ -218,14 +204,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function getFolders()
     {
         return $this->folderRepository->getSubFolderFromFolder($this->getUid());
-    }
-
-    /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\File>
-     */
-    public function getFiles()
-    {
-        return $this->files;
     }
 
     /**
@@ -342,22 +320,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function getOwnerHasWriteAccess()
     {
         return $this->ownerHasWriteAccess;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRealstatus()
-    {
-        return $this->realstatus;
     }
 
     /**
@@ -480,6 +442,17 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
+     * Setter for uidParent
+     *
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
+     * @return void
+     */
+    public function setUidParent($uidParent)
+    {
+        $this->uidParent = $uidParent;
+    }
+
+    /**
      * Setter for noReadAccess
      *
      * @param boolean $noReadAccess
@@ -521,39 +494,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function setOwnerHasWriteAccess($ownerHasWriteAccess)
     {
         $this->ownerHasWriteAccess = $ownerHasWriteAccess;
-    }
-
-    /**
-     * Setter for status
-     *
-     * @param int $status
-     * @return void
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * Setter for realstatus
-     *
-     * @param int $realstatus
-     * @return void
-     */
-    public function setRealstatus($realstatus)
-    {
-        $this->realstatus = $realstatus;
-    }
-
-    /**
-     * Setter for uidParent
-     *
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
-     * @return void
-     */
-    public function setUidParent($uidParent)
-    {
-        $this->uidParent = $uidParent;
     }
 
     /**
@@ -675,38 +615,55 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
             return [];
         }
 
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid_local',
-            'sys_category_record_mm',
-            'tablenames like "tx_ameosfilemanager_domain_model_folder" AND fieldname like "cats" AND uid_foreign = ' . $this->getUid(),
-            '',
-            'sorting_foreign'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('sys_category_record_mm');
 
-        $uidsCat = array_map(function ($e) {
-            return $e['uid_local'];
-        }, $result);
+        $constraints = [
+            $queryBuilder->expr()->like('tablenames', $queryBuilder->createNamedParameter('tx_ameosfilemanager_domain_model_folder')),
+            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
+        ];
+        $categories = $queryBuilder
+            ->select('uid_local')
+            ->from('sys_category_record_mm')
+            ->where(...$constraints)
+            ->execute();
 
-        return $uidsCat;
+        $uids = [];
+        while ($category = $categories->fetch()) {
+            $uids[] = $category['uid_local'];
+        }
+        return $uids;
     }
 
     public function setCategories($categories)
     {
-        if(is_array($categories)) {
-            $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-                'sys_category_record_mm',
-                'tablenames like "tx_ameosfilemanager_domain_model_folder" AND fieldname like "cats" AND uid_foreign = ' . $this->getUid()
-            );
-            $i = 1;
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_category_record_mm');
+
+        $constraints = [
+            $queryBuilder->expr()->like('tablenames', $queryBuilder->createNamedParameter('tx_ameosfilemanager_domain_model_folder')),
+            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
+        ];
+
+        $queryBuilder
+            ->delete('sys_category_record_mm')
+            ->where(...$constraints)
+            ->execute();
+
+        $i = 1;
+        if (is_array($categories) && !empty($categories)) {
             foreach($categories as $category) {
-                $fields_values = array(
-                    "uid_local" => $category,
-                    "uid_foreign" => $this->getUid(),
-                    "tablenames" => "tx_ameosfilemanager_domain_model_folder",
-                    "fieldname" => "cats",
-                    "sorting_foreign" => $i,
-                );
-                $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_category_record_mm', $fields_values, $no_quote_fields=FALSE);
+                $connectionPool
+                    ->getConnectionForTable('sys_category_record_mm')
+                    ->insert('sys_category_record_mm', [
+                        'uid_local'       => $category,
+                        'uid_foreign'     => $this->getUid(),
+                        'tablenames'      => 'tx_ameosfilemanager_domain_model_folder',
+                        'fieldname'       => 'cats',
+                        'sorting_foreign' => $i,
+                    ]);
                 $i++;
             }
         }

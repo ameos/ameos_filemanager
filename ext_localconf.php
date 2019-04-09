@@ -1,8 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 
-$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
-
 // plugin
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer',
     [

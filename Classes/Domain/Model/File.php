@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 
 /*
@@ -62,22 +63,6 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             $this->meta = $metaDataRepository->findByFileUid($this->getUid());
         }
         return $this->meta;
-    }
-
-    /**
-     * return status
-     */
-    public function getStatus()
-    {
-        return $this->getMeta()['status'];
-    }
-
-    /**
-     * return status
-     */
-    public function getRealstatus()
-    {
-        return $this->getMeta()['realstatus'];
     }
 
     /**
@@ -307,43 +292,59 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     /**
      * Returns the cats
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category> $cats
+     * @return array
      */
     public function getCategoriesUids()
     {
-        $test = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid_local',
-            'sys_category_record_mm',
-            'tablenames like "sys_file_metadata" AND fieldname like "categories" AND uid_foreign = ' . $this->getMeta()['uid'],
-            '',
-            'sorting_foreign'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('sys_category_record_mm');
 
-        $uidsCat = array_map(function ($e) {
-            return $e['uid_local'];
-        }, $test);
+        $constraints = [
+            $queryBuilder->expr()->like('tablenames', $queryBuilder->createNamedParameter('sys_file_metadata')),
+            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMeta()['uid'])),
+        ];
+        $categories = $queryBuilder
+            ->select('uid_local')
+            ->from('sys_category_record_mm')
+            ->where(...$constraints)
+            ->execute();
 
-        return $uidsCat;
+        $uids = [];
+        while ($category = $categories->fetch()) {
+            $uids[] = $category['uid_local'];
+        }
+        return $uids;
     }
 
     public function setCategories($categories)
     {
-        if (is_array($categories)) {
-            $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-                'sys_category_record_mm',
-                'tablenames like "sys_file_metadata" AND fieldname like "categories" AND uid_foreign = ' . $this->getMeta()['uid']
-            );
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_category_record_mm');
 
-            $i = 1;
+        $constraints = [
+            $queryBuilder->expr()->like('tablenames', $queryBuilder->createNamedParameter('sys_file_metadata')),
+            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMeta()['uid'])),
+        ];
+        
+        $queryBuilder
+            ->delete('sys_category_record_mm')
+            ->where(...$constraints)
+            ->execute();
+
+        $i = 1;
+        if (is_array($categories) && !empty($categories)) {
             foreach ($categories as $category) {
-                $fields_values = array(
-                    'uid_local'       => $category,
-                    'uid_foreign'     => $this->getMeta()['uid'],
-                    'tablenames'      => 'sys_file_metadata',
-                    'fieldname'       => 'categories',
-                    'sorting_foreign' => $i,
-                );
-                $GLOBALS['TYPO3_DB']->exec_INSERTquery('sys_category_record_mm', $fields_values, false);
+                $connectionPool
+                    ->getConnectionForTable('sys_category_record_mm')
+                    ->insert('sys_category_record_mm', [
+                        'uid_local'       => $category,
+                        'uid_foreign'     => $this->getMeta()['uid'],
+                        'tablenames'      => 'sys_file_metadata',
+                        'fieldname'       => 'categories',
+                        'sorting_foreign' => $i,
+                    ]);
                 $i++;
             }
         }

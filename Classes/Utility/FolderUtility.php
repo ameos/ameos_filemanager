@@ -75,6 +75,7 @@ class FolderUtility
             $storage->moveFolder($storage->getFolder($folder->getGedPath()), $storage->getFolder($tfolder->getGedPath()));
 
             $folder->setUidParent($tfid);
+            $folder->setIdentifier($tfolder->getIdentifier() . $folder->getTitle() . '/');
             $folderRepository->add($folder);
 
             return true;
@@ -158,6 +159,7 @@ class FolderUtility
                 $newfile = $storage->getFile($fileIdentifier);                
 
                 $meta = $fileRepository->findByUid($file->getProperty('uid'))->getMeta();
+                $meta['file'] = $newfile->getUid();
                 $meta['folder_uid'] = $targetFolder->getUid();
 
                 $metaDataRepository = $objectManager->get(MetaDataRepository::class);

@@ -106,6 +106,7 @@ class FileUtility
             $newfile = $storage->copyFile($file->getOriginalResource(), $storage->getFolder($folder->getGedPath()));
 
             $meta = $file->getMeta();
+            $meta['file'] = $newfile->getUid();
             $meta['folder_uid'] = $tfid;
 
             $metaDataRepository = $objectManager->get(MetaDataRepository::class);

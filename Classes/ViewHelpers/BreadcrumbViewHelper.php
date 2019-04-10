@@ -40,8 +40,6 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
     {
         $this->registerArgument('folder', \Ameos\AmeosFilemanager\Domain\Model\Folder::class, 'Current folder', true);
         $this->registerArgument('startFolder', 'int', 'Start folder', true);
-        $this->registerArgument('separator', 'string', 'separator', false, ' / ');
-        $this->registerArgument('contentUid', 'int', 'Content uid', false, 0);
     }
 
     /**
@@ -52,12 +50,14 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
     	if ($arguments['folder'] != null) {
+            $breadcrumb = [];
             return static::getBreadcrumb(
+                $breadcrumb,
+                $arguments['folder'],
                 $arguments['folder'],
                 $arguments['startFolder'],
-                $arguments['separator'],
-                $arguments['contentUid'],
-                $renderingContext
+                $renderingContext,
+                $renderChildrenClosure
             );
     	}
         return '';
@@ -68,30 +68,39 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * $param Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * $param int $startFolder
      * @param string $separator
-     * @param int $contentUid 
      * @param RenderingContextInterface $renderingContext 
+     * @param Closure $renderChildrenClosure 
      * @return string
      */ 
-    protected static function getBreadcrumb($folder, $startFolder, $separator = ' / ', $contentUid = 0, $renderingContext)
+    protected static function getBreadcrumb($breadcrumb = [], $folder, $activeFolder, $startFolder, $renderingContext, $renderChildrenClosure)
     {
         $uri = $renderingContext->getControllerContext()->getUriBuilder()->reset()
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString(['id'])
             ->uriFor('index', ['folder' => $folder->getUid()]);
+        
 
-        $link = '<a href="' . $uri . '" data-ged-reload="1" data-ged-uid="' . $contentUid . '">' . $folder->getTitle() . '</a>';
-    	
+        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer->add('item', [
+            'uri'       => $uri,
+            'title'     => $folder->getTitle(),
+            'is_active' => $folder->getUid() == $activeFolder->getUid()
+        ]);
+        $output = $renderChildrenClosure();
+        $templateVariableContainer->remove('item');
+
     	if ($folder->getParent() && $folder->getUid() != $startFolder) {
-            $output = static::getBreadcrumb(
+            $parentOutput = static::getBreadcrumb(
+                $breadcrumb,
                 $folder->getParent(), 
-                $startFolder, 
-                $separator, 
-                $contentUid,
-                $renderingContext
+                $activeFolder,
+                $startFolder,
+                $renderingContext,
+                $renderChildrenClosure
             );
-    		return $output . $separator . $link;
+            return $parentOutput . $output;
     	} else {
-    		return $link;
-    	}
+            return $output;
+        }
     }   
 }

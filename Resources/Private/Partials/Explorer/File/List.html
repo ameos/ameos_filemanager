@@ -1,92 +1,112 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
 <tr>
-    <td>
-        <f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
-    </td>
-    <f:for each="{columns_table}" as="column">        
-        <f:if condition="{column} == 'icon'">
-            <td class="icone">
-                <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">
-                    <f:if condition="{settings.displayThumbnail}">
-                        <f:then><f:if condition="{file.thumbnailAvailable}">
-                            <f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
-                            <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
-                        </f:if></f:then>
-                        <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
-                    </f:if>
-                </f:link.action> 
-            </td>
-        </f:if>
-        <f:if condition="{column} == 'title'">
-            <td><f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">{file.title}</f:link.action> </td>
-        </f:if>    
-        <f:if condition="{column} == 'createdAt'">
-            <td><f:format.date format="%d/%m/%Y">@{file.crdate}</f:format.date></td>
-        </f:if>
-        <f:if condition="{column} == 'updatedAt'">
-            <td><f:format.date format="%d/%m/%Y">@{file.tstamp}</f:format.date></td>
-        </f:if>
-        <f:if condition="{column} == 'categories'">
-            <td><f:for each="{file.categories}" as="category" iteration="itemIteration">
-                {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
-            </f:for></td>
-        </f:if>
-        <f:if condition="{column} == 'description'">
-            <td>{file.description}</td>
-        </f:if>
-        <f:if condition="{column} == 'owner'">
-            <td>{file.ownerUsername}</td>
-        </f:if>
-        <f:if condition="{column} == 'size'">
-            <td><f:if condition="{file.isRemote}">
-                <f:then>N/A</f:then>
-                <f:else><filemanager:filesize size="{file.originalResource.size}" /></f:else>
-            </f:if></td>
-        </f:if>
-        <f:if condition="{column} == 'keywords'">
-            <td>{file.keywords}</td>
-        </f:if>
-        <f:if condition="{column} == 'actions'">
-            <td class="toolbar-file">
-                <f:for each="{allowed_actions_files}" as="action">
-                <f:if condition="{action} == 'download'">
-                    <f:if condition="{file.isRemote}">
-                        <f:then>
-                            <f:link.external uri="{file.publicUrl}" target="_blank" title="{f:translate(key:'seefile')}">
-                                <i class="fa fa-external-link" aria-hidden="true"></i>&nbsp;
-                            </f:link.external>
-                        </f:then>
-                        <f:else>
-                            <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">
-                                <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
-                            </f:link.action>
-                        </f:else>
-                    </f:if>
-                </f:if>
+	<td>
+		<f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
+	</td>
+	<f:for each="{columns_table}" as="column">        
+		<f:if condition="{column} == 'icon'">
+			<td class="icone"><f:if condition="{file.isRemote}">
+				<f:then>
+					<f:link.external uri="{file.publicUrl}" target="_blank">
+						<f:if condition="{settings.displayThumbnail}">
+							<f:then><f:if condition="{file.thumbnailAvailable}">
+								<f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
+								<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+							</f:if></f:then>
+							<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+						</f:if>
+					</f:link.external>
+				</f:then>
+				<f:else>
+					<f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">
+						<f:if condition="{settings.displayThumbnail}">
+							<f:then><f:if condition="{file.thumbnailAvailable}">
+								<f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
+								<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+							</f:if></f:then>
+							<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+						</f:if>
+					</f:link.action> 
+				</f:else>
+			</f:if></td>
+		</f:if>
+		<f:if condition="{column} == 'title'">
+			<td><f:if condition="{file.isRemote}">
+				<f:then>
+					<f:link.external uri="{file.publicUrl}" target="_blank">{file.title}</f:link.external>
+				</f:then>
+				<f:else>
+					<f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">{file.title}</f:link.action>
+				</f:else>
+			</f:if></td>
+		</f:if>    
+		<f:if condition="{column} == 'createdAt'">
+			<td><f:format.date format="%d/%m/%Y">@{file.crdate}</f:format.date></td>
+		</f:if>
+		<f:if condition="{column} == 'updatedAt'">
+			<td><f:format.date format="%d/%m/%Y">@{file.tstamp}</f:format.date></td>
+		</f:if>
+		<f:if condition="{column} == 'categories'">
+			<td><f:for each="{file.categories}" as="category" iteration="itemIteration">
+				{category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+			</f:for></td>
+		</f:if>
+		<f:if condition="{column} == 'description'">
+			<td>{file.description}</td>
+		</f:if>
+		<f:if condition="{column} == 'owner'">
+			<td>{file.ownerUsername}</td>
+		</f:if>
+		<f:if condition="{column} == 'size'">
+			<td><f:if condition="{file.isRemote}">
+				<f:then>N/A</f:then>
+				<f:else><filemanager:filesize size="{file.originalResource.size}" /></f:else>
+			</f:if></td>
+		</f:if>
+		<f:if condition="{column} == 'keywords'">
+			<td>{file.keywords}</td>
+		</f:if>
+		<f:if condition="{column} == 'actions'">
+			<td class="toolbar-file">
+				<f:for each="{allowed_actions_files}" as="action">
+				<f:if condition="{action} == 'download'">
+					<f:if condition="{file.isRemote}">
+						<f:then>
+							<f:link.external uri="{file.publicUrl}" target="_blank" title="{f:translate(key:'seefile')}">
+								<i class="fa fa-external-link" aria-hidden="true"></i>&nbsp;
+							</f:link.external>
+						</f:then>
+						<f:else>
+							<f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">
+								<i class="fa fa-download" aria-hidden="true"></i>&nbsp;
+							</f:link.action>
+						</f:else>
+					</f:if>
+				</f:if>
 
-                <f:if condition="{action} == 'detail'">
-                    <f:link.action action="info" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'detail')}">
-                        <i class="fa fa-info" aria-hidden="true"></i>&nbsp;
-                    </f:link.action>
-                </f:if>
+				<f:if condition="{action} == 'detail'">
+					<f:link.action action="info" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'detail')}">
+						<i class="fa fa-info" aria-hidden="true"></i>&nbsp;
+					</f:link.action>
+				</f:if>
 
-                <f:if condition="{action} == 'edit'">
-                    <filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
-                        <f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'edit')}">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;
-                        </f:link.action>
-                    </filemanager:checkAccess>
-                </f:if>
+				<f:if condition="{action} == 'edit'">
+					<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+						<f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'edit')}">
+							<i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;
+						</f:link.action>
+					</filemanager:checkAccess>
+				</f:if>
 
-                <f:if condition="{action} == 'delete'">
-                    <filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
-                        <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
-                            <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;
-                        </f:link.action>
-                    </filemanager:checkAccess>
-                </f:if>
-                </f:for>
-            </td>
-        </f:if>
-    </f:for>
+				<f:if condition="{action} == 'delete'">
+					<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+						<f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
+							<i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;
+						</f:link.action>
+					</filemanager:checkAccess>
+				</f:if>
+				</f:for>
+			</td>
+		</f:if>
+	</f:for>
 </tr>

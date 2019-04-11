@@ -1,15 +1,31 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
 <div class="col-md-2 item">
-    <f:link.action controller="Explorer\File" action="download" arguments="{file: file.uid}">
-        <f:if condition="{settings.displayThumbnail}">
-            <f:then><f:if condition="{file.thumbnailAvailable}">
-                <f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
-                <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
-            </f:if></f:then>
-            <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
-        </f:if>    
-        {file.title}
-    </f:link.action>
+    <f:if condition="{file.isRemote}">
+        <f:then>
+            <f:link.external uri="{file.publicUrl}" target="_blank">
+                <f:if condition="{settings.displayThumbnail}">
+                    <f:then><f:if condition="{file.thumbnailAvailable}">
+                        <f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
+                        <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+                    </f:if></f:then>
+                    <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+                </f:if>    
+                {file.title}
+            </f:link.external>
+        </f:then>
+        <f:else>
+            <f:link.action controller="Explorer\File" action="download" arguments="{file: file.uid}">
+                <f:if condition="{settings.displayThumbnail}">
+                    <f:then><f:if condition="{file.thumbnailAvailable}">
+                        <f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
+                        <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+                    </f:if></f:then>
+                    <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+                </f:if>    
+                {file.title}
+            </f:link.action>
+        </f:else>
+    </f:if>
     <p class="toolbar-file">    
         <f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
         <f:for each="{allowed_actions_files}" as="action">

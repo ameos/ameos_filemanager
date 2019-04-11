@@ -39,7 +39,7 @@ class DownloadUtility
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
-            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
+            if (!$file->isRemote() && AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
                     
                 $localFilepath =
                     PATH_site .
@@ -79,7 +79,7 @@ class DownloadUtility
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
-            if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
+            if (!$file->isRemote() && AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
                     
                 $localFilepath =
                     PATH_site .

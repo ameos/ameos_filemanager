@@ -66,83 +66,92 @@ class FilemanagerUtility
     }
 
     /**
-	 * return the image corresponding to the given extension
-	 * @param string $type extension of the file
-	 * @param string $iconFolder icon to look for the images
-	 * @return string
-	 */
-	public static function getImageIconeTagForType($type, $iconFolder)
+     * return the image corresponding to the given extension
+     * @param string $type extension of the file
+     * @param string $iconFolder icon to look for the images
+     * @return string
+     */
+    public static function getImageIconeTagForType($type, $iconFolder)
     {
-		if(empty($iconFolder)) {
-			$iconFolder = '/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/';
-		}
-
-		switch ($type) {
-			case 'folder':
-				if(file_exists($iconFolder.'icon_folder.png')) {
-					return '<img src="'.$iconFolder.'icon_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
-				}
-				else {
-					return self::getDefaultIcon($iconFolder);
-				}
-				break;
-			case 'previous_folder':
-				if(file_exists($iconFolder.'icon_previous_folder.png')) {
-					return '<img src="'.$iconFolder.'icon_previous_folder.png" alt="folder" title="folder" class="icone_file_manager" />';
-				}
-				else {
-					return self::getDefaultIcon($iconFolder);
-				}
-				break;
-			default:
-				if(file_exists($iconFolder.'icon_'.$type.'.png')) {
-					return '<img src="'.$iconFolder.'icon_'.$type.'.png" alt="file" title="file" class="icone_file_manager" />';
-				}
-				else {
-					return '<i class="fa fa-file-text-o" aria-hidden="true"></i>';
-					return self::getDefaultIcon($iconFolder);
-				}
-				break;
-		}
-	}
-
-	/**
-	 * return the default icon
-	 * @param string $iconFolder icon to look for the images
-	 * @return string
-	 */
-	public static function getDefaultIcon($iconFolder)
-    {
-		if (file_exists($iconFolder.'icon_default_file.png')) {
-			return '<img src="'.$iconFolder.'icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
-		} else {
-			return '<img src="/typo3conf/ext/ameos_filemanager/Resources/Public/Icons/icon_default_file.png" alt="file" title="file" class="icone_file_manager" />';
-		}
-	}
+        switch (strtolower($type)) {
+            case 'folder':
+                return '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
+                break;
+            case 'previous_folder':
+                return '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
+                break;
+            case 'pdf':
+                return '<i class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>';
+                break;
+            case 'xls':
+            case 'xlsx':
+            case 'ods':
+                return '<i class="fa fa-2x fa-file-excel-o" aria-hidden="true"></i>';
+                break;
+            case 'doc':
+            case 'docx':
+            case 'odt':
+                return '<i class="fa fa-2x fa-file-word-o" aria-hidden="true"></i>';
+                break;
+            case 'ppt':
+            case 'pptx':
+            case 'odp':
+                return '<i class="fa fa-2x fa-file-powerpoint-o" aria-hidden="true"></i>';
+                break;
+            case 'avi':
+            case 'mpeg':
+            case 'mp4':
+            case 'mov':
+            case 'flv':
+            case 'youtube':
+            case 'vimeo':
+            case 'dailymotion':
+                return '<i class="fa fa-2x fa-file-video-o" aria-hidden="true"></i>';
+                break;
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'bmp':
+            case 'gif':
+            case 'eps':
+            case 'tiff':
+                return '<i class="fa fa-2x fa-file-image-o" aria-hidden="true"></i>';
+                break;
+            case 'mp3':
+            case 'oga':
+            case 'ogg':
+            case 'midi':
+                return '<i class="fa fa-2x fa-file-audio-o" aria-hidden="true"></i>';
+                break;
+            default:
+                return '<i class="fa fa-2x fa-file-text-o" aria-hidden="true"></i>';
+                break;
+        }
+    }
 
     
-	/**
-	 * return objects of $repo where uid in $uids
-	 * @param Repository $repo
-	 * @param array $uids
-	 * @return object
-	 */
-	public static function getByUids($repo, $uids)
+    /**
+     * return objects of $repo where uid in $uids
+     * @param Repository $repo
+     * @param array $uids
+     * @return object
+     */
+    public static function getByUids($repo, $uids)
     {
-		if (!is_array($uids)) {
-			$uids = explode(',', $uids);
-		}
-		$query = $repo->createQuery();
-		$query->matching($query->in('uid', $uids));
-		return $query->execute();
-	}
+        if (!is_array($uids)) {
+            $uids = explode(',', $uids);
+        }
+        $query = $repo->createQuery();
+        $query->matching($query->in('uid', $uids));
+        return $query->execute();
+    }
 
-	/**
-	 * return folder parent
-	 * @param integer $uid uid of the child folder
-	 * @return string
-	 */
-	public static function getFolderPathFromUid($uid)
+    /**
+     * return folder parent
+     * @param integer $uid uid of the child folder
+     * @return string
+     */
+    public static function getFolderPathFromUid($uid)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
@@ -156,17 +165,17 @@ class FilemanagerUtility
             return self::getFolderPathFromUid($folder['uid_parent']) . '/' . $folder['title'];
         }
         return '/' . $folder['title'];
-	}
+    }
 
     /**
      * parse folder for indexing new content
      */ 
-	public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
+    public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
-		$slot = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\Slot::class);
-		$falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
-		$subfolders = $falFolder->getSubfolders();
-		foreach ($subfolders as $folder) {
+        $slot = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\Slot::class);
+        $falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
+        $subfolders = $falFolder->getSubfolders();
+        foreach ($subfolders as $folder) {
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
@@ -178,23 +187,23 @@ class FilemanagerUtility
 
             $exist = false;
             while ($row = $statement->fetch()) {
-				// Si il n'existe on ne fait rien
-				if (self::getFolderPathFromUid($row['uid']).'/' == $folder->getIdentifier()) {
-					$exist = true;
-					$uid = $row['uid'];
-					break;
-				}
-			}
-			if (!$exist) {
-				$slot->postFolderAdd($folder);
-			}
-		}
-		
-		$files = $falFolder->getFiles();
-		foreach ($files as $file) {
-			$slot->postFileAdd($file,$falFolder);
-		}
-	}
+                // Si il n'existe on ne fait rien
+                if (self::getFolderPathFromUid($row['uid']).'/' == $folder->getIdentifier()) {
+                    $exist = true;
+                    $uid = $row['uid'];
+                    break;
+                }
+            }
+            if (!$exist) {
+                $slot->postFolderAdd($folder);
+            }
+        }
+        
+        $files = $falFolder->getFiles();
+        foreach ($files as $file) {
+            $slot->postFileAdd($file,$falFolder);
+        }
+    }
 
     /**
      * return true if file content search is enable and tika installed

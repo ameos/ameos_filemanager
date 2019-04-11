@@ -38,7 +38,10 @@
             <td>{file.ownerUsername}</td>
         </f:if>
         <f:if condition="{column} == 'size'">
-            <td><filemanager:filesize size="{file.originalResource.size}" /></td>
+            <td><f:if condition="{file.isRemote}">
+                <f:then>N/A</f:then>
+                <f:else><filemanager:filesize size="{file.originalResource.size}" /></f:else>
+            </f:if></td>
         </f:if>
         <f:if condition="{column} == 'keywords'">
             <td>{file.keywords}</td>
@@ -47,9 +50,18 @@
             <td class="toolbar-file">
                 <f:for each="{allowed_actions_files}" as="action">
                 <f:if condition="{action} == 'download'">
-                    <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">
-                        <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
-                    </f:link.action>
+                    <f:if condition="{file.isRemote}">
+                        <f:then>
+                            <f:link.external uri="{file.publicUrl}" target="_blank" title="{f:translate(key:'seefile')}">
+                                <i class="fa fa-external-link" aria-hidden="true"></i>&nbsp;
+                            </f:link.external>
+                        </f:then>
+                        <f:else>
+                            <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">
+                                <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
+                            </f:link.action>
+                        </f:else>
+                    </f:if>
                 </f:if>
 
                 <f:if condition="{action} == 'detail'">

@@ -30,7 +30,8 @@
 			<trans-unit id="numberoffiles" xml:space="preserve"><source>Number of files</source></trans-unit>            
 			<trans-unit id="actions" xml:space="preserve"><source>Action</source></trans-unit>
 			<trans-unit id="back" xml:space="preserve"><source>Back</source></trans-unit>
-			<trans-unit id="download" xml:space="preserve"><source>Download</source></trans-unit>
+			<trans-unit id="seefile" xml:space="preserve"><source>Go to the file</source></trans-unit>
+            <trans-unit id="download" xml:space="preserve"><source>Download</source></trans-unit>
 			<trans-unit id="downloadCurrent" xml:space="preserve"><source>Download current version</source></trans-unit>
 			<trans-unit id="noReadAccess" xml:space="preserve"><source>Only owner can see this</source></trans-unit>
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source></trans-unit>

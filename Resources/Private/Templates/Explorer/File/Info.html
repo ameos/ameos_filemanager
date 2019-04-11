@@ -4,9 +4,18 @@
 <f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: file.parentFolder}">
     <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
 </f:link.action>
-<f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">
-    <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
-</f:link.action>
+<f:if condition="{file.isRemote}">
+    <f:then>
+        <f:link.external uri="{file.publicUrl}" target="_blank">
+            <i class="fa fa-external-link" aria-hidden="true"></i>&nbsp;{f:translate(key:"seefile")}
+        </f:link.external>
+    </f:then>
+    <f:else>
+        <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}">
+            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
+        </f:link.action>
+    </f:else>
+</f:if>
 <filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot:settings.startFolder}">
     <f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}">
         <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
@@ -15,10 +24,10 @@
 </p>
 
 <div class="row">
-    <f:if condition="{file.thumbnailAvailable}">
-        <div class="col-md-4"><f:image src="{file.uid}" alt="{file.title}" width="200" treatIdAsReference="0" /></div>
+    <f:if condition="{file.previewAvailable}">
+        <div class="col-md-4"><f:media class="img-fluid" file="{file}" alt="{file.title}" /></div>
     </f:if>
-    <div class="{f:if(condition: file.thumbnailAvailable, then: 'col-md-8', else: 'col-md-12')}">
+    <div class="{f:if(condition: file.previewAvailable, then: 'col-md-8', else: 'col-md-12')}">
         <table class="table table-striped">
             <tr>
                 <td>{f:translate(key: "title")}</td>

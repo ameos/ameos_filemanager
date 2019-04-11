@@ -106,7 +106,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
-     * return true if thumbnail are available
+     * return true if thumbnail is available
+     * alias for call from fluid template
      * @return bool
      */
     public function getThumbnailAvailable()
@@ -115,7 +116,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     }
 
     /**
-     * return true if thumbnail are available
+     * return true if thumbnail is available
      * @return bool
      */
     public function thumbnailAvailable()
@@ -127,6 +128,58 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             'image/gif',
             'image/bmp',
             'application/pdf',
+        ]);
+    }
+
+    /**
+     * return true if preview is available
+     * alias for call from fluid template
+     * @return bool
+     */
+    public function getPreviewAvailable()
+    {
+        return $this->previewAvailable();
+    }
+
+    /**
+     * return true if preview is available
+     * @return bool
+     */
+    public function previewAvailable()
+    {
+        return in_array($this->getOriginalResource()->getProperty('mime_type'), [
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/bmp',
+            'application/pdf',
+            'video/youtube',
+            'video/vimeo',
+            'video/dailymotion',
+        ]);
+    }
+
+    /**
+     * return true if is remote file
+     * alias for call from fluid template
+     * @return bool
+     */
+    public function getIsRemote()
+    {
+        return $this->isRemote();
+    }
+
+    /**
+     * return true if is remote file
+     * @return bool
+     */
+    public function isRemote()
+    {
+        return in_array($this->getOriginalResource()->getProperty('mime_type'), [
+            'video/youtube',
+            'video/vimeo',
+            'video/dailymotion',
         ]);
     }
 

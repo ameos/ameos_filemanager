@@ -1,0 +1,20 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<f:flashMessages />
+<div class="row">
+<f:if condition="{settings.displayTree}">
+    <f:then>
+        <div class="col-md-4 tree">
+            <ul><f:render partial="Explorer/Folder" arguments="{folder: root_folder, current_folder: current_folder, root_folder: root_folder}" /></ul>
+        </div>
+        <div class="col-md-8 files">
+            <f:render partial="Explorer/Files" arguments="{_all}" />
+        </div>
+    </f:then>
+    <f:else>
+        <div class="col-md-12 files">
+            <f:render partial="Explorer/Files" arguments="{_all}" />
+        </div>
+    </f:else>
+</f:if>
+</div>
+<f:render partial="Explorer/IncludeAssets" arguments="{_all}" />

@@ -2,6 +2,8 @@
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -18,6 +20,17 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  
 class FilesizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
+    /**
+     * Arguments initialization
+     *
+     * @return void
+     */
+    public function initializeArguments() 
+    {
+        $this->registerArgument('size', 'string', 'File Size', true);
+    }
 
     /**
      * Renders icon of extension $type
@@ -25,20 +38,18 @@ class FilesizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
      * @param string $size 
      * @return string
      */
-    public function render($size)
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        $stringLength = strlen($size);
-        $separatorNumber = 3;
-        $separatorChar = ' ';
-        $temp = $stringLength % $separatorNumber;
-        $packOfThree = floor($stringLength / $separatorNumber);
+        $stringLength = strlen($arguments['size']);
+        $temp = $stringLength % 3;
+        $packOfThree = floor($stringLength / 3);
         if ($temp != 0) {
-            $newString = substr($size, 0,$temp ).".".substr($size, $temp);
+            $newString = substr($arguments['size'], 0, $temp) . '.' . substr($arguments['size'], $temp);
         } else {
-            $newString = substr($size, 0,$separatorNumber ).".".substr($size, $separatorNumber);
+            $newString = substr($arguments['size'], 0, 3) . '.' . substr($arguments['size'], 3);
             $packOfThree--;
         }
-        return round($newString, 2) . ' ' . $this->getUnit($packOfThree);
+        return round($newString, 2) . ' ' . static::getUnit($packOfThree);
     }
 
     /**
@@ -46,7 +57,7 @@ class FilesizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
      * @param int $packOfThree
      * @return string
      */ 
-    protected function getUnit($packOfThree)
+    protected static function getUnit($packOfThree)
     {
         switch ($packOfThree) {
             case 0:  return LocalizationUtility::translate('filesizeO',  'ameos_filemanager');  break;

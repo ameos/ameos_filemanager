@@ -1,0 +1,15 @@
+<f:layout name="Default" />
+<f:flashMessages />
+<f:render section="Main" />
+<f:section name="HeaderAssets">
+    <f:if condition="{settings.includeDefaultCss}">
+        <link rel="stylesheet" href="{f:uri.resource(path: 'Css/style.css')}"/>
+    </f:if>
+    <f:if condition="{settings.includeFontawesome}">
+        <link rel="stylesheet" href="{f:uri.resource(path: 'Css/font-awesome/css/font-awesome.min.css')}"/>
+    </f:if>  
+</f:section>
+<f:section name="FooterAssets">
+    <f:debug>{settings}</f:debug>
+    <script src="{f:uri.resource(path: 'JavaScript/Explorer.js')}"></script>
+</f:section>

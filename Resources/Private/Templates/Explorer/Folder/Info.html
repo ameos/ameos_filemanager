@@ -1,0 +1,53 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<h1><f:translate key="infofolder" arguments="{0: folder.title}" /></h1>
+<p class="toolbar">
+<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: folder.parent.uid}">
+    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
+</f:link.action>
+<f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid}">
+    <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
+</f:link.action>
+<filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+    <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}">
+        <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
+    </f:link.action>
+</filemanager:checkAccess>
+</p>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <tr>
+                <td>{f:translate(key: "title")}</td>
+                <td>{folder.title}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "description")}</td>
+                <td>{folder.description}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "keywords")}</td>
+                <td>{folder.keywords}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "path")}</td>
+                <td>{folder.identifier}</td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "category")}</td>
+                <td><f:for each="{folder.categories}" as="category" iteration="itemIteration">
+                {category.title} {f:if(condition: itemIteration.isLast, then: '', else: ' - ')}
+                </f:for></td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "numberoffiles")}</td>
+                <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
+            </tr>
+            <tr>
+                <td>{f:translate(key: "size")}</td>
+                <td>{filemanager:filesize(size: folder.filesSize)}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<f:render partial="Explorer/IncludeAssets" arguments="{_all}" />

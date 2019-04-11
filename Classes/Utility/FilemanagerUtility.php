@@ -2,6 +2,8 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 
 /*
@@ -142,15 +144,18 @@ class FilemanagerUtility
 	 */
 	public static function getFolderPathFromUid($uid)
     {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'uid_parent, title',
-			'tx_ameosfilemanager_domain_model_folder',
-			'tx_ameosfilemanager_domain_model_folder.uid = '.$uid
-		);
-		if ($res['uid_parent'] != '' && $res['uid_parent'] != 0) {
-			return self::getFolderPathFromUid($res['uid_parent']).'/'.$res['title'];
-		}
-		return '/'.$res['title'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+        $folder = $queryBuilder
+            ->select('uid_parent', 'title')
+            ->from('tx_ameosfilemanager_domain_model_folder', 'folder')
+            ->where($queryBuilder->expr()->eq('uid', (int)$uid))
+            ->execute()
+            ->fetch();
+        if ($folder && $folder['uid_parent'] > 0) {
+            return self::getFolderPathFromUid($folder['uid_parent']) . '/' . $folder['title'];
+        }
+        return '/' . $folder['title'];
 	}
 
     /**
@@ -158,13 +163,21 @@ class FilemanagerUtility
      */ 
 	public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
-		$slot = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Slots\Slot');
-		$falFolder = GeneralUtility::makeInstance('TYPO3\CMS\Core\Resource\Folder', $storage, $folderIdentifier, $folderName);
+		$slot = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\Slot::class);
+		$falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
 		$subfolders = $falFolder->getSubfolders();
 		foreach ($subfolders as $folder) {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid", "tx_ameosfilemanager_domain_model_folder", "tx_ameosfilemanager_domain_model_folder.title like '".$folder->getName()."'" );
-			$exist = false;
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+            $statement = $queryBuilder
+                ->select('uid')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where($queryBuilder->expr()->eq('title', $folder->getName()))
+                ->execute();
+
+            $exist = false;
+            while ($row = $statement->fetch()) {
 				// Si il n'existe on ne fait rien
 				if (self::getFolderPathFromUid($row['uid']).'/' == $folder->getIdentifier()) {
 					$exist = true;
@@ -184,108 +197,11 @@ class FilemanagerUtility
 	}
 
     /**
-     * update cache folder status
-     * @param array $folder
-     * @return int
+     * return true if file content search is enable and tika installed
      */
-    public static function updateFolderCacheStatus($folder)
+    public static function fileContentSearchEnabled()
     {
-        $realstatus = 0;
-        if ($folder['status'] == 1 || $folder['status'] == 2) {
-            $realstatus = $folder['status'];
-        }
-        if ($folder['status'] == 0) {
-            $realstatus = self::calculFolderStatus($folder['uid_parent']);
-        }
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid = ' . (int)$folder['uid'], ['realstatus' => $realstatus]);
-        return $realstatus;
-    }
-
-    /**
-     * update cache file status
-     * @param array $file
-     * @return int
-     */
-    public static function updateFileCacheStatus($file)
-    {
-        $realstatus = 0;
-        if ($file['status'] == 1 || $file['status'] == 2) {
-            $realstatus = $file['status'];
-        }
-        if ($file['status'] == 0) {
-            $realstatus = self::calculFolderStatus($file['folder_uid']);
-        }
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'uid = ' . (int)$file['uid'], ['realstatus' => $realstatus]);
-        return $realstatus;
-    }
-    
-    /**
-     * calcul folder status
-     * @param mixed $folder
-     * @return int
-     */
-    public static function calculFolderStatus($folder)
-    {
-        if (is_a($folder, Folder::class)) {
-            $folder = $folder->toArray();
-        } else {
-            $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_ameosfilemanager_domain_model_folder', 'uid = ' . (int)$folder);
-        }
-
-        // if is root folder and no status set on this root folder : folder ready by default
-        if ((int)$folder['uid_parent'] === 0 && (int)$folder['status'] === 0 && (int)$folder['realstatus'] === 0) {
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folder['uid'],
-                ['realstatus' => 1, 'status' => 1]
-            );
-            return 1;
-        }
-
-        do {
-            if ($folder['status'] > 0) {
-                return $folder['status'];
-            }
-            $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_ameosfilemanager_domain_model_folder', 'uid = ' . (int)$folder['uid_parent']);
-            // if is root folder and no status set on this root folder : folder ready by default
-            if ((int)$folder['uid_parent'] === 0 && (int)$folder['status'] === 0 && (int)$folder['realstatus'] === 0) {
-                $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                    'tx_ameosfilemanager_domain_model_folder',
-                    'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folder['uid'],
-                    ['realstatus' => 1, 'status' => 1]
-                );
-                return 1;
-            }            
-            if ($folder['realstatus'] > 0) {
-                return $folder['realstatus'];
-            }
-        } while ($folder);
-        return 1;
-    }
-
-    /**
-     * calcul folder status
-     * @param mixed $folder
-     * @return int
-     */
-    public static function updateChildStatus($folders, $realstatus)
-    {
-        if (is_array($folders)) {
-            $folders = implode(',', $folders);
-        }
-
-        // update childs files
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('sys_file_metadata', 'status = 0 AND folder_uid IN (' . $folders . ')', ['realstatus' => $realstatus]);
-        
-        // update childs folders
-        $childsFolders = [];
-        $childsFoldersResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'status = 0 AND uid_parent IN  (' . $folders . ')');
-        while (($childsFolder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($childsFoldersResult)) !== false) {
-            $childsFolders[] = $childsFolder['uid'];
-        }        
-        if (!empty($childsFolders)) {
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_ameosfilemanager_domain_model_folder', 'uid IN (' . implode(',', $childsFolders) . ')', ['realstatus' => $realstatus]);
-            self::updateChildStatus($childsFolders, $realstatus);
-        }
+        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+        return $configuration['enable_filecontent_search'] == 1;
     }
 }

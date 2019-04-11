@@ -2,6 +2,8 @@
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -42,35 +44,40 @@ class SortlinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBas
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
-        $this->registerTagAttribute('target', 'string', 'Target of link', false);
-        $this->registerTagAttribute('rel', 'string', 'Specifies the relationship between the current document and the linked document', false);
+        $this->registerArgument('column', 'string', 'Column', true);
+        $this->registerArgument('folder', 'string', 'Folder', false, 0);
     }
     
     /**
      * Renders sort link
      *
-     * @param string $column the column
      * @return string html
      */
-    public function render($column) 
+    public function render() 
     {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $currentDirection = $this->controllerContext->getRequest()->hasArgument('direction')
-            ? $this->controllerContext->getRequest()->getArgument('direction')
+        $controllerContext = $this->renderingContext->getControllerContext();
+        $uriBuilder = $controllerContext->getUriBuilder();
+        $currentDirection = $controllerContext->getRequest()->hasArgument('direction')
+            ? $controllerContext->getRequest()->getArgument('direction')
             : 'ASC';
             
-        $currentColumn = $this->controllerContext->getRequest()->hasArgument('sort')
-            ? $this->controllerContext->getRequest()->getArgument('sort')
+        $currentColumn = $controllerContext->getRequest()->hasArgument('sort')
+            ? $controllerContext->getRequest()->getArgument('sort')
             : false;
             
         $direction = 'ASC';
-        if ($currentColumn == $column && $currentDirection == 'ASC') {
+        if ($currentColumn == $this->arguments['column'] && $currentDirection == 'ASC') {
             $direction = 'DESC';
         }
-        
-        $uri = $uriBuilder->reset()
-            ->setAddQueryString(true)
-            ->uriFor(null, ['sort' => $column, 'direction' => $direction]);
+
+        $uri = $uriBuilder->reset()->uriFor(
+            null, 
+            [
+                'folder' => $this->arguments['folder'],
+                'sort' => $this->arguments['column'],
+                'direction' => $direction
+            ]
+        );
         $this->tag->addAttribute('href', $uri);
         $this->tag->setContent($this->renderChildren());
         $this->tag->forceClosingTag(true);

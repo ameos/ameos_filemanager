@@ -3,22 +3,43 @@
 plugin.tx_ameosfilemanager {
 	# cat=plugin.tx_ameosfilemanager/content; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.columnsTable
 	columnsTable = icon,title,updatedAt,size,actions
-	# cat=plugin.tx_ameosfilemanager/content; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.actionDetail
+	
+    # cat=plugin.tx_ameosfilemanager/content; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.actionDetail
 	actionDetail = download,detail,edit
-	# cat=plugin.tx_ameosfilemanager/file; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.iconFolder
+	
+    # cat=plugin.tx_ameosfilemanager/file; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.iconFolder
 	iconFolder = typo3conf/ext/ameos_filemanager/Resources/Public/Icons/
-	# cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.columnsExport
+	
+    # cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.columnsExport
 	columnsExport = title,nbDownload,description,path
-	# cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.parseFolderInFE
+	
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.parseFolderInFE
     parseFolderInFE = 0
+    
     # cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.allowedFileExtension
-    allowedFileExtension = jpg,jpeg,tif,png,gif,pdf,docx,doc,xls,xlsx,csv,odt,ppt,ods,pptx
+    allowedFileExtension = jpg,jpeg,tif,png,gif,pdf,docx,doc,xls,xlsx,csv,odt,ppt,pptx,ods,pptx,txt,zip
+    
     # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_read_access
     newFile.owner_has_read_access = 1
+    
     # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFile.owner_has_write_access
     newFile.owner_has_write_access = 1
+    
     # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_read_access
     newFolder.owner_has_read_access = 1
+    
     # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.newFolder.owner_has_write_access
     newFolder.owner_has_write_access = 1
+    
+    # cat=plugin.tx_ameosfilemanager/basic; type=string; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.stockageGroupPid
+    stockageGroupPid = 
+    
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includejQuery
+    includejQuery = 1
+    
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includeFontawesome
+    includeFontawesome = 1
+    
+    # cat=plugin.tx_ameosfilemanager/basic; type=boolean; label=LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:constant.includeDefaultCss
+    includeDefaultCss = 1
 }

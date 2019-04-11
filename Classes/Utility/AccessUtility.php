@@ -60,7 +60,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid())) {
             return true;
         }
@@ -96,7 +96,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfolder')) {
             return true;
         }
@@ -132,7 +132,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfile')) {
             return true;
         }
@@ -183,7 +183,7 @@ class AccessUtility
             return false;
         }
         if ($file->getArrayFeGroupRead()) {
-            $fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
+            $fileRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FileRepository::class);
             if ($exist = $fileRepository->findByUid($file->getUid())) {
                 return true;
             }
@@ -237,7 +237,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FolderRepository');
+        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'write')) {
             return true;
         }
@@ -286,7 +286,7 @@ class AccessUtility
             return true;
         }
         if ($file->getArrayFeGroupWrite()) {
-            $fileRepository = GeneralUtility::makeInstance('Ameos\AmeosFilemanager\Domain\Repository\FileRepository');
+            $fileRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FileRepository::class);
             if ($exist = $fileRepository->findByUid($file->getUid(),$writeMode = true)) {
                 return true;
             }

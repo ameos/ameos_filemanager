@@ -1,7 +1,9 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -22,7 +24,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @var array
      */ 
-    protected $defaultOrderings = array('tstamp' => QueryInterface::ORDER_DESCENDING);
+    protected $defaultOrderings = ['tstamp' => QueryInterface::ORDER_DESCENDING];
 
     /**
      * Initialization
@@ -44,14 +46,31 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return $this->findAll();
         }
 
-        $fields = 'sys_file.*'; 
-        $from = 'sys_file, sys_file_metadata LEFT JOIN fe_users ON sys_file_metadata.fe_user_id = fe_users.uid';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder
+            ->select('sys_file.*')
+            ->from('sys_file')
+            ->join(
+                'sys_file',
+                'sys_file_metadata',
+                'sys_file_metadata',
+                'sys_file_metadata.file = sys_file.uid'
+            )
+            ->leftJoin(
+                'sys_file_metadata',
+                'fe_users',
+                'fe_users',
+                'fe_users.uid = sys_file_metadata.fe_user_id'
+            );
+
         if (is_array($folder)) {
             $folders = array_map('intval', $folder);
-            $where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid IN (' . implode(',', $folders) . ')';
+            $queryBuilder->where($queryBuilder->expr()->in('sys_file_metadata.folder_uid', $folders));
         } else {
-            $where = 'sys_file_metadata.file = sys_file.uid AND sys_file_metadata.folder_uid = ' . (int)$folder;    
+            $queryBuilder->where($queryBuilder->expr()->eq('sys_file_metadata.folder_uid', (int)$folder));
         }
+
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);
@@ -66,16 +85,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
             $order = $get['sort'] . ' ' . $direction;
+            $queryBuilder->orderBy($order);
         }
-        
+
         $query = $this->createQuery();
-        $query->statement($GLOBALS['TYPO3_DB']->SELECTquery(
-            $fields, 
-            $from, 
-            $where,
-            '',
-            $order
-        ));
+        $query->statement($queryBuilder->getSql());
         return $query->execute();
     }
 
@@ -88,20 +102,43 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     protected function getFilesIdentifiersRecursively($folders, $recursiveLimit = 0, $currentRecursive = 1)
     {
         $files = [];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('file', 'sys_file_metadata', 'folder_uid IN (' . $folders . ')');
-        while (($file = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) !== false) {
+        $folders = GeneralUtility::trimExplode(',', $folders);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+        $statement = $queryBuilder
+            ->select('file')
+            ->from('sys_file_metadata')
+            ->where($queryBuilder->expr()->in('folder_uid', $folders))
+            ->execute();
+
+        while ($file = $statement->fetch()) {
             $files[] = $file['file'];
         }
 
         if ($currentRecursive <= $recursiveLimit) {
             $currentRecursive++;
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_ameosfilemanager_domain_model_folder', 'uid_parent IN (' . $folders . ')');
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
+            $statement = $queryBuilder
+                ->select('uid')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where($queryBuilder->expr()->in('uid_parent', $folders))
+                ->execute();
+
             $childs = [];
-            while (($folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) !== false) {
+            while ($folder = $statement->fetch()) {
                 $childs[] = $folder['uid'];
             }
             if (!empty($childs)) {
-                $files = array_merge($files, $this->getFilesIdentifiersRecursively(implode(',', $childs), $recursiveLimit, $currentRecursive));    
+                $files = array_merge(
+                    $files,
+                    $this->getFilesIdentifiersRecursively(
+                        implode(',', $childs),
+                        $recursiveLimit,
+                        $currentRecursive
+                    )
+                );
             }
         }
         return $files;
@@ -120,43 +157,87 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return $this->findAll();
         }
 
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder
+            ->select('sys_file.*')
+            ->from('sys_file_metadata')
+            ->join(
+                'sys_file_metadata', 
+                'sys_file',
+                'sys_file',
+                'sys_file_metadata.file = sys_file.uid'
+            )
+            ->leftJoin(
+                'sys_file_metadata',
+                'sys_category_record_mm',
+                'sys_category_record_mm',
+                'sys_file_metadata.uid = sys_category_record_mm.uid_foreign 
+                    AND sys_category_record_mm.tablenames LIKE \'sys_file_metadata\'
+                    AND sys_category_record_mm.fieldname LIKE \'categories\''
+            )
+            ->leftJoin(
+                'sys_category_record_mm',
+                'sys_category',
+                'sys_category',
+                'sys_category_record_mm.uid_local = sys_category.uid'
+            );
+
+        if (FilemanagerUtility::fileContentSearchEnabled()) {
+            $queryBuilder->leftJoin(
+                'sys_file_metadata',
+                'tx_ameosfilemanager_domain_model_filecontent',
+                'filecontent',
+                'filecontent.file = sys_file_metadata.file'
+            );
+        }
+
         $rootFolder = (!is_null($rootFolder) && is_object($rootFolder)) ? $rootFolder->getUid() : $rootFolder;
 
-        $additionnalWhereClause = '';
+        if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
+            $arrayKeywords = explode(' ', $criterias['keyword']);
+            $arrayCondition = [];
+
+            foreach ($arrayKeywords as $keyword) {
+                $whereClauseKeyword = [];
+                $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
+
+                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
+                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
+                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.keywords', $keyword);
+                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file.name', $keyword);
+                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_category.title', $keyword);
+
+                if (FilemanagerUtility::fileContentSearchEnabled()) {
+                    $whereClauseKeyword[] = $queryBuilder->expr()->like('filecontent.content', $keyword);
+                }
+                
+                $whereClauseKeyword[] = 'sys_file_metadata.fe_user_id IN (
+                    SELECT
+                        uid
+                    FROM
+                        fe_users
+                    WHERE
+                        deleted = 0
+                        AND (
+                            name LIKE ' . $keyword . '
+                            OR first_name LIKE ' . $keyword . '
+                            OR middle_name LIKE ' . $keyword . '
+                            OR last_name LIKE ' . $keyword . '
+                        )
+                    )';                
+            }
+            $queryBuilder->orWhere(...$whereClauseKeyword);
+        }
+
         if (!is_null($rootFolder) && (int)$rootFolder > 0) {
             $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder, $recursiveLimit);
             if (empty($availableFilesIdentifiers)) {
-                $additionnalWhereClause = ' AND sys_file.uid = 0';    
+                $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_file.uid', 0));
             } else {
-                $additionnalWhereClause = ' AND sys_file.uid IN (' . implode(',', $availableFilesIdentifiers) . ')';
+                $queryBuilder->andWhere($queryBuilder->expr()->in('sys_file.uid', $availableFilesIdentifiers));
             }
-        }
-        
-        $fields = 'distinct sys_file.*'; 
-        $from = 'sys_file_metadata INNER JOIN sys_file  ON sys_file_metadata.file=sys_file.uid LEFT JOIN sys_category_record_mm ON sys_file_metadata.uid = sys_category_record_mm.uid_foreign LEFT JOIN sys_category ON sys_category_record_mm.uid_local = sys_category.uid';
-        $where = '1';
-        if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
-            $arrayKeywords = explode(' ', $criterias['keyword']);
-            $arrayCondition = array();
-            $where .= " AND (sys_category_record_mm.tablenames LIKE 'sys_file_metadata' OR sys_category_record_mm.tablenames IS NULL) ";
-            foreach ($arrayKeywords as $keyword) {
-                $where .= "AND ( ";
-                $where .= " sys_file_metadata.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-                $where .= " OR sys_file_metadata.description LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata'); 
-                $where .= " OR sys_file_metadata.keywords LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file_metadata');
-                $where .= " OR sys_file.name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_file');
-                $where .= " OR sys_category.title LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'sys_category');
-                $where .= " OR sys_file_metadata.fe_user_id IN (SELECT uid FROM fe_users WHERE
-                    deleted = 0
-                    AND (name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR first_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR middle_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "
-                    OR last_name LIKE " . $GLOBALS['TYPO3_DB']->fullQuoteStr('%' . $keyword . '%', 'fe_users') . "))";
-                $where .= ") ";
-            }
-        }
-
-        $where .= $additionnalWhereClause;
+        }        
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);
@@ -171,16 +252,13 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
             $order = $get['sort'] . ' ' . $direction;
+            $queryBuilder->orderBy($order);
         }
-        
+
+        $queryBuilder->orderBy('sys_file.uid');
+
         $query = $this->createQuery();
-        $query->statement($GLOBALS['TYPO3_DB']->SELECTquery(
-            $fields, 
-            $from, 
-            $where,
-            '',
-            $order
-        ));
+        $query->statement($queryBuilder->getSQL());
         return $query->execute();
     }
 
@@ -214,10 +292,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $where .= ')';
 
         // check owner access 
-        if($GLOBALS['TSFE']->fe_user->user) {
+        if ($GLOBALS['TSFE']->loginUser) {
             $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
             $where .= ' OR (
-                sys_file_metadata.fe_user_id = '.$GLOBALS['TSFE']->fe_user->user['uid'] . '
+                sys_file_metadata.fe_user_id = '. (int)$GLOBALS['TSFE']->fe_user->user['uid'] . '
                 AND sys_file_metadata.' . $ownerAccessField . ' = 1
             )';
         }
@@ -226,15 +304,18 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $where .= ')';
 
         $query = $this->createQuery();
-        $query->statement
-        (    '    SELECT distinct sys_file.uid, sys_file_metadata.folder_uid 
-                FROM sys_file_metadata
-                INNER JOIN sys_file 
-                ON sys_file_metadata.file=sys_file.uid
-                WHERE '.$where.'
-                ORDER BY sys_file_metadata.uid DESC 
-            ',
-            array()
+        $query->statement('
+            SELECT
+                distinct sys_file.uid,
+                sys_file_metadata.folder_uid 
+            FROM
+                sys_file_metadata
+                INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid
+            WHERE
+                ' . $where . '
+            ORDER BY
+                sys_file_metadata.uid DESC ',
+            []
         );
         
         $res = $query->execute()->getFirst();

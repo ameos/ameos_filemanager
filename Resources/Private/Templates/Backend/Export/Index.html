@@ -1,0 +1,23 @@
+<f:be.container pageTitle="Filemanager Export">
+
+
+<div class="typo3-fullDoc">
+	<div id="typo3-docheader">
+		<div class="typo3-docheader-functions"></div>
+		<div class="typo3-docheader-buttons"></div>
+	</div>
+	<div id="typo3-docbody">
+		<div id="typo3-inner-docbody">
+			<h1><f:translate key="export.moduletitle" arguments="{0: folder.title}" /></h1>
+			<div>			
+                <f:form action="export">
+                    <f:form.hidden name="folder" value="{folder.uid}" />
+                    <label for="subfolders">{f:translate(key:'export.subfolders')} <f:form.checkbox value="1" name="subfolders" /></label>
+                    <f:form.submit name="export" value="{f:translate(key:'export.submit')}" />
+                </f:form>
+			</div>
+		</div>
+	</div>
+</div>
+
+</f:be.container>

@@ -22,8 +22,8 @@ class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
      */ 
     public function getSubCategories()
     {
-		$extbaseObjectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-		$repo = $extbaseObjectManager->get('TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository');
+		$extbaseObjectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+		$repo = $extbaseObjectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
 		return $repo->findByParent($this->getUid());
 	}
 }

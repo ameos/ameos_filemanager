@@ -1,0 +1,36 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<tr>
+    <td></td>
+    <f:for each="{columns_table}" as="column">
+    <f:if condition="{column} == 'icon'">
+        <th></th>
+    </f:if>
+    <f:if condition="{column} == 'title'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file.name"><f:translate key="fileName"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'createdAt'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.crdate"><f:translate key="createdAt"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'updatedAt'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.tstamp"><f:translate key="updatedAt"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'categories'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.categories"><f:translate key="categories"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'description'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.description"><f:translate key="description"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'owner'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="fe_users.username"><f:translate key="owner"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'size'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file.size"><f:translate key="size"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'keywords'">
+        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.keywords"><f:translate key="keywords"/></filemanager:sortlink></th>
+    </f:if>
+    <f:if condition="{column} == 'actions'">
+        <th><f:translate key="actions"/></th>
+    </f:if>
+    </f:for>
+</tr>

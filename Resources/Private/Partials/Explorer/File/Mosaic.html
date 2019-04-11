@@ -1,0 +1,45 @@
+{namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
+<div class="col-md-2 item">
+    <f:link.action controller="Explorer\File" action="download" arguments="{file: file.uid}">
+        <f:if condition="{settings.displayThumbnail}">
+            <f:then><f:if condition="{file.thumbnailAvailable}">
+                <f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
+                <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+            </f:if></f:then>
+            <f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+        </f:if>    
+        {file.title}
+    </f:link.action>
+    <p class="toolbar-file">    
+        <f:form.checkbox name="selectedfiles[]" value="{file.uid}" />
+        <f:for each="{allowed_actions_files}" as="action">
+        <f:if condition="{action} == 'download'">
+            <f:link.action action="download" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'download')}">
+                <i class="fa fa-download" aria-hidden="true"></i>&nbsp;
+            </f:link.action>
+        </f:if>
+
+        <f:if condition="{action} == 'detail'">
+            <f:link.action action="info" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'detail')}">
+                <i class="fa fa-info" aria-hidden="true"></i>&nbsp;
+            </f:link.action>
+        </f:if>
+
+        <f:if condition="{action} == 'edit'">
+            <filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+                <f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'edit')}">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;
+                </f:link.action>
+            </filemanager:checkAccess>
+        </f:if>
+
+        <f:if condition="{action} == 'delete'">
+            <filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+                <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;
+                </f:link.action>
+            </filemanager:checkAccess>
+        </f:if>
+        </f:for>
+    </p>
+</div>

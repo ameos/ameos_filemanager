@@ -24,5 +24,5 @@ The files and folders are the same in FE and BE. Therefore, a change in one cont
 Screenshots
 -----------
 
-.. figure:: ../Images/fullTab.png
+.. figure:: ../Screenshots/PreviewPlugin.png
 	:alt: Frontend rendering

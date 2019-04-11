@@ -21,11 +21,15 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder'     => false,
     'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version'          => '1.1.10',
+    'version'          => '1.4.0',
     'clearcacheonload' => false,
     'autoload'         => ['psr-4' => ['Ameos\\AmeosFilemanager\\' => 'Classes']],
     'constraints'      => [
-        'depends'   => ['typo3' => '7.6.0-8.7.99', 'php' => '5.5.0-7.0.99'],
+        'depends' => [
+            'typo3' => '8.7.0-9.5.99',
+            'php'   => '7.0.0-7.2.99',
+            'vhs'   => '5.1.0',
+        ],
         'conflicts' => [],
         'suggests'  => [],
     ],

@@ -1,2 +1,8 @@
 # cat=basic; type=boolean; label=Use ZIP Archive
 use_ziparchive = 0
+
+# cat=basic; type=boolean; label=Enable Export Module
+enable_export_module = 1
+
+# cat=basic; type=boolean; label=Enable File's content search
+enable_filecontent_search = 1

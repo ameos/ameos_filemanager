@@ -7,6 +7,7 @@
 			<trans-unit id="title" xml:space="preserve"><source>Title</source><target>Titolo</target></trans-unit>
 			<trans-unit id="categories" xml:space="preserve"><source>Categories</source><target>Categorie</target></trans-unit>
 			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Descrizione</target></trans-unit>
+            <trans-unit id="path" xml:space="preserve"><source>Path</source><target>Sentiero</target></trans-unit>
 			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Parole chiave</target></trans-unit>
 			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Parola chiave</target></trans-unit>
 			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Cerca</target></trans-unit>
@@ -25,6 +26,7 @@
 			<trans-unit id="updatedAt" xml:space="preserve"><source>Updated the</source><target>Aggiornato il</target></trans-unit>
 			<trans-unit id="owner" xml:space="preserve"><source>Owner</source><target>Proprietario</target></trans-unit>
 			<trans-unit id="size" xml:space="preserve"><source>Size</source><target>Dimensione</target></trans-unit>
+            <trans-unit id="numberoffiles" xml:space="preserve"><source>Number of files</source><target>Numero di file</target></trans-unit>
 			<trans-unit id="actions" xml:space="preserve"><source>Action</source><target>Azione</target></trans-unit>
 			<trans-unit id="back" xml:space="preserve"><source>Back</source><target>Indietro</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Scarica</target></trans-unit>
@@ -33,6 +35,8 @@
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source><target>Solo il proprietarioi puà editare questo</target></trans-unit>
 			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source><target>Non ai accesso a questa sezione del sito.</target></trans-unit>
             <trans-unit id="tooMuchRecursion" xml:space="preserve"><source>Too much recursion.</source><target>Troppe ricusioni.</target></trans-unit>
+            <trans-unit id="missingStartFolder" xml:space="preserve"><source>Select a root folder in plugin configuration.</source><target>Select a root folder in plugin configuration.</target></trans-unit>
+            <trans-unit id="missingStorage" xml:space="preserve"><source>Select a storage in plugin configuration.</source><target>Select a storage in plugin configuration.</target></trans-unit>
 			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source><target>Inizializza il database.</target></trans-unit>
 			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source><target>Inizializzazione termnata correttamente.</target></trans-unit>
 			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source><target>Alcuni folders sono stati aggiunti al database</target></trans-unit>
@@ -41,6 +45,7 @@
 			<trans-unit id="adviceInitialize" xml:space="preserve"><source>Now you can go in the "filelist" menu and start to set metadatas and permissions on your files and folders.</source><target>Ora vai al menu "filelist" dal quale puoi caricare/modificare i permessi e i metadati per i documenti e folders.</target></trans-unit>
 			<trans-unit id="searchResultFor" xml:space="preserve"><source>Results for</source><target>Risultati trovati per</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Scarica</target></trans-unit>
+            <trans-unit id="upload" xml:space="preserve"><source>Upload</source><target>Upload</target></trans-unit>
 			<trans-unit id="detail" xml:space="preserve"><source>Detail</source><target>Dettagli</target></trans-unit>
 			<trans-unit id="edit" xml:space="preserve"><source>Edit</source><target>Edita</target></trans-unit>
 			<trans-unit id="delete" xml:space="preserve"><source>Delete</source><target>Cancella</target></trans-unit>
@@ -49,20 +54,33 @@
 			<trans-unit id="fileAlreadyExist" xml:space="preserve"><source>A file with this name already exists.</source><target>Un file con il medesimo nome già esiste</target></trans-unit>
 			<trans-unit id="filecategory" xml:space="preserve"><source>Category</source><target>Categoria</target></trans-unit>
 			<trans-unit id="category" xml:space="preserve"><source>Category</source><target>Categoria</target></trans-unit>
-			<trans-unit id="filetype" xml:space="preserve"><source>Axe</source><target></target></trans-unit>
-			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source><target></target></trans-unit>
-			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source><target></target></trans-unit>
-			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source><target></target></trans-unit>
-			<trans-unit id="filesizeGO" xml:space="preserve"><source>Go</source><target></target></trans-unit>
-			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source><target></target></trans-unit>
-			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source><target></target></trans-unit>
+			<trans-unit id="filetype" xml:space="preserve"><source>File type</source><target>Tipo di file</target></trans-unit>
+			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source><target>o</target></trans-unit>
+			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source><target>Ko</target></trans-unit>
+			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source><target>Mo</target></trans-unit>
+			<trans-unit id="filesizeGO" xml:space="preserve"><source>Go</source><target>Go</target></trans-unit>
+			<trans-unit id="filesizeTO" xml:space="preserve"><source>To</source><target>To</target></trans-unit>
+			<trans-unit id="filesizePO" xml:space="preserve"><source>Po</source><target>Po</target></trans-unit>
 			<trans-unit id="folderFiles" xml:space="preserve"><source>File(s)</source><target>Documento(i)</target></trans-unit>
 			<trans-unit id="massDownload" xml:space="preserve"><source>Download as ZIP archive</source><target>Scarica come archivio compresso ZIP</target></trans-unit>
 			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Cerca</target></trans-unit>
 			<trans-unit id="refresh" xml:space="preserve"><source>Reload</source><target>Ricarica</target></trans-unit>
 			<trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source><target>Il folder è vuoto</target></trans-unit>
             <trans-unit id="download_generated_zip" xml:space="preserve"><source>The ZIP file has been generated. Download it !</source><target>Il file ZIP è stato generato. Scaricalo!</target></trans-unit>
-
+            <trans-unit id="upload_area" xml:space="preserve"><source>Click or drop your files on the box below</source><target>Click or drop your files on the box below</target></trans-unit>
+            <trans-unit id="missingFolderArgument" xml:space="preserve"><source>You must select a folder</source><target>You must select a folder</target></trans-unit>
+            <trans-unit id="missingFileArgument" xml:space="preserve"><source>You must select a file</source><target>You must select a file</target></trans-unit>
+            <trans-unit id="fileRemoved" xml:space="preserve"><source>File removed</source><target>File removed</target></trans-unit>
+            <trans-unit id="folderRemoved" xml:space="preserve"><source>Folder removed</source><target>Folder removed</target></trans-unit>
+            <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source><target>Title required</target></trans-unit>
+            <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source><target>Folder %s created</target></trans-unit>
+            <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source><target>Folder %s updated</target></trans-unit>
+            <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source><target>Information on folder %s</target></trans-unit>
+            <trans-unit id="uploadfolder" xml:space="preserve"><source>Upload on folder %s</source><target>Upload on folder %s</target></trans-unit>
+            <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source><target>Information on file %s</target></trans-unit>
+            <trans-unit id="folderTitleEmpty" xml:space="preserve"><source>Folder title cannot be empty</source><target>Il titolo della cartella non può essere vuoto</target></trans-unit>
+            <trans-unit id="folderExist" xml:space="preserve"><source>Folder already exists</source><target>La cartella esiste già</target></trans-unit>
+            
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>N.ro di scaricamenti</target></trans-unit>
 			<trans-unit id="export.title" xml:space="preserve"><source>Title</source><target>Titolo</target></trans-unit>

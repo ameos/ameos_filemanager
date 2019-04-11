@@ -2,6 +2,7 @@
 namespace Ameos\AmeosFilemanager\Hooks;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -50,7 +51,10 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
      * @return void
      */
     public function preProcess(PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
-        if ($row['CType'] === 'list' && ($row['list_type'] == 'ameosfilemanager_fe_filemanager' || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat')) {
+        if ($row['CType'] === 'list' && (
+            $row['list_type'] == 'ameosfilemanager_fe_filemanager'
+            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat'
+            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_explorer')) {
             $this->initialize($row);
 
             $drawItem = false;
@@ -73,19 +77,27 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 case 'ameosfilemanager_fe_filemanager_flat': 
                     $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_flat.title', 'AmeosFilemanager');
                     break;
+                case 'ameosfilemanager_fe_filemanager_explorer': 
+                    $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_explorer.title', 'AmeosFilemanager');
+                    break;
             }
             $headerContent = '<strong><a href="' . $url . '">'  . $title . '</a></strong><br/>';
 
-            $folder = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'tx_ameosfilemanager_domain_model_folder.*',
-                'tx_ameosfilemanager_domain_model_folder',
-                'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$this->flexFormData['settings']['startFolder']
-            );
-            $storage = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'sys_file_storage.*',
-                'sys_file_storage',
-                'sys_file_storage.uid = ' . (int)$this->flexFormData['settings']['storage']
-            );
+            $folder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder')
+                ->select('*')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where('uid = ' . (int)$this->flexFormData['settings']['startFolder'])
+                ->execute()
+                ->fetch();
+
+            $storage = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('sys_file_storage')
+                ->select('*')
+                ->from('sys_file_storage')
+                ->where('uid = ' . (int)$this->flexFormData['settings']['storage'])
+                ->execute()
+                ->fetch();
 
             $standaloneView = GeneralUtility::makeInstance(ObjectManager::class)->get(StandaloneView::class);
             $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($this->templatePathAndFile));

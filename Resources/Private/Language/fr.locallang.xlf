@@ -6,25 +6,28 @@
             <trans-unit id="file" xml:space="preserve"><source>File</source><target>Fichier</target></trans-unit>
 			<trans-unit id="title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>
 			<trans-unit id="categories" xml:space="preserve"><source>Categories</source><target>Categories</target></trans-unit>
-			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Rechercher un fichier</target></trans-unit>
-			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Description</target></trans-unit>
-			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Mots-clés</target></trans-unit>
-			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Mot-clé</target></trans-unit>
+			<trans-unit id="description" xml:space="preserve"><source>Description</source><target>Description</target></trans-unit>
+            <trans-unit id="path" xml:space="preserve"><source>Path</source><target>Emplacement</target></trans-unit>
+			<trans-unit id="keywords" xml:space="preserve"><source>Keywords</source><target>Mots-clés</target></trans-unit>
+			<trans-unit id="keyword" xml:space="preserve"><source>Keyword</source><target>Mot-clé</target></trans-unit>
+			<trans-unit id="search" xml:space="preserve"><source>Search</source><target>Rechercher</target></trans-unit>
 			<trans-unit id="feGroupRead" xml:space="preserve"><source>Groups with read permissions</source><target>Groupe avec autorisation de lecture</target></trans-unit>
 			<trans-unit id="feGroupWrite" xml:space="preserve"><source>Groups with write permissions</source><target>Groupe avec autorisation d'écriture</target></trans-unit>
             <trans-unit id="feGroupAddfolder" xml:space="preserve"><source>Groups with add folders permissions</source><target>Groupe avec autorisation d'ajouter des dossiers</target></trans-unit>
             <trans-unit id="feGroupAddfile" xml:space="preserve"><source>Groups with add files permissions</source><target>Groupe avec autorisation d'ajouter des fichiers</target></trans-unit>
+            <trans-unit id="fileMissing" xml:space="preserve"><source>You need select a file.</source><target>Vous devez sélectionner un fichier</target></trans-unit>
 			<trans-unit id="fileNotUploaded" xml:space="preserve"><source>You must upload a file to create a document.</source><target>Vous devez choisir un fichier pour créer un document.</target></trans-unit>
 			<trans-unit id="fileUploadError" xml:space="preserve"><source>An error occured while loading the file. Please try again.</source><target>Problème lors de l'upload du fichier.</target></trans-unit>
             <trans-unit id="notAllowedFileType" xml:space="preserve"><source>File type not allowed.</source><target>Type de fichier non autorisé.</target></trans-unit>
 			<trans-unit id="errors" xml:space="preserve"><source>Error(s) were detected, please fill the form correctly.</source><target>Des erreurs ont été détécté, merci de remplir le formulaire correctement.</target></trans-unit>
 			<trans-unit id="createFile" xml:space="preserve"><source>Submit file</source><target>Transférer un fichier</target></trans-unit>
-			<trans-unit id="createFolder" xml:space="preserve"><source>Create folder</source><target>Créer un nouveau dossier</target></trans-unit>
+			<trans-unit id="createFolder" xml:space="preserve"><source>Create folder</source><target>Créer un dossier</target></trans-unit>
 			<trans-unit id="fileName" xml:space="preserve"><source>Name</source><target>Intitulé</target></trans-unit>
 			<trans-unit id="createdAt" xml:space="preserve"><source>Created the</source><target>Créé le</target></trans-unit>
 			<trans-unit id="updatedAt" xml:space="preserve"><source>Updated the</source><target>Mis à jour le</target></trans-unit>
 			<trans-unit id="owner" xml:space="preserve"><source>Owner</source><target>Propriétaire</target></trans-unit>
 			<trans-unit id="size" xml:space="preserve"><source>Size</source><target>Taille</target></trans-unit>
+            <trans-unit id="numberoffiles" xml:space="preserve"><source>Number of files</source><target>Nombre de fichiers</target></trans-unit>
 			<trans-unit id="actions" xml:space="preserve"><source>Action</source><target>Action</target></trans-unit>
 			<trans-unit id="back" xml:space="preserve"><source>Back</source><target>Retour</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Télécharger le fichier.</target></trans-unit>
@@ -32,6 +35,9 @@
 			<trans-unit id="noReadAccess" xml:space="preserve"><source>Only owner can see this</source><target>Seul le propriétaire peut lire</target></trans-unit>
 			<trans-unit id="noWriteAccess" xml:space="preserve"><source>Only owner can edit this</source><target>Seul le propriétaire peut editer</target></trans-unit>
 			<trans-unit id="accessDenied" xml:space="preserve"><source>You do not have access to this part of the website.</source><target>Vous n'avez pas accès à cette partie du site.</target></trans-unit>
+            <trans-unit id="tooMuchRecursion" xml:space="preserve"><source>Too much recursion.</source><target>Trop de recursion</target></trans-unit>
+            <trans-unit id="missingStartFolder" xml:space="preserve"><source>Select a root folder in plugin configuration.</source><target>Veuillez sélectionner un dossier racine dans la configuration du plugin</target></trans-unit>
+            <trans-unit id="missingStorage" xml:space="preserve"><source>Select a storage in plugin configuration.</source><target>Veuillez sélectionner le stockage dans la configuration du plugin</target></trans-unit>
 			<trans-unit id="doInitialize" xml:space="preserve"><source>Initialize database.</source><target>Initializer la base de données.</target></trans-unit>
 			<trans-unit id="initializeSuccess" xml:space="preserve"><source>Initialization was correctly executed.</source><target>L'initialization à été un succés.</target></trans-unit>
 			<trans-unit id="initializeCountFolder" xml:space="preserve"><source>Folders added to database</source><target>Nombre de dossier ajoutés à la base de données</target></trans-unit>
@@ -40,6 +46,7 @@
 			<trans-unit id="adviceInitialize" xml:space="preserve"><source>Now you can go in the "filelist" menu and start to set metadatas and permissions on your files and folders.</source><target>Attention</target></trans-unit>
 			<trans-unit id="searchResultFor" xml:space="preserve"><source>Results for</source><target>Résultats de recherche pour le terme</target></trans-unit>
 			<trans-unit id="download" xml:space="preserve"><source>Download</source><target>Télécharger</target></trans-unit>
+            <trans-unit id="upload" xml:space="preserve"><source>Upload</source><target>Upload</target></trans-unit>
 			<trans-unit id="detail" xml:space="preserve"><source>Detail</source><target>Detail</target></trans-unit>
 			<trans-unit id="edit" xml:space="preserve"><source>Edit</source><target>Editer</target></trans-unit>
 			<trans-unit id="delete" xml:space="preserve"><source>Delete</source><target>Supprimer</target></trans-unit>
@@ -48,7 +55,7 @@
 			<trans-unit id="fileAlreadyExist" xml:space="preserve"><source>A file with this name already exists.</source><target>Un fichier portant ce nom existe déjà.</target></trans-unit>
 			<trans-unit id="filecategory" xml:space="preserve"><source>Category</source><target>Catégorie</target></trans-unit>
 			<trans-unit id="category" xml:space="preserve"><source>Category</source><target>Catégorie</target></trans-unit>
-			<trans-unit id="filetype" xml:space="preserve"><source>Axe</source><target>Axe</target></trans-unit>
+			<trans-unit id="filetype" xml:space="preserve"><source>File type</source><target>Type de fichier</target></trans-unit>
 			<trans-unit id="filesizeO" xml:space="preserve"><source>o</source><target>o</target></trans-unit>
 			<trans-unit id="filesizeKO" xml:space="preserve"><source>Ko</source><target>Ko</target></trans-unit>
 			<trans-unit id="filesizeMO" xml:space="preserve"><source>Mo</source><target>Mo</target></trans-unit>
@@ -61,7 +68,20 @@
             <trans-unit id="refresh" xml:space="preserve"><source>Reload</source><target>Recharger</target></trans-unit>
             <trans-unit id="empty_folder" xml:space="preserve"><source>The folder is empty</source><target>Le dossier est vide</target></trans-unit>
             <trans-unit id="download_generated_zip" xml:space="preserve"><source>The ZIP file has been generated. Download it !</source><target>Le ZIP a correctement été généré. Télécharger le !</target></trans-unit>
-
+            <trans-unit id="upload_area" xml:space="preserve"><source>Click or drop your files on the box below</source><target>Cliquer ou déposer vos fichiers dans la zone ci dessous</target></trans-unit>
+            <trans-unit id="missingFolderArgument" xml:space="preserve"><source>You must select a folder</source><target>Aucun dossier de sélectionner</target></trans-unit>
+            <trans-unit id="missingFileArgument" xml:space="preserve"><source>You must select a file</source><target>Aucun fichier de sélectionner</target></trans-unit>
+            <trans-unit id="fileRemoved" xml:space="preserve"><source>File removed</source><target>Fichier supprimé</target></trans-unit>
+            <trans-unit id="folderRemoved" xml:space="preserve"><source>Folder removed</source><target>Dossier supprimé</target></trans-unit>
+            <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source><target>Titre obligatoire</target></trans-unit>
+            <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source><target>Dossier %s créé</target></trans-unit>
+            <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source><target>Dossier %s mis à jour</target></trans-unit>
+            <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source><target>Information sur le dossier %s</target></trans-unit>
+            <trans-unit id="uploadfolder" xml:space="preserve"><source>Upload on folder %s</source><target>Charger des fichiers dans le dossier %s</target></trans-unit>
+            <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source><target>Information sur le fichier %s</target></trans-unit>
+            <trans-unit id="folderTitleEmpty" xml:space="preserve"><source>Folder title cannot be empty</source><target>Le nom du dossier ne peut pas être vide</target></trans-unit>
+            <trans-unit id="folderExist" xml:space="preserve"><source>Folder already exists</source><target>Ce dossier existe déjà</target></trans-unit>
+            
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>
 			<trans-unit id="export.title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>

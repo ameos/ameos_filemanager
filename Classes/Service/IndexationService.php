@@ -1,4 +1,5 @@
 <?php
+namespace Ameos\AmeosFilemanager\Service;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -20,99 +21,42 @@ use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-class ext_update
+ 
+class IndexationService
 {
-
-    /**
-     * Main function, returning the HTML content of the module
-     * @return string HTML
-     */
-    public function main()
+    public static function runForDefaultStorage()
     {
-        if (!GeneralUtility::_GP('do_initialize')) {
-            $content = $this->displayWarning();
-            $onClick = 'document.location="' . GeneralUtility::linkThisScript(array('do_initialize'=>1)) . '"; return false;';
-            $content .= htmlspecialchars($GLOBALS['LANG']->getLL('update_convert_now')) . '
-                <br /><br />
-                <form action=""><input type="submit" value="' . LocalizationUtility::translate('doInitialize', 'ameos_filemanager') . '" onclick="' . htmlspecialchars($onClick) . '"></form>';
-        } else {
-            $this->countFolder = 0;
-            $this->countAddedFolder = 0;
-            
-            $updated = $this->initializeDatabase();
-            $content .= $updated.'<br/>'.LocalizationUtility::translate('initializeCountFolder', 'ameos_filemanager').' : '.$this->countFolder. ' - ' . $this->countAddedFolder .'<br/>'.LocalizationUtility::translate('adviceInitialize', 'ameos_filemanager');
-
-        }
-        return $content;
+        $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+        $storage = $resourceFactory->getDefaultStorage();
+        GeneralUtility::makeInstance(IndexationService::class)->run($storage);
     }
 
     /**
-     * Checks if extension is loaoed
-     * @return boolean true if user have access, otherwise false
-     */
-    public function access()
-    {
-        // We cannot update before the extension is installed: required tables are not yet in TCA
-        return ExtensionManagementUtility::isLoaded('ameos_filemanager');
-    }
-
-    /**
-     * Go through the DB and initialize the basic settings to use the extension. 
-     * @return string indication about the success or failure of the task
-     */
-    protected function initializeDatabase()
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $storageRepository = $this->objectManager->get(StorageRepository::class);
-        $storages = $storageRepository->findAll();
-        
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder');
-        $connection->executeQuery(
-            'DELETE FROM tx_ameosfilemanager_domain_model_folder WHERE identifier = \'\' OR identifier IS NULL'
-        );
-        $connection->executeQuery(
-            'UPDATE tx_ameosfilemanager_domain_model_folder SET deleted = 1'
-        );
-        
-        foreach ($storages as $storage) {
-            $this->currentStorage = $storage;
-            $storagePath = $_SERVER['DOCUMENT_ROOT'] . '/' . $storage->getConfiguration()['basePath'];
-            $this->setDatabaseForFolder(substr($storagePath, 0,-1), $storagePath, 0, $storage->getUid());
-        }
-        return LocalizationUtility::translate('initializeSuccess', 'ameos_filemanager');
-    }
-
-    /**
+     * run indexation for a storage
      *
-     * Display the description of the task
-     * @return string
+     * @param \TYPO3\CMS\Core\Resource\ResourceStorage $storage storage
      */
-    protected function displayWarning()
+    public function run($storage)
     {
-        $out = '
-            <div style="padding:15px 15px 20px 0;">
-                <div class="typo3-message message-warning">
-                        <div class="message-header">' . LocalizationUtility::translate('warning', 'ameos_filemanager') . '</div>
-                        <div class="message-body">' . LocalizationUtility::translate('warningInitialize', 'ameos_filemanager') . '</div>
-                    </div>
-                </div>
-            </div>';
-
-        return $out;
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_ameosfilemanager_domain_model_folder')
+            ->update(
+                'tx_ameosfilemanager_domain_model_folder',
+                ['deleted' => '1'],
+                ['storage' => $storage->getUid()]
+            );
+        
+        $this->indexFolder($storage, $this->getStorageRootpath($storage), 0);
     }
 
     /**
-     *
      * Parse a folder and add the necessary folder/file into the database
      *
-     * @param string $storageFolderPath storage folder path
-     * @param Ameos\AmeosFilemanager\Domain\Model\Folder $folder the folder currently in treatment
+     * @param \TYPO3\CMS\Core\Resource\ResourceStorage $storage storage
+     * @param string $folder the folder currently in treatment
      * @param int $uidParent his parent's uid
-     * @param int $storage storage uid
      */
-    protected function setDatabaseForFolder($storageFolderPath, $folder, $uidParent = 0, $storage)
+    protected function indexFolder($storage, $folder, $uidParent = 0)
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 
@@ -121,18 +65,17 @@ class ext_update
         $queryBuilder->getRestrictions()->removeAll();
 
         $files = [];
-        $this->countFolder++;
         if ($handle = opendir($folder)) {
             while (($entry = readdir($handle)) !== false) {
                 if ($entry != '.' && $entry != '..') {
                     if (is_dir($folder . $entry)) {
-                        $identifier = '/' . trim(str_replace($storageFolderPath, '', $folder . $entry), '/') . '/';
+                        $identifier = '/' . trim(str_replace($this->getStorageRootpath($storage), '', $folder . $entry), '/') . '/';
 
                         $qb = clone $queryBuilder;
                         $res = $qb->select('uid', 'storage')
                             ->from('tx_ameosfilemanager_domain_model_folder')
                             ->where(
-                                $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage, \PDO::PARAM_INT)),
+                                $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)),
                                 $qb->expr()->like('identifier', $qb->createNamedParameter($identifier))
                             )
                             ->execute();
@@ -148,26 +91,24 @@ class ext_update
                                 )
                                 ->set('deleted', 0)
                                 ->set('uid_parent', $uidParent)
-                                ->set('deleted', $storage)
+                                ->set('storage', $storage->getUid())
                                 ->execute();
                         }
 
                         if (!$exist) {
-                            $this->countAddedFolder ++;
-
                             $insertQb = clone $queryBuilder;
                             $insertQb->insert('tx_ameosfilemanager_domain_model_folder')
                                 ->values([
                                     'title'      => $entry,
                                     'pid'        => 0,
-                                    'cruser_id'  => $GLOBALS['BE_USER']->user['uid'],
+                                    'cruser_id'  => $GLOBALS['BE_USER']->user['uid'] ?: 0,
                                     'uid_parent' => $uidParent,
                                     'crdate'     => time(),
                                     'tstamp'     => time(),
                                     'deleted'    => 0,
                                     'hidden'     => 0,
                                     'identifier' => $identifier,
-                                    'storage'    => $storage,
+                                    'storage'    => $storage->getUid(),
                                     'fe_group_read'      => '',
                                     'fe_group_write'     => '',
                                     'fe_group_addfile'   => '',
@@ -176,22 +117,21 @@ class ext_update
                                 ->execute();
 
                             $uid = $folderConnection->lastInsertId('tx_ameosfilemanager_domain_model_folder');
-                            $this->countFolder++;                            
                         }
-                        $this->setDatabaseForFolder($storageFolderPath, $folder . $entry . '/', $uid, $storage);
+                        $this->indexFolder($storage, $folder . $entry . '/', $uid);
                     } else {                        
-                        $this->setDatabaseForFile($storageFolderPath, $folder, $entry, $uidParent);
+                        $this->indexFile($storage, $folder, $entry, $uidParent);
                     }
                 }
             }
             closedir($handle);
 
-            $currentFolderIdentifier = '/' . trim(str_replace($storageFolderPath, '', $folder), '/') . '/';
+            $currentFolderIdentifier = '/' . trim(str_replace($this->getStorageRootpath($storage), '', $folder), '/') . '/';
             $qb = clone $queryBuilder;
             $qb->select('uid')
                 ->from('tx_ameosfilemanager_domain_model_folder')
                 ->where(
-                    $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage, \PDO::PARAM_INT)),
+                    $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)),
                     $qb->expr()->like('identifier', $qb->createNamedParameter($identifier))
                 )
                 ->execute()
@@ -213,12 +153,12 @@ class ext_update
                         ),
                         $qbfile->expr()->eq(
                             'file.storage', 
-                            $qbfile->createNamedParameter((int)$storage, \PDO::PARAM_INT)
+                            $qbfile->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
                         )
                     )
                     ->execute();
                if ($file = $result->fetch()) {
-                    if (!file_exists($storageFolderPath . $file['identifier'])) {
+                    if (!file_exists($this->getStorageRootpath($storage) . $file['identifier'])) {
                         $qbDelete = $connectionPool->getQueryBuilderForTable('sys_file');
                         $qbDelete->getRestrictions()->removeAll();
                         $qbDelete
@@ -242,14 +182,13 @@ class ext_update
                 }
             }
         }
-        
     }
 
     /**
      *
      * add file into the database
      */
-    protected function setDatabaseForFile($storageFolderPath, $folderPath, $entry, $folderParentUid)
+    protected function indexFile($storage, $folderPath, $entry, $folderParentUid)
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $fileConnection = $connectionPool->getConnectionForTable('sys_file');
@@ -257,8 +196,8 @@ class ext_update
         $fileQueryBuilder = $connectionPool->getQueryBuilderForTable('sys_file');
 
         $filePath = $folderPath . $entry;
-        $fileIdentifier = str_replace($storageFolderPath, '', $filePath);
-        $infoFile = $this->currentStorage->getFileInfoByIdentifier($fileIdentifier, array());
+        $fileIdentifier = str_replace($this->getStorageRootpath($storage), '', $filePath);
+        $infoFile = $storage->getFileInfoByIdentifier($fileIdentifier, array());
 
         // Add file into sys_file if it doesn't exist
         $file = $fileQueryBuilder->select('uid')
@@ -305,6 +244,24 @@ class ext_update
                 'fe_group_read'  => '',
                 'fe_group_write' => '',
             ]);
+        }
+    }
+
+    /**
+     * return storage root path
+     * @param \TYPO3\CMS\Core\Resource\ResourceStorage $storage
+     * @return string
+     */
+    protected function getStorageRootpath($storage)
+    {
+        if ($storage->getConfiguration()['pathType'] == 'relative') {
+            $root = php_sapi_name() == 'cli'
+                ? realpath(dirname(__FILE__) . '/../../../../../')
+                : realpath($_SERVER['DOCUMENT_ROOT']);
+
+            return $root . '/' . $storage->getConfiguration()['basePath'];
+        } else {
+            return $storage->getConfiguration()['basePath'];
         }
     }
 }

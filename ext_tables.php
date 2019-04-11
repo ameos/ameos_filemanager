@@ -75,6 +75,14 @@ if (TYPO3_MODE == 'BE') {
         'move'
     );
 
+    // initialization slot
+    $dispatcher->connect(
+        \TYPO3\CMS\Extensionmanager\Utility\InstallUtility::class,
+        'afterExtensionInstall',
+        \Ameos\AmeosFilemanager\Slots\Install::class, 
+        'execute'
+    );
+
     // Register backend module
     if ($configuration['enable_export_module']) {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(

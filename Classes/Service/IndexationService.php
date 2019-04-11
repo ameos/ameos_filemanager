@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -119,7 +120,7 @@ class IndexationService
                             $uid = $folderConnection->lastInsertId('tx_ameosfilemanager_domain_model_folder');
                         }
                         $this->indexFolder($storage, $folder . $entry . '/', $uid);
-                    } else {                        
+                    } else {
                         $this->indexFile($storage, $folder, $entry, $uidParent);
                     }
                 }
@@ -196,54 +197,21 @@ class IndexationService
         $fileQueryBuilder = $connectionPool->getQueryBuilderForTable('sys_file');
 
         $filePath = $folderPath . $entry;
-        $fileIdentifier = str_replace($this->getStorageRootpath($storage), '', $filePath);
-        $infoFile = $storage->getFileInfoByIdentifier($fileIdentifier, array());
-
+        $fileIdentifier = '/' . str_replace($this->getStorageRootpath($storage), '', $filePath);
+        
         // Add file into sys_file if it doesn't exist
-        $file = $fileQueryBuilder->select('uid')
-            ->from('sys_file')
-            ->where(
-                $fileQueryBuilder->expr()->like('identifier', $fileQueryBuilder->createNamedParameter($fileIdentifier))
-            )
-            ->execute()
-            ->fetch();
-
+        $file = $storage->getFile($fileIdentifier);
         if ($file) {
-            $fileUid = $file['uid'];
+            $meta = $metaConnection->select(['uid'], 'sys_file_metadata', ['file' => (int)$file->getUid()])->fetch();
+            if (!$meta && !$storage->isWithinProcessingFolder($fileIdentifier)) {
+                $this->getIndexer($storage)->extractMetaData($file);
+            }
 
-            // adding metadatas.
             $metaConnection->update(
                 'sys_file_metadata',
                 ['folder_uid' => $folderParentUid],
-                ['file' => $fileUid]
+                ['file' => $file->getUid()]
             );
-
-        } else {
-            $fileConnection->insert('sys_file', [
-                'pid'               => 0,
-                'tstamp'            => time(),
-                'storage'           => $infoFile['storage'],
-                'identifier'        => $infoFile['identifier'],
-                'identifier_hash'   => $infoFile['identifier_hash'],
-                'folder_hash'       => $infoFile['folder_hash'],
-                'extension'         => pathinfo($filePath)['extension'] ?: '',
-                'mime_type'         => $infoFile['mimetype'],
-                'name'              => $entry,
-                'size'              => $infoFile['size'],
-                'creation_date'     => $infoFile['ctime'],
-                'modification_date' => $infoFile['mtime']
-            ]);
-
-            $fileUid = $fileConnection->lastInsertId('sys_file');
-
-            $metaConnection->insert('sys_file_metadata', [
-                'pid'    => 0,
-                'tstamp' => time(),
-                'crdate' => time(),
-                'file'   => $fileUid,
-                'fe_group_read'  => '',
-                'fe_group_write' => '',
-            ]);
         }
     }
 
@@ -263,5 +231,15 @@ class IndexationService
         } else {
             return $storage->getConfiguration()['basePath'];
         }
+    }
+
+    /**
+     * Gets the Indexer.
+     *
+     * @return Index\Indexer
+     */
+    protected function getIndexer($storage)
+    {
+        return GeneralUtility::makeInstance(Indexer::class, $storage);
     }
 }

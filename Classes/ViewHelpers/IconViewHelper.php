@@ -40,7 +40,6 @@ class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
     public function initializeArguments() 
     {
         $this->registerArgument('type', 'string', 'File type', true);
-        $this->registerArgument('iconFolder', 'string', 'icon folder', true);
     }
 
     /**
@@ -52,6 +51,6 @@ class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        return FilemanagerUtility::getImageIconeTagForType($arguments['type'], $arguments['iconFolder']);
+        return FilemanagerUtility::getImageIconeTagForType($arguments['type']);
     }
 }

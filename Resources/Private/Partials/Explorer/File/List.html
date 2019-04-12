@@ -11,9 +11,9 @@
 						<f:if condition="{settings.displayThumbnail}">
 							<f:then><f:if condition="{file.thumbnailAvailable}">
 								<f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
-								<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+								<f:else><filemanager:icon type="{file.originalResource.extension}" /><br></f:else>
 							</f:if></f:then>
-							<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+							<f:else><filemanager:icon type="{file.originalResource.extension}" /><br></f:else>
 						</f:if>
 					</f:link.external>
 				</f:then>
@@ -22,9 +22,9 @@
 						<f:if condition="{settings.displayThumbnail}">
 							<f:then><f:if condition="{file.thumbnailAvailable}">
 								<f:then><f:image src="{file.uid}" alt="{file.title}" width="50" height="40c" treatIdAsReference="0" /><br></f:then>
-								<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+								<f:else><filemanager:icon type="{file.originalResource.extension}" /><br></f:else>
 							</f:if></f:then>
-							<f:else><filemanager:icon type="{file.originalResource.extension}" iconFolder="{settings.iconFolder}"/><br></f:else>
+							<f:else><filemanager:icon type="{file.originalResource.extension}" /><br></f:else>
 						</f:if>
 					</f:link.action> 
 				</f:else>

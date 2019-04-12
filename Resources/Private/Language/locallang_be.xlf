@@ -51,7 +51,6 @@
             <trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source></trans-unit>
             <trans-unit id="flexform.allowedActionsOnFiles" xml:space="preserve"><source>Allowed actions on files</source></trans-unit>
             <trans-unit id="flexform.allowedActionsOnFolders" xml:space="preserve"><source>Allowed actions on folders</source></trans-unit>
-            <trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source></trans-unit>
             <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source></trans-unit>
             <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
             <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source></trans-unit>

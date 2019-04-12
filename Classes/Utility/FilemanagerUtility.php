@@ -68,10 +68,9 @@ class FilemanagerUtility
     /**
      * return the image corresponding to the given extension
      * @param string $type extension of the file
-     * @param string $iconFolder icon to look for the images
      * @return string
      */
-    public static function getImageIconeTagForType($type, $iconFolder)
+    public static function getImageIconeTagForType($type)
     {
         switch (strtolower($type)) {
             case 'folder':

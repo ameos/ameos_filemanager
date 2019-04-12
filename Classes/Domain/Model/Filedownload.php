@@ -17,7 +17,7 @@ namespace Ameos\AmeosFilemanager\Domain\Model;
 class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
-     * @var Tx_AmeosFilemanager_Domain_Model_File
+     * @var Ameos\AmeosFilemanager\Domain\Model\File
      */
     protected $file;
     
@@ -31,14 +31,16 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $userDownload;
 
-
+    /**
+     * @return Ameos\AmeosFilemanager\Domain\Model\File
+     */
     public function getFile()
     {
         return $this->file;
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getCrdate()
     {
@@ -48,7 +50,7 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Setter for file
      *
-     * @param Tx_AmeosFilemanager_Domain_Model_File $file
+     * @param Ameos\AmeosFilemanager\Domain\Model\File $file
      * @return void
      */
     public function setFile($file)

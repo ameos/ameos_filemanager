@@ -85,7 +85,7 @@
             
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>
-			<trans-unit id="export.title" xml:space="preserve"><source>Title</source><target>Titre</target></trans-unit>
+            <trans-unit id="export.filename" xml:space="preserve"><source>Filename</source><target>Nom du fichier</target></trans-unit>
 			<trans-unit id="export.createdAt" xml:space="preserve"><source>Created the</source><target>Créé le</target></trans-unit>
 			<trans-unit id="export.updatedAt" xml:space="preserve"><source>Updated the</source><target>Mis à jour le</target></trans-unit>
 			<trans-unit id="export.owner" xml:space="preserve"><source>Owner</source><target>Propriétaire</target></trans-unit>

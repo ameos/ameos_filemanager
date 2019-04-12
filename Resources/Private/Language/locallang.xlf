@@ -87,7 +87,7 @@
 
 			<!-- Languages for export controller -->
 			<trans-unit id="export.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
-			<trans-unit id="export.title" xml:space="preserve"><source>Title</source></trans-unit>
+			<trans-unit id="export.filename" xml:space="preserve"><source>Filename</source></trans-unit>
 			<trans-unit id="export.createdAt" xml:space="preserve"><source>Created the</source></trans-unit>
 			<trans-unit id="export.updatedAt" xml:space="preserve"><source>Updated the</source></trans-unit>
 			<trans-unit id="export.owner" xml:space="preserve"><source>Owner</source></trans-unit>
@@ -102,7 +102,11 @@
 			<trans-unit id="export.subfolders" xml:space="preserve"><source>Include sub-folders</source></trans-unit>
 			<trans-unit id="export.mainTitle" xml:space="preserve"><source>Export downloaded files (EDM)</source></trans-unit>
             <trans-unit id="export.moduletitle"><source>Export downloaded files in folder %s</source></trans-unit>
+            <trans-unit id="export.start"><source>Start</source></trans-unit>
+            <trans-unit id="export.end"><source>End</source></trans-unit>
             <trans-unit id="export.submit"><source>Export</source></trans-unit>
+            <trans-unit id="export.title"><source>Export</source></trans-unit>
+            <trans-unit id="export.info"><source>This module allows you to download statistics about downloads</source></trans-unit>
 
 			<!-- Languages for datepiker-->
 			<trans-unit id="format" xml:space="preserve"><source>m/d/y</source></trans-unit>

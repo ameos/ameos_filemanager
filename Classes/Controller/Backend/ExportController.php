@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 
 /*
@@ -39,6 +40,9 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function indexAction()
     {
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/AmeosFilemanager/Export');
+
         $folderIdentifier = GeneralUtility::_GET('id');
         $folderResource = ResourceFactory::getInstance()->retrieveFileOrFolderObject($folderIdentifier);
 
@@ -63,7 +67,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         header('Content-Disposition: attachment; filename="export.csv";');
         header('Content-Transfer-Encoding: binary');
 
-        echo '"' . LocalizationUtility::translate('export.title', 'ameos_filemanager') . '";';
+        echo '"' . LocalizationUtility::translate('export.filename', 'ameos_filemanager') . '";';
         echo '"' . LocalizationUtility::translate('export.createdAt', 'ameos_filemanager') . '";';
         echo '"' . LocalizationUtility::translate('export.updatedAt', 'ameos_filemanager') . '";';
         echo '"' . LocalizationUtility::translate('export.description', 'ameos_filemanager') . '";';
@@ -90,8 +94,10 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $folder['storage'] ,
                 $folder['identifier'] . '%'
             );
-            foreach ($subfolders as $subfolder) {
-                $folders[] = $subfolder['uid'];
+            if ($subfolders) {
+                foreach ($subfolders as $subfolder) {
+                    $folders[] = $subfolder['uid'];
+                }
             }
         }
 
@@ -109,12 +115,35 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         while ($row = $statement->fetch()) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_filedownload');
+
+            $constraints = [];
+            $constraints[] = $queryBuilder->expr()->eq('file', $queryBuilder->createNamedParameter(
+                (int)$row['file'], \PDO::PARAM_INT
+            ));
+
+            if ($this->request->hasArgument('start')) {
+                $datetime = \DateTime::createFromFormat(
+                    'd.m.Y H:i:s',
+                    $this->request->getArgument('start') . ' 00:00:00'
+                );
+                $constraints[] = $queryBuilder->expr()->gte('crdate', $queryBuilder->createNamedParameter(
+                    (int)$datetime->getTimestamp(), \PDO::PARAM_INT
+                ));
+            }
+            if ($this->request->hasArgument('end')) {
+                $datetime = \DateTime::createFromFormat(
+                    'd.m.Y H:i:s',
+                    $this->request->getArgument('end') . ' 23:59:59'
+                );
+                $constraints[] = $queryBuilder->expr()->lte('crdate', $queryBuilder->createNamedParameter(
+                    (int)$datetime->getTimestamp(), \PDO::PARAM_INT
+                ));
+            }
+
             $downloaded = $queryBuilder
                 ->count('uid', 'nb_downloads')
                 ->from('tx_ameosfilemanager_domain_model_filedownload')
-                ->where(
-                    $queryBuilder->expr()->eq('file', $queryBuilder->createNamedParameter((int)$row['file'], \PDO::PARAM_INT))
-                )
+                ->where(...$constraints)
                 ->execute()
                 ->fetchColumn(0);
 

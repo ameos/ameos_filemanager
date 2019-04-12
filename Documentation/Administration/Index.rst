@@ -16,4 +16,3 @@ Administration
 	PluginConfiguration
 	FolderConfiguration
 	FileConfiguration
-	Compatibility

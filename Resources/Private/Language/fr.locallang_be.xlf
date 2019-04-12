@@ -39,9 +39,6 @@
             <trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source><target>Storage</target></trans-unit>
             <trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source><target>Dossier de base</target></trans-unit>
             <trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source><target>Colonnes affichées dans le tableau</target></trans-unit>
-            <trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source><target>Action proposé ( si action est affiché dans le tableau)</target></trans-unit>
-            <trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
-            <trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source><target>Informations exportées.</target></trans-unit>
             <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source><target>Chemin du fichier</target></trans-unit>
             <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Nombre de téléchargement</target></trans-unit>
             <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source><target>Extension du fichier</target></trans-unit>
@@ -52,9 +49,6 @@
             <trans-unit id="flexform.partialRootPaths" xml:space="preserve"><source>Partial root path</source><target>Chemin des templates partiels</target></trans-unit>
 
             <trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source><target>Colonnes affichées:Colonnes affichées dans le tableau</target></trans-unit>
-            <trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source><target>Actions :Action proposées dans la colonne correspondante du tableau (si action est affiché dans le tableau)</target></trans-unit>
-            <trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Dossier d'îcone : Chemin vers le dossier d'icone d'extensions. Ces fichiers soivent OBLIGATOIREMENT porter le même nom que les fichiers originaux.</target></trans-unit>
-            <trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source><target>Informations exportées.</target></trans-unit>
             <trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source><target>Balayer dossier en FE:Verifier présence de nouveaux objets dans le dossier visité en FE. (Peut réduire grandement les performances)</target></trans-unit>
             <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source><target>Type de fichier autorisé</target></trans-unit>
             <trans-unit id="constant.newFolder.owner_has_read_access" xml:space="preserve"><source>New folder : owner has read access</source><target>Nouveau dossier : le propriétaire a les droits de lecture</target></trans-unit>

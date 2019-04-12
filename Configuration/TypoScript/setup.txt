@@ -1,9 +1,6 @@
 plugin.tx_ameosfilemanager {
 	settings {
 		columnsTable = {$plugin.tx_ameosfilemanager.columnsTable}
-		actionDetail = {$plugin.tx_ameosfilemanager.actionDetail}
-		iconFolder = {$plugin.tx_ameosfilemanager.iconFolder}
-		columnsExport = {$plugin.tx_ameosfilemanager.columnsExport}
 		parseFolderInFE = {$plugin.tx_ameosfilemanager.parseFolderInFE}
         allowedFileExtension = {$plugin.tx_ameosfilemanager.allowedFileExtension}
 

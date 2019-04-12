@@ -39,9 +39,6 @@
             <trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source><target>Storage</target></trans-unit>
             <trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source><target>Root Ordner</target></trans-unit>
             <trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source><target>Spalten, die im Tab header angezeigt werden</target></trans-unit>
-            <trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source><target>Erlaubte Aktionen (wenn im Tab header angezeigt)</target></trans-unit>
-            <trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Pfad zum Ordner, in dem die Icons der Extension gespeichert sind. Die Dateien MÜSSEN die gleichen Namen haben, wie die Originaldateien.</target></trans-unit>
-            <trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source><target>Informationen wurden exportiert.</target></trans-unit>
             <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source><target>Pfad zur Datei</target></trans-unit>
             <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source><target>Anzahl der Downloads</target></trans-unit>
             <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source><target>Dateierweiterung</target></trans-unit>
@@ -52,9 +49,6 @@
             <trans-unit id="flexform.partialRootPaths" xml:space="preserve"><source>Partial root path</source><target>Teilwurzel Pfad</target></trans-unit>
 
             <trans-unit id="constant.columnsTable" xml:space="preserve"><source>Header tab:Columns that'll appear in the header tab</source><target>Spalten, die im Tab header angezeigt werden</target></trans-unit>
-            <trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source><target>Aktionen: Erlaubte Aktionen (wenn im Tab header angezeigt)</target></trans-unit>
-            <trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source><target>Pfad zum Ordner, in dem die Icons der Extension gespeichert sind. Die Dateien MÜSSEN die gleichen Namen haben, wie die Originaldateien.</target></trans-unit>
-            <trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source><target>Exort Spalte: Spalte, die im Export Script exportiert werden</target></trans-unit>
             <trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source><target>Ordner im FE parsen: Neue Ordner im Frontend prüfen (Performance kann leiden)</target></trans-unit>
             <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source><target>Autorisierter Dateityp</target></trans-unit>
         </body>

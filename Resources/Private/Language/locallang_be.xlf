@@ -49,11 +49,9 @@
             <trans-unit id="flexform.storage" xml:space="preserve"><source>Storage</source></trans-unit>
             <trans-unit id="flexform.startFolder" xml:space="preserve"><source>Root folder</source></trans-unit>
             <trans-unit id="flexform.columnsTable" xml:space="preserve"><source>Columns that'll be in the header tab</source></trans-unit>
-            <trans-unit id="flexform.actionDetail" xml:space="preserve"><source>Allowed actions (if displayed in tab header)</source></trans-unit>
             <trans-unit id="flexform.allowedActionsOnFiles" xml:space="preserve"><source>Allowed actions on files</source></trans-unit>
             <trans-unit id="flexform.allowedActionsOnFolders" xml:space="preserve"><source>Allowed actions on folders</source></trans-unit>
             <trans-unit id="flexform.iconFolder" xml:space="preserve"><source>Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source></trans-unit>
-            <trans-unit id="flexform.columnsExport" xml:space="preserve"><source>Information exported.</source></trans-unit>
             <trans-unit id="flexform.path" xml:space="preserve"><source>Path of the file</source></trans-unit>
             <trans-unit id="flexform.nbDownload" xml:space="preserve"><source>Number of downloads</source></trans-unit>
             <trans-unit id="flexform.extension" xml:space="preserve"><source>File extension</source></trans-unit>
@@ -69,9 +67,6 @@
             <trans-unit id="flexform.list" xml:space="preserve"><source>List</source></trans-unit>
 
             <trans-unit id="constant.columnsTable" xml:space="preserve"><source>Columns that'll appear in the list</source></trans-unit>
-            <trans-unit id="constant.actionDetail" xml:space="preserve"><source>Actions:Allowed actions (if displayed in tab header)</source></trans-unit>
-            <trans-unit id="constant.iconFolder" xml:space="preserve"><source>Icon Folder:Path to the folder where extension icons are stored. The files MUST have the same names as the original ones.</source></trans-unit>
-            <trans-unit id="constant.columnsExport" xml:space="preserve"><source>Column exported:Information that will be exported in the export script</source></trans-unit>
             <trans-unit id="constant.parseFolderInFE" xml:space="preserve"><source>Parse folder in FE:Check new files or folder when in FE. (Performances can be greatly diminished)</source></trans-unit>
             <trans-unit id="constant.allowedFileExtension" xml:space="preserve"><source>Authorized file type</source></trans-unit>
             <trans-unit id="constant.newFolder.owner_has_read_access" xml:space="preserve"><source>New folder : owner has read access</source></trans-unit>

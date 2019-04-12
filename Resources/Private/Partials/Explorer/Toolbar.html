@@ -46,7 +46,7 @@
 
     <div class="col-md-2">
         <f:if condition="{settings.displaySearch}">
-        <f:form action="search" class="form-inline">
+        <f:form action="search" class="form">
             <div class="form-group">
             <f:form.hidden name="folder" value="{current_folder.uid}" />
             <f:form.textfield class="form-control" name="query" placeholder="Search" value="{current_query}" />
@@ -60,7 +60,7 @@
     
     <div class="col-md-2">
     <f:if condition="{has_many_display_mode}">
-    <f:form action="updateDisplayMode" class="form-inline">
+    <f:form action="updateDisplayMode" class="form">
         <f:form.hidden name="folder" value="{current_folder.uid}" />
         <f:form.select additionalAttributes="{data-update-display: '1'}" class="form-control" name="displaymode" options="{mosaic: 'Mosaic', list: 'List'}" value="{display_mode}" />
         <noscript>

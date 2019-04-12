@@ -127,6 +127,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             'image/png',
             'image/gif',
             'image/bmp',
+            'image/svg+xml',
             'application/pdf',
         ]);
     }
@@ -153,6 +154,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             'image/png',
             'image/gif',
             'image/bmp',
+            'image/svg+xml',
             'application/pdf',
             'video/youtube',
             'video/vimeo',

@@ -110,6 +110,7 @@ class FilemanagerUtility
                 break;
             case 'jpg':
             case 'jpeg':
+            case 'svg':
             case 'png':
             case 'bmp':
             case 'gif':

@@ -84,8 +84,9 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
-            $order = $get['sort'] . ' ' . $direction;
-            $queryBuilder->orderBy($order);
+            if ($direction == 'ASC' || $direction == 'DESC') {
+                $queryBuilder->orderBy($get['sort'], $direction);    
+            }
         }
 
         $query = $this->createQuery();
@@ -251,11 +252,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
-            $order = $get['sort'] . ' ' . $direction;
-            $queryBuilder->orderBy($order);
+            if ($direction == 'ASC' || $direction == 'DESC') {
+                $queryBuilder->orderBy($get['sort'], $direction);    
+            }
         }
-
-        $queryBuilder->orderBy('sys_file.uid');
 
         $query = $this->createQuery();
         $query->statement($queryBuilder->getSQL());

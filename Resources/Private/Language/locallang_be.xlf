@@ -34,6 +34,7 @@
             <trans-unit id="flexform.massDownload" xml:space="preserve"><source>Download as a Zip Archive</source></trans-unit>
             <trans-unit id="flexform.displayThumbnail" xml:space="preserve"><source>Display thumbnail</source></trans-unit>
             <trans-unit id="flexform.displayFolders" xml:space="preserve"><source>Display folders in filelist</source></trans-unit>
+            <trans-unit id="flexform.displayParentFolder" xml:space="preserve"><source>Display link to parent folder</source></trans-unit>
             <trans-unit id="flexform.displaySearch" xml:space="preserve"><source>Display search field</source></trans-unit>
             <trans-unit id="flexform.displayTree" xml:space="preserve"><source>Display tree</source></trans-unit>
 

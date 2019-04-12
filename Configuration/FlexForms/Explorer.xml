@@ -115,12 +115,23 @@
                     <settings.displayFolders>
                         <TCEforms>
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displayFolders</label>
+                            <onChange>reload</onChange>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
                     </settings.displayFolders>
+                    <settings.displayParentFolder>
+                        <TCEforms>
+                            <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displayParentFolder</label>
+                            <displayCond>FIELD:settings.displayFolders:=:1</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.displayParentFolder>
                     <settings.displaySearch>
                         <TCEforms>
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.displaySearch</label>

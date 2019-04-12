@@ -7,7 +7,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_filedownload';
 
-$GLOBALS['TCA']['tx_ameosfilemanager_domain_model_filedownload'] = [
+return [
     'ctrl' => [
         'title'          => $ll,
         'label'          => 'file', 
@@ -43,13 +43,14 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_filedownload'] = [
         ],
         'user_download' => [
             'exclude' => 0,
-            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.be_user',
+            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.fe_user',
             'config'  => [
                 'type'                => 'select',
+                'renderType'          => 'selectSingle',
                 'size'                => 5,
                 'maxitems'            => 1,
-                'foreign_table'       => 'be_user',
-                'foreign_table_where' => 'ORDER BY be_user.uid'
+                'foreign_table'       => 'fe_user',
+                'foreign_table_where' => 'ORDER BY fe_user.uid'
             ]
         ],
         'file' => [
@@ -57,6 +58,7 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_filedownload'] = [
             'label'   => $ll . '.file',
             'config'  => [
                 'type'                => 'select',
+                'renderType'          => 'selectSingle',
                 'foreign_table'       => 'sys_file_reference',
                 'foreign_table_where' => 'ORDER BY sys_file_reference.title'
             ]

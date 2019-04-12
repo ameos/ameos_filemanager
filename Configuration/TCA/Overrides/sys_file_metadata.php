@@ -14,6 +14,7 @@ $additionalColumnsMetadata = [
         'label'   => $ll . '.fe_groups_read',
         'config'  => [
             'type'                => 'select',
+            'renderType'          => 'selectMultipleSideBySide',
             'size'                => 5,
             'maxitems'            => 20,
             'exclusiveKeys'       => '-1,-2',
@@ -40,6 +41,7 @@ $additionalColumnsMetadata = [
         'label'      => $ll . '.fe_groups_write',
         'config'     => [
             'type'                => 'select',
+            'renderType'          => 'selectMultipleSideBySide',
             'size'                => 5,
             'maxitems'            => 20,
             'exclusiveKeys'       => '-1,-2',
@@ -100,7 +102,6 @@ $additionalColumnsMetadata = [
             'allowed'       => 'fe_users',
             'maxitems'      => 1,
             'size'          => 1,
-            'wizards'       => ['suggest' => ['type' => 'suggest']],
         ]
     ],
     'folder_uid' => [
@@ -108,6 +109,7 @@ $additionalColumnsMetadata = [
         'label'   => $ll . '.folder_uid',
         'config'  => [
             'type'          => 'select',
+            'renderType'    => 'selectSingle',
             'maxitems'      => 1,
             'items'         => [['', 0]],
             'size'          => 1,

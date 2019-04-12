@@ -11,10 +11,10 @@ $corell = version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getCurre
     : 'LLL:EXT:lang/locallang_general.xlf';
 
 
-$GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
+$tca = [
     'ctrl' => [
         'title'          => $ll,
-        'label'          => 'title', 
+        'label'          => 'title',
         'tstamp'         => 'tstamp',
         'crdate'         => 'crdate',
         'cruser_id'      => 'cruser_id',
@@ -72,7 +72,6 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
                 'allowed'       => 'fe_users',
                 'maxitems'      => 1,
                 'size'          => 1,
-                'wizards'       => ['suggest' => ['type' => 'suggest']],
             ]
         ],
         'title' => [
@@ -259,3 +258,5 @@ $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder'] = [
 ];
 
 ExtensionManagementUtility::makeCategorizable('ameos_filemanager', 'tx_ameosfilemanager_domain_model_folder', 'cats', ['exclude' => FALSE]);
+
+return $tca;

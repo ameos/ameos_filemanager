@@ -5,7 +5,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\File as ResourceFile;
-use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -65,8 +65,7 @@ class FileController extends AbstractController
         }
 
         if ($this->request->getMethod() == 'POST') {
-            $storageRepository = $this->objectManager->get(StorageRepository::class);
-            $storage = $storageRepository->findByUid($this->settings['storage']);                
+            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
             $driver = $this->objectManager->get(LocalDriver::class);
 
             $arguments = $this->request->getArguments();
@@ -209,8 +208,7 @@ class FileController extends AbstractController
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            $storageRepository = $this->objectManager->get(StorageRepository::class);
-            $storage = $storageRepository->findByUid($this->settings['storage']);                
+            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
             $driver = $this->objectManager->get(LocalDriver::class);
 
             $errors = [];

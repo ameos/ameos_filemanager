@@ -3,7 +3,6 @@ namespace Ameos\AmeosFilemanager\Service;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;

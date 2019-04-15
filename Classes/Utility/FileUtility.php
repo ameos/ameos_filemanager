@@ -2,7 +2,7 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
@@ -34,11 +34,8 @@ class FileUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
-        $fileRepository = $objectManager->get(FileRepository::class);
-      
-        $storage = $storageRepository->findByUid($sid);                
-        $file = $fileRepository->findByUid($fid);
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $file = $objectManager->get(FileRepository::class)->findByUid($fid);
 
         if ($file && AccessUtility::userHasFileWriteAccess($GLOBALS['TSFE']->fe_user->user, $file, ['folderRoot' => $folderRoot])) {
             $storage->deleteFile($file->getOriginalResource());
@@ -58,13 +55,9 @@ class FileUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
-        $fileRepository = $objectManager->get(FileRepository::class);
-        $folderRepository = $objectManager->get(FolderRepository::class);
-
-        $storage = $storageRepository->findByUid($sid);                
-        $file = $fileRepository->findByUid($fid);
-        $folder = $folderRepository->findByUid($tfid);
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $file = $objectManager->get(FileRepository::class)->findByUid($fid);
+        $folder = $objectManager->get(FolderRepository::class)->findByUid($tfid);
 
         if (
             $file && AccessUtility::userHasFileWriteAccess($GLOBALS['TSFE']->fe_user->user, $file, ['folderRoot' => $folderRoot])
@@ -91,13 +84,9 @@ class FileUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
-        $fileRepository = $objectManager->get(FileRepository::class);
-        $folderRepository = $objectManager->get(FolderRepository::class);
-
-        $storage = $storageRepository->findByUid($sid);                
-        $file = $fileRepository->findByUid($fid);
-        $folder = $folderRepository->findByUid($tfid);
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $file = $objectManager->get(FileRepository::class)->findByUid($fid);
+        $folder = $objectManager->get(FolderRepository::class)->findByUid($tfid);
 
         if (
             $file && AccessUtility::userHasFileWriteAccess($GLOBALS['TSFE']->fe_user->user, $file, ['folderRoot' => $folderRoot])

@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use Ameos\AmeosFilemanager\Service\IndexationService;
 
 /*
@@ -53,11 +53,9 @@ class IndexCommand extends Command
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         if ((bool)$input->hasOption('storage') && (int)$input->getOption('storage') > 0) {
-            $storageRepository = $objectManager->get(StorageRepository::class);
-            $storage = $storageRepository->findByUid((int)$input->getOption('storage'));
+            $storage = ResourceFactory::getInstance()->getStorageObject((int)$input->getOption('storage'));
         } else {
-            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-            $storage = $resourceFactory->getDefaultStorage();
+            $storage = ResourceFactory::getInstance()->getDefaultStorage();
         }
 
         if ($storage) {

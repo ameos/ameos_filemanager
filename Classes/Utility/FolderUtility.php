@@ -2,7 +2,7 @@
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -36,10 +36,9 @@ class FolderUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
         $folderRepository = $objectManager->get(FolderRepository::class);
         
-        $storage = $storageRepository->findByUid($sid);
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         
         if ($folder && AccessUtility::userHasFolderWriteAccess($GLOBALS['TSFE']->fe_user->user, $folder, ['folderRoot' => $folderRoot])) {
@@ -61,10 +60,9 @@ class FolderUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
         $folderRepository = $objectManager->get(FolderRepository::class);
 
-        $storage = $storageRepository->findByUid($sid);  
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         $tfolder = $folderRepository->findByUid($tfid);
 
@@ -94,10 +92,9 @@ class FolderUtility
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $storageRepository = $objectManager->get(StorageRepository::class);
         $folderRepository = $objectManager->get(FolderRepository::class);
 
-        $storage = $storageRepository->findByUid($sid);  
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         $tfolder = $folderRepository->findByUid($tfid);
 
@@ -147,10 +144,9 @@ class FolderUtility
 
         $persistenceManager = $objectManager->get(PersistenceManager::class);
         $folderRepository = $objectManager->get(FolderRepository::class);
-        $storageRepository = $objectManager->get(StorageRepository::class);
         $fileRepository = $objectManager->get(FileRepository::class);
         
-        $storage = $storageRepository->findByUid($sid);
+        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
 
         $files = $storage->getFolder($sourceFolder->getGedPath())->getFiles();
         if ($files) {

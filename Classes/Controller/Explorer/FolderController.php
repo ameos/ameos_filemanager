@@ -3,7 +3,7 @@ namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -59,8 +59,7 @@ class FolderController extends AbstractController
             }
 
             if (!$hasError) {
-                $storageRepository = $this->objectManager->get(StorageRepository::class);
-                $storage = $storageRepository->findByUid($this->settings['storage']);                
+                $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
                 $driver = $this->objectManager->get(LocalDriver::class);
 
                 $title = $driver->sanitizeFileName($this->request->getArgument('title'));
@@ -152,8 +151,7 @@ class FolderController extends AbstractController
             $this->forward('errors', 'Explorer\\Explorer');
         }
 
-        $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
-        $storage = $storageRepository->findByUid((int)$this->settings['storage']);
+        $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
 
         $zipPath  = PATH_site . 'typo3temp/' . $folder->getTitle() . '_' . date('dmY_His') . '.zip';
         $filePath = PATH_site . trim($storage->getConfiguration()['basePath'], '/') . $folder->getGedPath();

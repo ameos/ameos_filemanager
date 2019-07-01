@@ -108,8 +108,8 @@ class SlotFolder
             }
 
             if (!$inserted) {            
-                $this->postFolderAdd($folder->getParentFolder());
-                $this->postFolderAdd($folder);
+                $this->add($folder->getParentFolder());
+                $this->add($folder);
             }
         } else {
             $folderRepository->requestInsert([

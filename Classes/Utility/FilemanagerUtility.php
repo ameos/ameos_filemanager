@@ -172,7 +172,8 @@ class FilemanagerUtility
      */ 
     public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
-        $slot = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\Slot::class);
+        $slotFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFolder::class);
+        $slotFile = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFile::class);
         $falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
         $subfolders = $falFolder->getSubfolders();
         foreach ($subfolders as $folder) {
@@ -195,13 +196,13 @@ class FilemanagerUtility
                 }
             }
             if (!$exist) {
-                $slot->postFolderAdd($folder);
+                $slotFolder->add($folder);
             }
         }
         
         $files = $falFolder->getFiles();
         foreach ($files as $file) {
-            $slot->postFileAdd($file,$falFolder);
+            $slotFile->add($file, $falFolder);
         }
     }
 

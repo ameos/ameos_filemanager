@@ -249,6 +249,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
 
+        $identifier = '/' . trim($identifier, '/') . '/';
         return $queryBuilder
             ->select('*')
             ->from('tx_ameosfilemanager_domain_model_folder')

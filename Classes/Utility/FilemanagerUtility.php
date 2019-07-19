@@ -4,7 +4,10 @@ namespace Ameos\AmeosFilemanager\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -172,30 +175,20 @@ class FilemanagerUtility
      */ 
     public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
+        if (is_numeric($storage)) {
+            $storage = ResourceFactory::getInstance()->getStorageObject($storage);
+        }
+        $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
         $slotFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFolder::class);
         $slotFile = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFile::class);
         $falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
         $subfolders = $falFolder->getSubfolders();
         foreach ($subfolders as $folder) {
-
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
-            $statement = $queryBuilder
-                ->select('uid')
-                ->from('tx_ameosfilemanager_domain_model_folder')
-                ->where($queryBuilder->expr()->eq('title', $folder->getName()))
-                ->execute();
-
-            $exist = false;
-            while ($row = $statement->fetch()) {
-                // Si il n'existe on ne fait rien
-                if (self::getFolderPathFromUid($row['uid']).'/' == $folder->getIdentifier()) {
-                    $exist = true;
-                    $uid = $row['uid'];
-                    break;
-                }
-            }
-            if (!$exist) {
+            $folderRecord = $folderRepository->findRawByStorageAndIdentifier(
+                $folder->getStorage()->getUid(),
+                $folder->getIdentifier()
+            );
+            if (!$folderRecord) {
                 $slotFolder->add($folder);
             }
         }

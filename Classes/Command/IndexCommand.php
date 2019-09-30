@@ -5,6 +5,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -50,6 +51,8 @@ class IndexCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         if ((bool)$input->hasOption('storage') && (int)$input->getOption('storage') > 0) {
@@ -60,6 +63,9 @@ class IndexCommand extends Command
 
         if ($storage) {
             $objectManager->get(IndexationService::class)->run($storage);
+            $io->success(sprintf('Indexation of %s finished.', $storage->getName()));
+        } else {
+            $io->error('No storage found.');
         }
     }
 }

@@ -26,9 +26,12 @@ class IndexationService
 {
     public static function runForDefaultStorage()
     {
+
         $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
         $storage = $resourceFactory->getDefaultStorage();
-        GeneralUtility::makeInstance(IndexationService::class)->run($storage);
+        if ($storage) {
+            GeneralUtility::makeInstance(IndexationService::class)->run($storage);
+        }
     }
 
     /**

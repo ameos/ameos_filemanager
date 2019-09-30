@@ -19,12 +19,13 @@ There are two static template
 Initialization
 ----------------------
 
-You must launch the update script in order to initiate the database.
-This will parse the folders in your filelist and make the necessary adjustement in the database. (create folders, link sys_file to folders).
+For each of your storage system, you must run the cli script : 
 
-.. warning ::
+::
 
-    If your filelist is big and your max_execution_time low. The update script might not have time to process the entire filelist.
+    typo3/sysext/core/bin/typo3 filemanager:index --storage=STORAGE_ID
+
+For the default storage (e.g. fileadmin), this is automaticly launch during extension activation.
 
 Once the initiation is over, you can place the plugin "Frontend File Manager" in any page of your website.
 

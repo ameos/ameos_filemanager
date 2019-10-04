@@ -17,3 +17,5 @@ You can update the configuration in the extension manager
 +----------------------------------------------------+-------------------------------------------------------------------------------+ 
 | Enable File's content search                       | Enable searching in file's content.                                           |
 +----------------------------------------------------+-------------------------------------------------------------------------------+
+
+You can use tika for a better file content indexation.

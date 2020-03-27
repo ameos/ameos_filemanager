@@ -8,7 +8,7 @@
 <f:form action="edit" enctype="multipart/form-data">
     <div class="form-group">
         <label for="upload"><f:translate key="file"/> : </label>
-        <f:form.upload id="upload" name="upload" additionalAttributes="{accept: '{settings.allowedFileExtension -> custom:acceptFileType()}'}" />
+        <f:form.upload id="upload" name="upload" additionalAttributes="{accept: '{settings.allowedFileExtension -> filemanager:acceptFileType()}'}" />
     </div>
     <div class="form-group">
         <label for="title"><f:translate key="title"/> : </label>

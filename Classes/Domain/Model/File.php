@@ -1,6 +1,12 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository;
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -21,14 +27,12 @@ use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 class File extends \TYPO3\CMS\Extbase\Domain\Model\File
 {
     /**
-     * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository                                                                                           
-     * @inject
+     * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
      */
     protected $folderRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
-     * @inject
      */
     protected $frontendUserRepository;
 
@@ -58,8 +62,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getMeta($reload = false)
     {
         if ($this->meta === FALSE || $reload) {
-            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            $metaDataRepository = $objectManager->get(\TYPO3\CMS\Core\Resource\Index\MetaDataRepository::class);
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $metaDataRepository = $objectManager->get(MetaDataRepository::class);
             $this->meta = $metaDataRepository->findByFileUid($this->getUid());
         }
         return $this->meta;
@@ -219,7 +223,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     public function getCruser()
     {
         if ($this->cruser === FALSE) {
-            $beUserRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository::class);
+            $beUserRepository = GeneralUtility::makeInstance(BackendUserRepository::class);
             $this->cruser = $beUserRepository->findByUid($this->getMeta()['cruser_id']);
         }
         return $this->cruser;
@@ -332,8 +336,8 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getCategories()
     {
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $repo = $objectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $repo = $objectManager->get(CategoryRepository::class);
 
         $uidsCat = $this->getCategoriesUids();
         if (!empty($uidsCat)) {
@@ -403,5 +407,15 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
                 $i++;
             }
         }
+    }
+
+    public function injectFolderRepository(FolderRepository $folderRepository): void
+    {
+        $this->folderRepository = $folderRepository;
+    }
+
+    public function injectFrontendUserRepository(FrontendUserRepository $frontendUserRepository): void
+    {
+        $this->frontendUserRepository = $frontendUserRepository;
     }
 }

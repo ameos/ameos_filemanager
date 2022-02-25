@@ -1,6 +1,9 @@
 <?php
 namespace Ameos\AmeosFilemanager\Utility;
 
+use Ameos\AmeosFilemanager\Slots\SlotFolder;
+use Ameos\AmeosFilemanager\Slots\SlotFile;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -176,11 +179,11 @@ class FilemanagerUtility
     public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
         if (is_numeric($storage)) {
-            $storage = ResourceFactory::getInstance()->getStorageObject($storage);
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($storage);
         }
         $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-        $slotFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFolder::class);
-        $slotFile = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFile::class);
+        $slotFolder = GeneralUtility::makeInstance(SlotFolder::class);
+        $slotFile = GeneralUtility::makeInstance(SlotFile::class);
         $falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
         $subfolders = $falFolder->getSubfolders();
         foreach ($subfolders as $folder) {
@@ -204,7 +207,7 @@ class FilemanagerUtility
      */
     public static function fileContentSearchEnabled()
     {
-        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+        $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('ameos_filemanager');
         return $configuration['enable_filecontent_search'] == 1;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -18,7 +19,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * The TYPO3 project - inspiring people to share!
  */
 
-class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IconViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

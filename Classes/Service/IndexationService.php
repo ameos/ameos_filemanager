@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\Service;
 
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -27,7 +28,7 @@ class IndexationService
     public static function runForDefaultStorage()
     {
 
-        $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $storage = $resourceFactory->getDefaultStorage();
         if ($storage) {
             GeneralUtility::makeInstance(IndexationService::class)->run($storage);

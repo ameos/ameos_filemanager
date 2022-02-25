@@ -1,6 +1,10 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
+use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository;
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -22,13 +26,12 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 {
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
-     * @inject
      */
     protected $folderRepository;
 
     /**
      * @var string
-     * @validate NotEmpty
+     * @Extbase\Validate("NotEmpty")
      */
     protected $title;
 
@@ -600,8 +603,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         $uidsCategories = $this->getCategoriesUids();
 
         if (!empty($uidsCategories)) {
-            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            $repository = $objectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $repository = $objectManager->get(CategoryRepository::class);
             $categories = FilemanagerUtility::getByUids($repository, $uidsCategories);
             return $categories;
         } else {
@@ -683,5 +686,10 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function getIsEmpty()
     {
         return ( $this->getFileNumber() == 0 && $this->getFolderNumber() == 0 );
+    }
+
+    public function injectFolderRepository(FolderRepository $folderRepository): void
+    {
+        $this->folderRepository = $folderRepository;
     }
 }

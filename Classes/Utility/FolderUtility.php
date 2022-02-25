@@ -38,7 +38,7 @@ class FolderUtility
 
         $folderRepository = $objectManager->get(FolderRepository::class);
         
-        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         
         if ($folder && AccessUtility::userHasFolderWriteAccess($GLOBALS['TSFE']->fe_user->user, $folder, ['folderRoot' => $folderRoot])) {
@@ -62,7 +62,7 @@ class FolderUtility
 
         $folderRepository = $objectManager->get(FolderRepository::class);
 
-        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         $tfolder = $folderRepository->findByUid($tfid);
 
@@ -94,7 +94,7 @@ class FolderUtility
 
         $folderRepository = $objectManager->get(FolderRepository::class);
 
-        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($sid);
         $folder = $folderRepository->findByUid($fid);
         $tfolder = $folderRepository->findByUid($tfid);
 
@@ -146,7 +146,7 @@ class FolderUtility
         $folderRepository = $objectManager->get(FolderRepository::class);
         $fileRepository = $objectManager->get(FileRepository::class);
         
-        $storage = ResourceFactory::getInstance()->getStorageObject($sid);
+        $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($sid);
 
         $files = $storage->getFolder($sourceFolder->getGedPath())->getFiles();
         if ($files) {

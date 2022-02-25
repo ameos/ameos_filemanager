@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
 
@@ -17,7 +18,7 @@ use Ameos\AmeosFilemanager\Utility\AccessUtility;
  * The TYPO3 project - inspiring people to share!
  */
  
-class CanAddFolderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+class CanAddFolderViewHelper extends AbstractConditionViewHelper
 {
     /**
      * Initializes arguments

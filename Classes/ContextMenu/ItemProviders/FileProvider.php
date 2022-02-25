@@ -33,7 +33,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     public function __construct(string $table, string $identifier, string $context = '')
     {
         $this->itemsConfiguration['editFolder'] = [
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.edit',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.edit',
             'iconIdentifier' => 'actions-page-open',
             'callbackAction' => 'editFolder'
         ];
@@ -49,7 +49,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      */
     protected function canRender(string $itemName, string $type): bool
     {
-        if ($itemName == 'editFolder') {
+        if ($itemName === 'editFolder') {
             return true;
         }
         return parent::canRender($itemName, $type);
@@ -60,8 +60,8 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      * @return array
      */
     protected function getAdditionalAttributes(string $itemName): array
-    {        
-        if ($itemName == 'editFolder') {
+    {
+        if ($itemName === 'editFolder') {
             return [
                 'data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'
             ];

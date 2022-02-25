@@ -1,6 +1,10 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
@@ -16,14 +20,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+
+class FolderRepository extends Repository
 {
 
     protected $defaultOrderings = array(
-        'crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+        'crdate' => QueryInterface::ORDER_DESCENDING
     );
-    
+
     /**
      * Initialization
      */
@@ -82,7 +86,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * count total files size for a folder
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @return int
-     */ 
+     */
     public function countFilesizeForFolder($folder)
     {
         if (!$folder) {
@@ -107,7 +111,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * count file for a folder
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @return int
-     */ 
+     */
     public function countFilesForFolder($folder)
     {
         if (!$folder) {
@@ -133,7 +137,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $folderUid
      * @param bool $withArchive
      * @return int
-     */ 
+     */
     public function countFoldersForFolder($folderUid)
     {
         if (empty($folderUid)) {
@@ -155,14 +159,14 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (empty($folderUid)) {
             return 0;
         }
-        $query = $this->createQuery();        
+        $query = $this->createQuery();
         $where = 'tx_ameosfilemanager_domain_model_folder.uid_parent = ' . (int)$folderUid;
         $where .= $this->getModifiedEnabledFields();
         $query->statement
-        (    '  SELECT tx_ameosfilemanager_domain_model_folder.* 
-                FROM tx_ameosfilemanager_domain_model_folder 
-                WHERE '.$where.' 
-                ORDER BY tx_ameosfilemanager_domain_model_folder.title ASC 
+        (    '  SELECT tx_ameosfilemanager_domain_model_folder.*
+                FROM tx_ameosfilemanager_domain_model_folder
+                WHERE '.$where.'
+                ORDER BY tx_ameosfilemanager_domain_model_folder.title ASC
             ',
             array()
         );
@@ -172,25 +176,25 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     public function getModifiedEnabledFields($writeMode = false)
     {
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         $enableFieldsWithFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['disabled' => 1]);
         $enableFieldsWithoutFeGroup = $pageRepository->enableFields('tx_ameosfilemanager_domain_model_folder', 0, ['fe_group' => 1]);
 
         $ownerOnlyField   = $writeMode ? 'no_write_access' : 'no_read_access';
         $ownerAccessField = $writeMode ? 'owner_has_write_access' : 'owner_has_read_access';
 
-        if ($GLOBALS['TSFE']->loginUser) {
+        if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
             $where = ' AND (';
             $where .= '(1 ' . $enableFieldsWithoutFeGroup  . ')'; // classic enable fields
 
-            // open clause access right 
+            // open clause access right
             $where .= ' AND (';
-                
+
             // available for all (owner only field = 0)
             $where .=  '(' . $ownerOnlyField . ' = 0 ' // owner only field = 0
                     . ' AND (' // and
                         . '(1 ' . $enableFieldsWithFeGroup . ')' // group access
-                        . ' OR (' // is owner 
+                        . ' OR (' // is owner
                             . 'tx_ameosfilemanager_domain_model_folder.fe_user_id = ' . $GLOBALS['TSFE']->fe_user->user['uid']
                             . ' AND tx_ameosfilemanager_domain_model_folder.' . $ownerAccessField . ' = 1
                         )
@@ -207,7 +211,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     . ')
                 )';
 
-            // close clause access right 
+            // close clause access right
             $where .= ')';
 
             // close enable field clause
@@ -231,8 +235,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             case 'addfolder': $GLOBALS['TCA']["tx_ameosfilemanager_domain_model_folder"]['ctrl']['enablecolumns']['fe_group'] = 'fe_group_addfolder'; break;
         }
 
-        $writeMode = $accessMode == 'read' ? false : true;        
-        $query = $this->createQuery();        
+        $writeMode = !($accessMode == 'read');
+        $query = $this->createQuery();
         $where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
         $where .= $this->getModifiedEnabledFields($writeMode);
         $query->statement('SELECT * FROM tx_ameosfilemanager_domain_model_folder WHERE ' . $where, []);
@@ -240,8 +244,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Don't forget to change back to read right once the deed is done
         $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group'] = 'fe_group_read';
 
-        $res = $query->execute()->getFirst();
-        return $res;
+        return $query->execute()->getFirst();
     }
 
     public function findRawByStorageAndIdentifier($storage, $identifier)
@@ -258,6 +261,6 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $queryBuilder->expr()->eq('identifier', $queryBuilder->createNamedParameter($identifier))
             )
             ->execute()
-            ->fetch(); 
+            ->fetch();
     }
 }

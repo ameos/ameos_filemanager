@@ -2,23 +2,23 @@
 if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 
 // plugin
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('Ameos.' . $_EXTKEY, 'fe_filemanager_explorer',
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('AmeosFilemanager', 'fe_filemanager_explorer',
     [
-        'Explorer\\Explorer'   => 'index, search, updateDisplayMode, errors',
-        'Explorer\\File'       => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'     => 'edit, download, info, remove',
-        'Explorer\\Massaction' => 'index',
+        \Ameos\AmeosFilemanager\Controller\Explorer\ExplorerController::class   => 'index, search, updateDisplayMode, errors',
+        \Ameos\AmeosFilemanager\Controller\Explorer\FileController::class       => 'edit, download, info, upload, remove',
+        \Ameos\AmeosFilemanager\Controller\Explorer\FolderController::class     => 'edit, download, info, remove',
+        \Ameos\AmeosFilemanager\Controller\Explorer\MassactionController::class => 'index',
     ],
     [
-        'Explorer\\Explorer'   => 'index, search, updateDisplayMode, errors',
-        'Explorer\\File'       => 'edit, download, info, upload, remove',
-        'Explorer\\Folder'     => 'edit, download, info, remove',
-        'Explorer\\Massaction' => 'index',
+        \Ameos\AmeosFilemanager\Controller\Explorer\ExplorerController::class   => 'index, search, updateDisplayMode, errors',
+        \Ameos\AmeosFilemanager\Controller\Explorer\FileController::class       => 'edit, download, info, upload, remove',
+        \Ameos\AmeosFilemanager\Controller\Explorer\FolderController::class     => 'edit, download, info, remove',
+        \Ameos\AmeosFilemanager\Controller\Explorer\MassactionController::class => 'index',
     ]
 );
 
 // xclass
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Filelist\FileList::class] = 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Filelist\FileList::class] =
     ['className' => \Ameos\AmeosFilemanager\XClass\FileList::class];
 
 // Hook to show PluginInformation under a tt_content element

@@ -1,6 +1,12 @@
 <?php
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository;
+use TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -26,35 +32,30 @@ use Ameos\AmeosFilemanager\Utility\ExplorerUtility;
  * The TYPO3 project - inspiring people to share!
  */
  
-abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+abstract class AbstractController extends ActionController
 {
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
-     * @inject
      */
     protected $folderRepository;
 
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FileRepository
-     * @inject
      */
     protected $fileRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
-     * @inject
      */
     protected $frontendUserRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
-     * @inject
      */
     protected $frontendUserGroupRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
-     * @inject
      */
     protected $categoryRepository;
 
@@ -132,7 +133,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $usergroups = $usergroups->toArray();
         $anyUsergroup = $this->objectManager->get(FrontendUserGroup::class);
         $anyUsergroup->_setProperty('uid', -2);
-        $anyUsergroup->setTitle(LocalizationUtility::translate('LLL:EXT:lang/locallang_general.xlf:LGL.any_login', null));
+        $anyUsergroup->setTitle(LocalizationUtility::translate('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', null));
         $usergroups[] = $anyUsergroup;
         return $usergroups;
     }
@@ -150,5 +151,30 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             $categories = $this->categoryRepository->findByParent(0);
         }
         return $categories;
+    }
+
+    public function injectFolderRepository(FolderRepository $folderRepository): void
+    {
+        $this->folderRepository = $folderRepository;
+    }
+
+    public function injectFileRepository(FileRepository $fileRepository): void
+    {
+        $this->fileRepository = $fileRepository;
+    }
+
+    public function injectFrontendUserRepository(FrontendUserRepository $frontendUserRepository): void
+    {
+        $this->frontendUserRepository = $frontendUserRepository;
+    }
+
+    public function injectFrontendUserGroupRepository(FrontendUserGroupRepository $frontendUserGroupRepository): void
+    {
+        $this->frontendUserGroupRepository = $frontendUserGroupRepository;
+    }
+
+    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
+    {
+        $this->categoryRepository = $categoryRepository;
     }
 }

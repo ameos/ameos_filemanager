@@ -1,11 +1,13 @@
 <?php
 namespace Ameos\AmeosFilemanager\DataProvider;
 
+use TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTreeDataProvider;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,8 +21,8 @@ use TYPO3\CMS\Extbase\Service\FlexFormService;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTreeDataProvider
+
+class FileTreeFolder extends DatabaseTreeDataProvider
 {
 
     /**
@@ -41,17 +43,17 @@ class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTre
             ->execute()
             ->fetch();
 
-        $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $storage = $resourceFactory->getDefaultStorage()->getUid();
         if ($content) {
-            /** @var FlexFormService $flexFormService */
+            /** @var \TYPO3\CMS\Core\Service\FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance(ObjectManager::class)->get(FlexFormService::class);
             $flexformConfiguration = $flexFormService->convertFlexFormContentToArray($content['pi_flexform']);
             if ($flexformConfiguration['settings']['storage']) {
                 $storage = $flexformConfiguration['settings']['storage'];
             }
         }
-        
+
         $queryId = (int)$queryId;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($this->getTableName());
@@ -75,9 +77,8 @@ class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTre
         }
 
         $records = $queryBuilder->execute()->fetchAll();
-        $uidArray = is_array($records) ? array_column($records, 'uid') : [];
 
-        return $uidArray;
+        return is_array($records) ? array_column($records, 'uid') : [];
     }
 
 

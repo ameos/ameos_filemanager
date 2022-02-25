@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
@@ -16,7 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The TYPO3 project - inspiring people to share!
  */
 
-class IsInListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+class IsInListViewHelper extends AbstractConditionViewHelper
 {
 
     /**

@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\Controller\Backend;
 
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -21,17 +23,15 @@ use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
  * The TYPO3 project - inspiring people to share!
  */
  
-class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class ExportController extends ActionController
 {
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FileRepository
-     * @inject
      */
     protected $fileRepository;
 
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FolderRepository
-     * @inject
      */
     protected $folderRepository;
 
@@ -44,7 +44,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/AmeosFilemanager/Export');
 
         $folderIdentifier = GeneralUtility::_GET('id');
-        $folderResource = ResourceFactory::getInstance()->retrieveFileOrFolderObject($folderIdentifier);
+        $folderResource = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject($folderIdentifier);
 
         $folder = $this->folderRepository->findRawByStorageAndIdentifier(
             $folderResource->getStorage()->getUid(),
@@ -157,9 +157,19 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             echo '"' . $row['identifier'] . '";';
             echo '"' . (int)$downloaded . '";';
             echo '"' . $row['extension'] . '";' . "\n";     
-               
+
         }
         exit;
+    }
+
+    public function injectFileRepository(FileRepository $fileRepository): void
+    {
+        $this->fileRepository = $fileRepository;
+    }
+
+    public function injectFolderRepository(FolderRepository $folderRepository): void
+    {
+        $this->folderRepository = $folderRepository;
     }
 }
 

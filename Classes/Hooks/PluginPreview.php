@@ -1,12 +1,14 @@
 <?php
 namespace Ameos\AmeosFilemanager\Hooks;
 
+use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -22,8 +24,8 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface
+
+class PluginPreview implements PageLayoutViewDrawItemHookInterface
 {
     /**
      * @var array
@@ -52,9 +54,9 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
      */
     public function preProcess(PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
         if ($row['CType'] === 'list' && (
-            $row['list_type'] == 'ameosfilemanager_fe_filemanager'
-            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_flat'
-            || $row['list_type'] == 'ameosfilemanager_fe_filemanager_explorer')) {
+            $row['list_type'] === 'ameosfilemanager_fe_filemanager'
+            || $row['list_type'] === 'ameosfilemanager_fe_filemanager_flat'
+            || $row['list_type'] === 'ameosfilemanager_fe_filemanager_explorer')) {
             $this->initialize($row);
 
             $drawItem = false;
@@ -67,17 +69,17 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 ],
                 'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
             ];
-            $url = BackendUtility::getModuleUrl('record_edit', $urlParameters);
+            $url = GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('record_edit', $urlParameters);
 
             $llprefix = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:';
             switch ($row['list_type']) {
                 case 'ameosfilemanager_fe_filemanager':
                     $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager.title', 'AmeosFilemanager');
                     break;
-                case 'ameosfilemanager_fe_filemanager_flat': 
+                case 'ameosfilemanager_fe_filemanager_flat':
                     $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_flat.title', 'AmeosFilemanager');
                     break;
-                case 'ameosfilemanager_fe_filemanager_explorer': 
+                case 'ameosfilemanager_fe_filemanager_explorer':
                     $title = LocalizationUtility::translate($llprefix . 'plugin.fe_filemanager_explorer.title', 'AmeosFilemanager');
                     break;
             }
@@ -107,7 +109,7 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
                 'folder'       => $folder,
                 'storage'      => $storage,
             ]);
-            $itemContent = $standaloneView->render();            
+            $itemContent = $standaloneView->render();
         }
     }
 
@@ -119,7 +121,7 @@ class PluginPreview implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHoo
     {
         $this->row = $row;
 
-        /** @var FlexFormService $flexFormService */
+        /** @var \TYPO3\CMS\Core\Service\FlexFormService $flexFormService */
         $flexFormService = GeneralUtility::makeInstance(ObjectManager::class)->get(FlexFormService::class);
         $this->flexFormData = $flexFormService->convertFlexFormContentToArray($this->row['pi_flexform']);
     }

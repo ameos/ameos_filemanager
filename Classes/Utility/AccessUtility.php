@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\Utility;
 
+use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
@@ -15,7 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class AccessUtility
 {
     /**
@@ -38,8 +40,8 @@ class AccessUtility
         );
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFolderReadAccess'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFolderReadAccess'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
-                if(method_exists($hookObject, 'userHasNotFolderReadAccess') && $hookObject->userHasNotFolderReadAccess($user, folder, $arguments)) {
+                $hookObject = GeneralUtility::makeInstance($classData);
+                if(method_exists($hookObject, 'userHasNotFolderReadAccess') && $hookObject->userHasNotFolderReadAccess($user, $folder, $arguments)) {
                     return false;
                 }
             }
@@ -60,13 +62,13 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
-        if ($exist = $folderRepository->findByUid($folder->getUid())) {
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
+        if ($folderRepository->findByUid($folder->getUid())) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * check if user has read permission to the folder
      * @param array $user current user
@@ -96,13 +98,13 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfolder')) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * check if user has read permission to the folder
      * @param array $user current user
@@ -132,7 +134,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'addfile')) {
             return true;
         }
@@ -156,7 +158,7 @@ class AccessUtility
         );
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFileReadAccess'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFileReadAccess'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 // Don't forget to test $user in your hook
                 if(method_exists($hookObject, 'userHasNotFileReadAccess') && $hookObject->userHasNotFileReadAccess($user, $file, $arguments)) {
                     return false;
@@ -183,11 +185,11 @@ class AccessUtility
             return false;
         }
         if ($file->getArrayFeGroupRead()) {
-            $fileRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FileRepository::class);
+            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
             if ($exist = $fileRepository->findByUid($file->getUid())) {
                 return true;
             }
-        } else {            
+        } else {
             return self::userHasFolderReadAccess($user,$file->getParentFolder(), $arguments);
         }
         return false;
@@ -197,7 +199,7 @@ class AccessUtility
     /**
      * check if user has write permission to the folder
      * @param array $user current user
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folde $folder
+     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * @param array $arguments array of other arguments for hooks
      * @return boolean
      */
@@ -214,7 +216,7 @@ class AccessUtility
         );
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFolderWriteAccess'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFolderWriteAccess'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 // Don't forget to test $user in your hook
                 if(method_exists($hookObject, 'userHasNotFolderWriteAccess') && $hookObject->userHasNotFolderWriteAccess($user, $folder, $arguments)) {
                     return false;
@@ -237,7 +239,7 @@ class AccessUtility
         ) {
             return true;
         }
-        $folderRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FolderRepository::class);
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
         if ($exist = $folderRepository->findByUid($folder->getUid(), 'write')) {
             return true;
         }
@@ -262,7 +264,7 @@ class AccessUtility
         );
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFileWriteAccess'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][AccessUtility::class]['userHasFileWriteAccess'] as $classData) {
-                $hookObject = GeneralUtility::getUserObj($classData);
+                $hookObject = GeneralUtility::makeInstance($classData);
                 // Don't forget to test $user in your hook
                 if(method_exists($hookObject, 'userHasNotFileWriteAccess') && $hookObject->userHasNotFileWriteAccess($user, $file, $arguments)) {
                     return false;
@@ -286,7 +288,7 @@ class AccessUtility
             return true;
         }
         if ($file->getArrayFeGroupWrite()) {
-            $fileRepository = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Domain\Repository\FileRepository::class);
+            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
             if ($exist = $fileRepository->findByUid($file->getUid(),$writeMode = true)) {
                 return true;
             }

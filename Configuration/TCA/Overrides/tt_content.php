@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 
 // register plugin
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Ameos.ameos_filemanager',
+    'AmeosFilemanager',
     'fe_filemanager_explorer',
     'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_explorer.title'
 );

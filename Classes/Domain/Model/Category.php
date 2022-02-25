@@ -1,6 +1,9 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,17 +16,15 @@ namespace Ameos\AmeosFilemanager\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
 {
 
     /**
      * return sub categories
-     */ 
+     */
     public function getSubCategories()
     {
-		$extbaseObjectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-		$repo = $extbaseObjectManager->get(\TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository::class);
-		return $repo->findByParent($this->getUid());
+		$extbaseObjectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        return $extbaseObjectManager->get(CategoryRepository::class)->findByParent($this->getUid());
 	}
 }

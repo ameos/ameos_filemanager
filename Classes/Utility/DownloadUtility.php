@@ -1,10 +1,10 @@
 <?php
 namespace Ameos\AmeosFilemanager\Utility;
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use Ameos\AmeosFilemanager\Utility\AccessUtility;
 use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository;
 use Ameos\AmeosFilemanager\Domain\Model\Filedownload;
@@ -21,17 +21,18 @@ use Ameos\AmeosFilemanager\Domain\Model\Filedownload;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class DownloadUtility
 {
     /**
      * return files to add in zip
+     * @param $rootPath
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-     * @param ZipArchive $zip zip archive
-     * @param int $rootFolder root folder uid
-     * @param int $recursiveLimit recursive limit
+     * @param \ZipArchive $zip zip archive
+     * @param $rootFolderUid
+     * @param bool $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
-     * @return void
+     * @return array
      */
     public static function getFilesToAdd($rootPath, $folder, $zip, $rootFolderUid, $recursiveLimit = false, $recursiveOccurence = 1)
     {
@@ -39,10 +40,11 @@ class DownloadUtility
         $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
+            $user = $GLOBALS['TSFE']->fe_user->user;
             if (!$file->isRemote() && AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
-                    
+
                 $localFilepath =
-                    PATH_site .
+                    Environment::getPublicPath() . '/' .
                     trim($file->getOriginalResource()->getStorage()->getConfiguration()['basePath'], '/') . '/' .
                     trim($file->getOriginalResource()->getIdentifier(), '/');
                 $zipFilepath   = str_replace($rootPath, '', $localFilepath);
@@ -61,13 +63,13 @@ class DownloadUtility
                 }
             }
         }
-        return $filesToAdd; 
+        return $filesToAdd;
     }
-    
+
     /**
      * add folder to zip
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
-     * @param ZipArchive $zip zip archive
+     * @param \ZipArchive $zip zip archive
      * @param int $rootFolder root folder uid
      * @param int $recursiveLimit recursive limit
      * @param int $recursiveOccurence recursive occurence
@@ -80,9 +82,9 @@ class DownloadUtility
         $files = $fileRepository->findFilesForFolder($folder->getUid());
         foreach ($files as $file) {
             if (!$file->isRemote() && AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $rootFolderUid])) {
-                    
+
                 $localFilepath =
-                    PATH_site .
+                    Environment::getPublicPath() . '/' .
                     trim($file->getOriginalResource()->getStorage()->getConfiguration()['basePath'], '/') . '/' .
                     trim($file->getOriginalResource()->getIdentifier(), '/');
                 $zipFilepath   = str_replace($rootPath, '', $localFilepath);
@@ -99,7 +101,7 @@ class DownloadUtility
             }
         }
     }
-    
+
     /**
      * download the file and log the download in the DB
      * @param integer $uidFile uid of the file
@@ -130,7 +132,7 @@ class DownloadUtility
 
                 header('Location: ' . $filename);
                 exit;
-            
+
             } elseif (file_exists($filename)) {
                 // We register who downloaded the file and when
                 $filedownloadRepository = GeneralUtility::makeInstance(FiledownloadRepository::class);

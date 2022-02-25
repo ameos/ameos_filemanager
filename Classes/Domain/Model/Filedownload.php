@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,26 +15,25 @@ namespace Ameos\AmeosFilemanager\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Filedownload extends AbstractEntity
 {
     /**
-     * @var Ameos\AmeosFilemanager\Domain\Model\File
+     * @var \Ameos\AmeosFilemanager\Domain\Model\File
      */
     protected $file;
-    
+
     /**
      * @var int
      */
     protected $crdate;
 
     /**
-     * @var TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     protected $userDownload;
 
     /**
-     * @return Ameos\AmeosFilemanager\Domain\Model\File
+     * @return \Ameos\AmeosFilemanager\Domain\Model\File
      */
     public function getFile()
     {
@@ -50,7 +51,7 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Setter for file
      *
-     * @param Ameos\AmeosFilemanager\Domain\Model\File $file
+     * @param \Ameos\AmeosFilemanager\Domain\Model\File $file
      * @return void
      */
     public function setFile($file)
@@ -72,7 +73,7 @@ class Filedownload extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Setter for downloader
      *
-     * @param TYPO3\CMS\Extbase\Domain\Model\FrontendUser $userDownload
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $userDownload
      * @return void
      */
     public function setUserDownload($userDownload)

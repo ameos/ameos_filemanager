@@ -3,8 +3,6 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_filedownload';
 
 return [
@@ -18,17 +16,16 @@ return [
         'enablecolumns'  => ['disabled' => 'hidden'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => ExtensionManagementUtility::extPath('ameos_filemanager') . 'ext_icon.png',
+        'iconfile'       => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ameos_filemanager') . 'ext_icon.png',
         'searchFields'   => 'file',
     ],    
     'types'       => ['0' => ['showitem' => 'file,crdate,cruser_id,']],
     'palettes'    => ['1' => ['showitem' => '']],
     'feInterface' => ['fe_admin_fieldList'  => 'file,crdate,cruser_id,'],
-    'interface'   => ['showRecordFieldList' => 'file,crdate,cruser_id,'],
     'columns'     => [
         'hidden' => [        
             'exclude' => 1,
-            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config'  => [
                 'type'    => 'check',
                 'default' => '0'
@@ -36,14 +33,14 @@ return [
         ],
         'crdate' => [
             'exclude' => 0, 
-            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.crdate',
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.crdate',
             'config'  => [
                 'type' => 'input',
             ]
         ],
         'user_download' => [
             'exclude' => 0,
-            'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.fe_user',
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_user',
             'config'  => [
                 'type'                => 'select',
                 'renderType'          => 'selectSingle',

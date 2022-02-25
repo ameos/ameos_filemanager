@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\Slots;
 
+use Ameos\AmeosFilemanager\Service\IndexationService;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,13 +14,12 @@ namespace Ameos\AmeosFilemanager\Slots;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
 class Install
 {
     public function execute($extname = null)
     {
         if($extname === 'ameos_filemanager') {
-            \Ameos\AmeosFilemanager\Service\IndexationService::runForDefaultStorage();
+            IndexationService::runForDefaultStorage();
         }
     }
 }

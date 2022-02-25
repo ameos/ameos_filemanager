@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_file';
 $corell = version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getCurrentTypo3Version(), '9.0.0', '>=')
     ? 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf'
-    : 'LLL:EXT:lang/locallang_general.xlf';
+    : 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf';
 
 $additionalColumnsMetadata = [
     'fe_group_read' => [

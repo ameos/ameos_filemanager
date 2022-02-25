@@ -1,6 +1,8 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\Context\Context;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -18,12 +20,12 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+
+class FileRepository extends Repository
 {
     /**
      * @var array
-     */ 
+     */
     protected $defaultOrderings = ['tstamp' => QueryInterface::ORDER_DESCENDING];
 
     /**
@@ -38,8 +40,8 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * find files for a folder
-     * @param mixed $folder 
-     */ 
+     * @param mixed $folder
+     */
     public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
     {
         if (empty($folder)) {
@@ -81,11 +83,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'sys_file_metadata.title', 'sys_file_metadata.categories', 'sys_file_metadata.keywords',
             'fe_users.name', 'fe_users.username', 'fe_users.company',
         ];
-    
+
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
             if ($direction == 'ASC' || $direction == 'DESC') {
-                $queryBuilder->orderBy($get['sort'], $direction);    
+                $queryBuilder->orderBy($get['sort'], $direction);
             }
         }
 
@@ -164,7 +166,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->select('sys_file.*')
             ->from('sys_file_metadata')
             ->join(
-                'sys_file_metadata', 
+                'sys_file_metadata',
                 'sys_file',
                 'sys_file',
                 'sys_file_metadata.file = sys_file.uid'
@@ -173,7 +175,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 'sys_file_metadata',
                 'sys_category_record_mm',
                 'sys_category_record_mm',
-                'sys_file_metadata.uid = sys_category_record_mm.uid_foreign 
+                'sys_file_metadata.uid = sys_category_record_mm.uid_foreign
                     AND sys_category_record_mm.tablenames LIKE \'sys_file_metadata\'
                     AND sys_category_record_mm.fieldname LIKE \'categories\''
             )
@@ -212,7 +214,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 if (FilemanagerUtility::fileContentSearchEnabled()) {
                     $whereClauseKeyword[] = $queryBuilder->expr()->like('filecontent.content', $keyword);
                 }
-                
+
                 $whereClauseKeyword[] = 'sys_file_metadata.fe_user_id IN (
                     SELECT
                         uid
@@ -226,7 +228,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                             OR middle_name LIKE ' . $keyword . '
                             OR last_name LIKE ' . $keyword . '
                         )
-                    )';                
+                    )';
             }
             $queryBuilder->orWhere(...$whereClauseKeyword);
         }
@@ -238,7 +240,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             } else {
                 $queryBuilder->andWhere($queryBuilder->expr()->in('sys_file.uid', $availableFilesIdentifiers));
             }
-        }        
+        }
 
         $order = '';
         $get = GeneralUtility::_GET($pluginNamespace);
@@ -249,11 +251,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'sys_file_metadata.title', 'sys_file_metadata.categories', 'sys_file_metadata.keywords',
             'fe_users.name', 'fe_users.username', 'fe_users.company',
         ];
-    
+
         if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
             $direction = (isset($get['direction']) && $get['direction'] != '') ? $get['direction'] : 'ASC';
             if ($direction == 'ASC' || $direction == 'DESC') {
-                $queryBuilder->orderBy($get['sort'], $direction);    
+                $queryBuilder->orderBy($get['sort'], $direction);
             }
         }
 
@@ -266,7 +268,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * return file by uid
      * @param int $fileUid file uid
      * @param boolean $writeRight if true, use write access instead of read access
-     */ 
+     */
     public function findByUid($fileUid, $writeRight = false)
     {
         if (empty($fileUid)) {
@@ -276,23 +278,23 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // filter by uid
         $where = 'sys_file.uid = ' . (int)$fileUid;
 
-        // check group access 
+        // check group access
         $column = $writeRight ? 'fe_group_write' : 'fe_group_read';
-        $userGroups = $GLOBALS['TSFE']->gr_list;
+        $userGroups = implode(',', GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'groupIds'));
         $where .= ' AND (
-            ( 
-                sys_file_metadata.' . $column . ' = \'\' 
-                OR sys_file_metadata.' . $column . ' IS NULL 
+            (
+                sys_file_metadata.' . $column . ' = \'\'
+                OR sys_file_metadata.' . $column . ' IS NULL
                 OR sys_file_metadata.' . $column . ' = 0';
 
-        
+
         foreach (explode(',', $userGroups) as $userGroup) {
             $where .= ' OR FIND_IN_SET(' . $userGroup . ', sys_file_metadata.' . $column . ')';
         }
         $where .= ')';
 
-        // check owner access 
-        if ($GLOBALS['TSFE']->loginUser) {
+        // check owner access
+        if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
             $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
             $where .= ' OR (
                 sys_file_metadata.fe_user_id = '. (int)$GLOBALS['TSFE']->fe_user->user['uid'] . '
@@ -300,24 +302,25 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )';
         }
 
-        // clause access right 
+        // clause access right
         $where .= ')';
 
         $query = $this->createQuery();
         $query->statement('
             SELECT
                 distinct sys_file.uid,
-                sys_file_metadata.folder_uid 
+                sys_file_metadata.folder_uid,
+                sys_file_metadata.uid as metadatauid
             FROM
                 sys_file_metadata
                 INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid
             WHERE
                 ' . $where . '
             ORDER BY
-                sys_file_metadata.uid DESC ',
+                metadatauid DESC ',
             []
         );
-        
+
         $res = $query->execute()->getFirst();
         return $res;
     }

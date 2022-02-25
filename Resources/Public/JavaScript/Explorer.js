@@ -15,7 +15,6 @@
                         parents.push(o);
                         p = o.parentNode;
                     }
-                    parents.push(parentSelector);
                 }
 
                 return parents;
@@ -33,7 +32,7 @@
                         } else {
                             event.target.classList.add("fa-folder");
                             event.target.classList.remove("fa-folder-open");
-                        }                        
+                        }
                         event.preventDefault();
                     });
                 });
@@ -42,8 +41,10 @@
             if (tree.querySelector(".current")) {
                 parents(tree.querySelector(".current"), tree).forEach(function(item, i) {
                     item.classList.add("active");
-                    item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
-                    item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
+                    if (!$(item).children().hasClass('current')) {
+                      item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
+                      item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
+                    }
                 });
             }
             loadEventListener();

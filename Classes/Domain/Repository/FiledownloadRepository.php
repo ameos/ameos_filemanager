@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -16,7 +17,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * The TYPO3 project - inspiring people to share!
  */
  
-class FiledownloadRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class FiledownloadRepository extends Repository
 {
     /**
      * @var array

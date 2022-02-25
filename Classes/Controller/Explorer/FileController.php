@@ -1,6 +1,10 @@
 <?php
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -29,18 +33,16 @@ use Ameos\AmeosFilemanager\Domain\Model\File;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class FileController extends AbstractController
-{ 
+{
     /**
-    * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-    * @inject
-    */
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     */
     protected $persistenceManager;
 
     /**
      * @var \Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository
-     * @inject
      */
     protected $filedownloadRepository;
 
@@ -55,7 +57,7 @@ class FileController extends AbstractController
 
         $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
         $isNewFile = $this->request->getArgument('file') == 'new';
-        
+
         if ($isNewFile) {
             $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
         } else {
@@ -65,7 +67,7 @@ class FileController extends AbstractController
         }
 
         if ($this->request->getMethod() == 'POST') {
-            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($this->settings['storage']);
             $driver = $this->objectManager->get(LocalDriver::class);
 
             $arguments = $this->request->getArguments();
@@ -106,10 +108,9 @@ class FileController extends AbstractController
                 // create or update file
                 $fileIdentifier = $folder->getGedPath() . '/' . $arguments['upload']['name'];
                 if ($isNewFile) {
-                    $newfile = $storage->getFile($fileIdentifier);                
+                    $newfile = $storage->getFile($fileIdentifier);
                 } elseif ($arguments['upload']['name']) {
-                    $storage->replaceFile($file->getOriginalResource(), $someFileIdentifier);
-                    $storage->renameFile($file->getOriginalResource(), $arguments['upload']['name']);    
+                    $storage->renameFile($file->getOriginalResource(), $arguments['upload']['name']);
                 }
 
                 $this->persistenceManager->persistAll();
@@ -119,7 +120,7 @@ class FileController extends AbstractController
 
                 // update file's properties
                 $properties = [];
-                if ($isNewFile && $GLOBALS['TSFE']->loginUser) {
+                if ($isNewFile && GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
                     $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
                 }
                 if ($arguments['title']) { $properties['title'] = $arguments['title']; }
@@ -136,14 +137,14 @@ class FileController extends AbstractController
                     ? $this->settings['newFile']['owner_has_write_access'] : 1;
 
                 if ($isNewFile) {
-                    $properties['folder_uid'] = $folder->getUid();                    
+                    $properties['folder_uid'] = $folder->getUid();
                 }
                 $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
                 $metaDataRepository->update($file->getUid(), $properties);
                 $file->setCategories($arguments['categories']);
 
                 if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
-                    $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                    $textExtractorRegistry = TextExtractorRegistry::getInstance();
                     try {
                         $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
                         if (!is_null($textExtractor)) {
@@ -154,16 +155,16 @@ class FileController extends AbstractController
                                     'file'    => $file->getUid(),
                                     'content' => $textExtractor->extractText($file->getOriginalResource())
                                 ]);
-                        }    
+                        }
                     } catch (\Exception $e) {
-                        
+
                     }
                 }
-                
+
                 $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
             }
         }
-  
+
         $this->view->assign('folder', $folder->getUid());
         $this->view->assign('usergroups', $this->getAvailableUsergroups());
         $this->view->assign('categories', $this->getAvailableCategories());
@@ -182,7 +183,8 @@ class FileController extends AbstractController
             $this->addFlashMessage(LocalizationUtility::translate('missingFileArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
             $this->forward('errors', 'Explorer\\Explorer');
         }
-        
+
+        /** @var File $file */
         $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
         $this->view->assign('file', $file);
         $this->view->assign('file_isimage', $file->getOriginalResource()->getType() == ResourceFile::FILETYPE_IMAGE);
@@ -208,7 +210,7 @@ class FileController extends AbstractController
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($this->settings['storage']);
             $driver = $this->objectManager->get(LocalDriver::class);
 
             $errors = [];
@@ -245,7 +247,7 @@ class FileController extends AbstractController
 
                     // update file's properties
                     $properties = [];
-                    if ($GLOBALS['TSFE']->loginUser) {
+                    if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
                         $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
                     }
                     $properties['owner_has_read_access']  = isset($this->settings['newFile']['owner_has_read_access'])
@@ -254,14 +256,14 @@ class FileController extends AbstractController
                         ? $this->settings['newFile']['owner_has_write_access'] : 1;
 
                     $properties['title'] = pathinfo($_FILES['file']['name'], PATHINFO_FILENAME);
-                    $properties['folder_uid'] = $folder->getUid();                    
+                    $properties['folder_uid'] = $folder->getUid();
 
                     $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
                     $metaDataRepository->update($file->getUid(), $properties);
                     $this->persistenceManager->persistAll();
 
                     if (FilemanagerUtility::fileContentSearchEnabled()) {
-                        $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                        $textExtractorRegistry = TextExtractorRegistry::getInstance();
                         try {
                             $textExtractor = $textExtractorRegistry->getTextExtractor($file);
                             if (!is_null($textExtractor)) {
@@ -272,9 +274,9 @@ class FileController extends AbstractController
                                         'file'    => $file->getUid(),
                                         'content' => $textExtractor->extractText($file)
                                     ]);
-                            }    
+                            }
                         } catch (\Exception $e) {
-                            
+
                         }
                     }
 
@@ -306,7 +308,7 @@ class FileController extends AbstractController
             exit;
         }
 
-        // assign to view        
+        // assign to view
         $this->view->assign('folder', $folder);
         $this->view->assign('includeDropzone', true);
         $this->view->assign('upload_uri', $this->uriBuilder->reset()->uriFor('upload', ['folder' => $folder->getUid()]));
@@ -327,7 +329,7 @@ class FileController extends AbstractController
             $this->addFlashMessage(LocalizationUtility::translate('missingFileArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
             $this->forward('errors', 'Explorer\\Explorer');
         }
-        
+
         DownloadUtility::downloadFile((int)$this->request->getArgument('file'), $this->settings['startFolder']);
     }
 
@@ -352,5 +354,15 @@ class FileController extends AbstractController
 
         $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', 'AmeosFilemanager'));
         $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
+    }
+
+    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
+
+    public function injectFiledownloadRepository(FiledownloadRepository $filedownloadRepository): void
+    {
+        $this->filedownloadRepository = $filedownloadRepository;
     }
 }

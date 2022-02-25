@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\Controller\Backend;
 
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -22,7 +23,7 @@ use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
  * The TYPO3 project - inspiring people to share!
  */
  
-class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class AjaxController extends ActionController
 {
 
     /**
@@ -33,7 +34,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function getFolderId(ServerRequestInterface $request)
     {
-        $folder = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+        $folder = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject(
             $request->getParsedBody()['folderIdentifier']
         );
 

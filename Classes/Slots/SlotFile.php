@@ -1,13 +1,13 @@
 <?php
 namespace Ameos\AmeosFilemanager\Slots;
 
+use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,13 +21,13 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class SlotFile
 {
     /**
      * Call after file addition in filelist
      * Add the file to the correct folder in the database
-     * @param File $file 
+     * @param File $file
      * @param Folder $targetFolder
      * @return void
      */
@@ -49,7 +49,7 @@ class SlotFile
             );
 
         if (FilemanagerUtility::fileContentSearchEnabled()) {
-            $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+            $textExtractorRegistry = TextExtractorRegistry::getInstance();
             try {
                 $textExtractor = $textExtractorRegistry->getTextExtractor($file);
                 if (!is_null($textExtractor)) {
@@ -66,9 +66,9 @@ class SlotFile
                         $connectionPool
                             ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
                             ->update(
-                                'tx_ameosfilemanager_domain_model_filecontent', 
+                                'tx_ameosfilemanager_domain_model_filecontent',
                                 ['content' => $textExtractor->extractText($file)],
-                                ['file'    => $file->getUid()]                                
+                                ['file'    => $file->getUid()]
                             );
                     } else {
                         $connectionPool
@@ -78,9 +78,9 @@ class SlotFile
                                 'content' => $textExtractor->extractText($file)
                             ]);
                     }
-                }    
+                }
             } catch (\Exception $e) {
-                
+
             }
         }
     }
@@ -88,7 +88,7 @@ class SlotFile
     /**
      * Call after file copy in filelist
      * Copy the file to the correct folder in the database
-     * @param File $file 
+     * @param File $file
      * @param Folder $targetFolder
      * @return void
      */
@@ -110,7 +110,7 @@ class SlotFile
             );
 
         if (FilemanagerUtility::fileContentSearchEnabled()) {
-            $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+            $textExtractorRegistry = TextExtractorRegistry::getInstance();
             try {
                 $textExtractor = $textExtractorRegistry->getTextExtractor($file);
                 if (!is_null($textExtractor)) {
@@ -120,9 +120,9 @@ class SlotFile
                             'file'    => $file->getUid(),
                             'content' => $textExtractor->extractText($file)
                         ]);
-                }    
+                }
             } catch (\Exception $e) {
-                
+
             }
         }
     }
@@ -130,7 +130,7 @@ class SlotFile
     /**
      * Call after file move in filelist
      * Move the file to the correct folder in the database
-     * @param File $file 
+     * @param File $file
      * @param Folder $targetFolder
      * @return void
      */

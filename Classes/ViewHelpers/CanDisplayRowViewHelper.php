@@ -1,6 +1,7 @@
 <?php
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Model\File;
@@ -21,7 +22,7 @@ use Ameos\AmeosFilemanager\Utility\AccessUtility;
  * The TYPO3 project - inspiring people to share!
  */
  
-class CanDisplayRowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+class CanDisplayRowViewHelper extends AbstractConditionViewHelper
 {
 
     /**

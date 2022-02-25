@@ -1,7 +1,7 @@
 <?php
 if (!defined('TYPO3_MODE')) { die ('Access denied.'); }
 
-$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+$configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('ameos_filemanager');
 
 // Register icons
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
@@ -14,7 +14,7 @@ $iconRegistry->registerIcon('extension-ameosfilemanager-main', \TYPO3\CMS\Core\I
     '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:ameos_filemanager/Configuration/TSConfig/ContentElementWizard.tsconfig">'
 );
 
-if (TYPO3_MODE == 'BE') {
+if (TYPO3_MODE === 'BE') {
 
     $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1496933853] =
         \Ameos\AmeosFilemanager\ContextMenu\ItemProviders\FileProvider::class;
@@ -24,53 +24,53 @@ if (TYPO3_MODE == 'BE') {
 
     // Folders slots
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFolderRename', 
-        \Ameos\AmeosFilemanager\Slots\SlotFolder::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFolderRename',
+        \Ameos\AmeosFilemanager\Slots\SlotFolder::class,
         'rename'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFolderAdd',    
-        \Ameos\AmeosFilemanager\Slots\SlotFolder::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFolderAdd',
+        \Ameos\AmeosFilemanager\Slots\SlotFolder::class,
         'add'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFolderMove',   
-        \Ameos\AmeosFilemanager\Slots\SlotFolder::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFolderMove',
+        \Ameos\AmeosFilemanager\Slots\SlotFolder::class,
         'move'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFolderCopy',   
-        \Ameos\AmeosFilemanager\Slots\SlotFolder::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFolderCopy',
+        \Ameos\AmeosFilemanager\Slots\SlotFolder::class,
         'copy'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFolderDelete', 
-        \Ameos\AmeosFilemanager\Slots\SlotFolder::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFolderDelete',
+        \Ameos\AmeosFilemanager\Slots\SlotFolder::class,
         'delete'
     );
 
     // Files slots
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFileAdd',  
-        \Ameos\AmeosFilemanager\Slots\SlotFile::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFileAdd',
+        \Ameos\AmeosFilemanager\Slots\SlotFile::class,
         'add'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFileCopy', 
-        \Ameos\AmeosFilemanager\Slots\SlotFile::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFileCopy',
+        \Ameos\AmeosFilemanager\Slots\SlotFile::class,
         'copy'
     );
     $dispatcher->connect(
-        \TYPO3\CMS\Core\Resource\ResourceStorage::class, 
-        'postFileMove', 
-        \Ameos\AmeosFilemanager\Slots\SlotFile::class, 
+        \TYPO3\CMS\Core\Resource\ResourceStorage::class,
+        'postFileMove',
+        \Ameos\AmeosFilemanager\Slots\SlotFile::class,
         'move'
     );
 
@@ -78,24 +78,24 @@ if (TYPO3_MODE == 'BE') {
     $dispatcher->connect(
         \TYPO3\CMS\Extensionmanager\Utility\InstallUtility::class,
         'afterExtensionInstall',
-        \Ameos\AmeosFilemanager\Slots\Install::class, 
+        \Ameos\AmeosFilemanager\Slots\Install::class,
         'execute'
     );
 
     // Register backend module
     if ($configuration['enable_export_module']) {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'Ameos.' . $_EXTKEY,
+            'AmeosFilemanager',
             'file',
             'filemanager_export',
             'bottom',
-            ['Backend\\Export' => 'index, export'],
+            [\Ameos\AmeosFilemanager\Controller\Backend\ExportController::class => 'index, export'],
             [
                 'access' => 'user, group',
-                'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.png',
-                'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_modexport.xlf'
+                'icon'   => 'EXT:' . 'ameos_filemanager' . '/ext_icon.png',
+                'labels' => 'LLL:EXT:' . 'ameos_filemanager' . '/Resources/Private/Language/locallang_modexport.xlf'
             ]
         );
     }
-    
+
 }

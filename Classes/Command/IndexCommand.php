@@ -56,9 +56,9 @@ class IndexCommand extends Command
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         if ((bool)$input->hasOption('storage') && (int)$input->getOption('storage') > 0) {
-            $storage = ResourceFactory::getInstance()->getStorageObject((int)$input->getOption('storage'));
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject((int)$input->getOption('storage'));
         } else {
-            $storage = ResourceFactory::getInstance()->getDefaultStorage();
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage();
         }
 
         if ($storage) {

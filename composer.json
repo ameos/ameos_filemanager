@@ -1,5 +1,5 @@
 {
-    "name": "ameos/ameos-filemanager",
+    "name": "ameos/ameos_filemanager",
     "description": "This will allow you to fully handle file upload in FE context.",
     "type": "typo3-cms-extension",
     "homepage": "https://github.com/ameos/ameos_filemanager",

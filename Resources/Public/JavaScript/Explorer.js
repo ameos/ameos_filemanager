@@ -42,9 +42,9 @@
             if (tree.querySelector(".current")) {
                 parents(tree.querySelector(".current"), tree).forEach(function(item, i) {
                     item.classList.add("active");
-                    item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
-                    item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
                 });
+                $(".tree ul.active li.active > a i").removeClass("fa-folder");
+                $(".tree ul.active li.active > a i").addClass("fa-folder-open");
             }
             loadEventListener();
         }

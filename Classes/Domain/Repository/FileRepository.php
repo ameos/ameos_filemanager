@@ -278,14 +278,15 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             '
             SELECT
                 distinct sys_file.uid,
-                sys_file_metadata.folder_uid 
+                sys_file_metadata.folder_uid,
+                sys_file_metadata.uid as metadatauid
             FROM
                 sys_file_metadata
                 INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid
             WHERE
                 ' . $where . '
             ORDER BY
-                sys_file_metadata.uid DESC 
+                metadatauid DESC 
             ',
             []
         );

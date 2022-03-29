@@ -22,34 +22,37 @@
         <label for="keywords"><f:translate key="keyword"/> : </label>
         <f:form.textfield id="keywords" class="form-control" name="keywords" value="{file.keywords}" />
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="fe_group_read"><f:translate key="feGroupRead"/></label>
-                <f:form.select class="form-control" multiple="1" id="fe_group_read" name="fe_group_read" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupRead}" />
+
+    <f:if condition="{isUserLoggedIn}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="fe_group_read"><f:translate key="feGroupRead"/></label>
+                    <f:form.select class="form-control" multiple="1" id="fe_group_read" name="fe_group_read" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupRead}" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <f:form.checkbox id="no_read_access" value="1" name="no_read_access" checked="{file.noReadAccess}" />
+                    <label for="no_read_access"><f:translate key="noReadAccess"/></label>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <f:form.checkbox id="no_read_access" value="1" name="no_read_access" checked="{file.noReadAccess}" />
-                <label for="no_read_access"><f:translate key="noReadAccess"/></label>        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="fe_group_write"><f:translate key="feGroupWrite"/></label>
+                    <f:form.select class="form-control" multiple="1" id="fe_group_write" name="fe_group_write" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupWrite}" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <f:form.checkbox id="no_write_access" value="1" name="no_write_access" checked="{file.noWriteAccess}" />
+                    <label for="no_write_access"><f:translate key="noWriteAccess"/></label>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="fe_group_write"><f:translate key="feGroupWrite"/></label>
-                <f:form.select class="form-control" multiple="1" id="fe_group_write" name="fe_group_write" options="{usergroups}" optionValueField="uid" optionLabelField="title" value="{file.arrayFeGroupWrite}" />
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <f:form.checkbox id="no_write_access" value="1" name="no_write_access" checked="{file.noWriteAccess}" />
-                <label for="no_write_access"><f:translate key="noWriteAccess"/></label>
-            </div>
-        </div>
-    </div>
+    </f:if>
     <div class="form-group">
         <label for="categories"><f:translate key="categories"/> : </label>
         <f:render partial="Form/CategoriesList" arguments="{categories: categories, objet: file}" />

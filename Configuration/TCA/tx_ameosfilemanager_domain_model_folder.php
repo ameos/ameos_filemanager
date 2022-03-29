@@ -1,17 +1,13 @@
 <?php
+
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_folder';
-$corell = version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getCurrentTypo3Version(), '9.0.0', '>=')
-    ? 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf'
-    : 'LLL:EXT:lang/locallang_general.xlf';
+$corell = 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf';
 
-
-$tca = [
+return [
     'ctrl' => [
         'title'          => $ll,
         'label'          => 'title',
@@ -22,34 +18,33 @@ $tca = [
         'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => ExtensionManagementUtility::extPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
+        'iconfile'       => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
         'searchFields'   => 'title, description, keywords',
         'rootLevel'      => 1,
-        'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],        
+        'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],
     ],
     'palettes' => [
         'owner' => ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'],
     ],
     'types' => ['0' => [
         'showitem' => 'description,keywords,
-            --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write,fe_group_addfolder,fe_group_addfile'
+            --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write,fe_group_addfolder,fe_group_addfile',
     ]],
-    'interface' => ['showRecordFieldList' => 'title,description,keywords'],
     'columns' => [
-        'hidden' => [        
+        'hidden' => [
             'exclude' => 1,
             'label'   => $corell . ':LGL.hidden',
-            'config'  => ['type' => 'check', 'default' => '0']
+            'config'  => ['type' => 'check', 'default' => '0'],
         ],
         'crdate' => [
-            'exclude' => 1, 
+            'exclude' => 1,
             'label'   => $corell . ':LGL.crdate',
-            'config'  => ['type' => 'input']
+            'config'  => ['type' => 'input'],
         ],
         'tstamp' => [
-            'exclude' => 1, 
+            'exclude' => 1,
             'label'   => $corell . ':LGL.tstamp',
-            'config'  => ['type' => 'input']
+            'config'  => ['type' => 'input'],
         ],
         'cruser_id' => [
             'exclude' => 1,
@@ -60,8 +55,8 @@ $tca = [
                 'size'                => 5,
                 'maxitems'            => 1,
                 'foreign_table'       => 'be_user',
-                'foreign_table_where' => 'ORDER BY be_user.uid'
-            ]
+                'foreign_table_where' => 'ORDER BY be_user.uid',
+            ],
         ],
         'fe_user_id' => [
             'exclude' => 1,
@@ -72,85 +67,85 @@ $tca = [
                 'allowed'       => 'fe_users',
                 'maxitems'      => 1,
                 'size'          => 1,
-            ]
+            ],
         ],
         'title' => [
-            'exclude' => 1, 
+            'exclude' => 1,
             'label' => $ll . '.title',
             'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'no_read_access' => [
-            'exclude' => 1, 
+            'exclude' => 1,
             'label' => $ll . '.no_read_access',
             'config' => [
                 'type'    => 'check',
                 'default' => '0',
-            ]
+            ],
         ],
         'no_write_access' => [
-            'exclude' => 1, 
+            'exclude' => 1,
             'label'   => $ll . '.no_write_access',
             'config'  => [
                 'type'    => 'check',
                 'default' => '0',
-            ]
+            ],
         ],
         'owner_has_read_access' => [
             'exclude' => 1,
             'label'   => $ll . '.owner_has_read_access',
             'config'  => [
                 'type'    => 'check',
-                'default' => '1'
-            ]
+                'default' => '1',
+            ],
         ],
         'owner_has_write_access' => [
             'exclude' => 1,
             'label'   => $ll . '.owner_has_write_access',
             'config'  => [
                 'type'    => 'check',
-                'default' => '1'
-            ]
+                'default' => '1',
+            ],
         ],
-        'description' => [      
-            'exclude' => 1,   
-            'label'   => $ll . '.description',     
+        'description' => [
+            'exclude' => 1,
+            'label'   => $ll . '.description',
             'config'  => [
-                'type' => 'text', 
+                'type' => 'text',
                 'cols' => '15',
-                'rows' => '5', 
-                'eval' => 'trim', 
-            ]
+                'rows' => '5',
+                'eval' => 'trim',
+            ],
         ],
-        'identifier' => [      
-            'exclude' => 1,   
+        'identifier' => [
+            'exclude' => 1,
             'label'   => $ll . '.identifier',
             'config'  => [
                 'type' => 'text',
                 'cols' => '15',
                 'rows' => '5',
-                'eval' => 'trim', 
-            ]
+                'eval' => 'trim',
+            ],
         ],
         'storage' => [
             'exclude' => 1,
             'label'   => $corell . ':sys_file.storage',
             'config'  => [
                 'type' => 'input',
-            ]
+            ],
         ],
-        'keywords' => [      
-            'exclude' => 1,   
-            'label'   => $ll . '.keywords',     
+        'keywords' => [
+            'exclude' => 1,
+            'label'   => $ll . '.keywords',
             'config'  => [
-                'type' => 'text', 
+                'type' => 'text',
                 'cols' => '40',
-                'rows' => '3', 
-                'eval' => 'trim', 
-            ]
+                'rows' => '3',
+                'eval' => 'trim',
+            ],
         ],
         'fe_group_read' => [
             'exclude' => 1,
@@ -162,12 +157,12 @@ $tca = [
                 'maxitems'   => 20,
                 'items'      => [
                     [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--']
+                    [$corell . ':LGL.usergroups', '--div--'],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            ]
+                'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
         ],
         'fe_group_write' => [
             'exclude' => 1,
@@ -179,12 +174,12 @@ $tca = [
                 'maxitems' => 20,
                 'items'      => [
                     [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--']
+                    [$corell . ':LGL.usergroups', '--div--'],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            ]
+                'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
         ],
         'fe_group_addfile' => [
             'exclude' => 1,
@@ -196,12 +191,12 @@ $tca = [
                 'maxitems'   => 20,
                 'items'      => [
                     [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--']
+                    [$corell . ':LGL.usergroups', '--div--'],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            ]
+                'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
         ],
         'fe_group_addfolder' => [
             'exclude' => 1,
@@ -213,14 +208,14 @@ $tca = [
                 'maxitems'   => 20,
                 'items'      => [
                     [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--']
+                    [$corell . ':LGL.usergroups', '--div--'],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            ]
+                'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
         ],
-        'folders' => [ 
+        'folders' => [
             'exclude' => 1,
             'label'   => $ll . '.folders',
             'config'  => [
@@ -229,7 +224,7 @@ $tca = [
                 'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
                 'foreign_field' => 'uid_parent',
                 'appearance'    => ['collapseAll' => 1],
-            ]
+            ],
         ],
         'uid_parent' => [
             'exclude' => 1,
@@ -240,8 +235,8 @@ $tca = [
                 'size'                => 5,
                 'maxitems'            => 1,
                 'foreign_table'       => 'tx_ameosfilemanager_domain_model_folder',
-                'foreign_table_where' => 'ORDER BY tx_ameosfilemanager_domain_model_folder.title'
-            ]
+                'foreign_table_where' => 'ORDER BY tx_ameosfilemanager_domain_model_folder.title',
+            ],
         ],
         'files' => [
             'exclude' => 1,
@@ -251,12 +246,7 @@ $tca = [
                 'type'          => 'inline',
                 'foreign_table' => 'sys_file_metadata',
                 'foreign_field' => 'folder_uid',
-            ]
+            ],
         ],
     ],
-
 ];
-
-ExtensionManagementUtility::makeCategorizable('ameos_filemanager', 'tx_ameosfilemanager_domain_model_folder', 'cats', ['exclude' => FALSE]);
-
-return $tca;

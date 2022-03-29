@@ -1,11 +1,14 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\DataProvider;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Ameos\AmeosFilemanager\Configuration\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTreeDataProvider;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,10 +22,9 @@ use TYPO3\CMS\Extbase\Service\FlexFormService;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTreeDataProvider
-{
 
+class FileTreeFolder extends DatabaseTreeDataProvider
+{
     /**
      * Queries the table for an field which might contain a list.
      *
@@ -32,8 +34,7 @@ class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTre
      */
     protected function listFieldQuery($fieldName, $queryId)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tt_content');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $content = $queryBuilder
             ->select('pi_flexform')
             ->from('tt_content')
@@ -41,17 +42,16 @@ class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTre
             ->execute()
             ->fetch();
 
-        $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-        $storage = $resourceFactory->getDefaultStorage()->getUid();
+        $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage()->getUid();
         if ($content) {
             /** @var FlexFormService $flexFormService */
-            $flexFormService = GeneralUtility::makeInstance(ObjectManager::class)->get(FlexFormService::class);
+            $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $flexformConfiguration = $flexFormService->convertFlexFormContentToArray($content['pi_flexform']);
-            if ($flexformConfiguration['settings']['storage']) {
-                $storage = $flexformConfiguration['settings']['storage'];
+            if ($flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY]) {
+                $storage = $flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY];
             }
         }
-        
+
         $queryId = (int)$queryId;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($this->getTableName());
@@ -75,10 +75,6 @@ class FileTreeFolder extends \TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTre
         }
 
         $records = $queryBuilder->execute()->fetchAll();
-        $uidArray = is_array($records) ? array_column($records, 'uid') : [];
-
-        return $uidArray;
+        return is_array($records) ? array_column($records, 'uid') : [];
     }
-
-
 }

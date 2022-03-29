@@ -16,22 +16,16 @@ $EM_CONF[$_EXTKEY] = [
     'category'         => 'plugin',
     'author'           => 'Ameos Team',
     'author_company'   => 'Ameos',
-    'author_email'     => 'typo3dev@ameos.com',  
+    'author_email'     => 'typo3dev@ameos.com',
     'state'            => 'beta',
-    'uploadfolder'     => false,
-    'createDirs'       => '',
-    'clearCacheOnLoad' => 0,
-    'version'          => '1.4.6',
-    'clearcacheonload' => false,
+    'version'          => '2.0.0',
     'autoload'         => ['psr-4' => ['Ameos\\AmeosFilemanager\\' => 'Classes']],
     'constraints'      => [
         'depends' => [
-            'typo3' => '8.7.0-9.5.99',
-            'php'   => '7.0.0-7.2.99',
-            'vhs'   => '5.1.0',
+            'typo3' => '10.4.0-11.5.99',
+            'php'   => '7.1.0-7.4.99',
         ],
         'conflicts' => [],
         'suggests'  => [],
     ],
 ];
-

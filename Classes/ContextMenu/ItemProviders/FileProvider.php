@@ -1,12 +1,6 @@
 <?php
-namespace Ameos\AmeosFilemanager\ContextMenu\ItemProviders;
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+namespace Ameos\AmeosFilemanager\ContextMenu\ItemProviders;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -23,48 +17,53 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider
 {
+    private const EDIT_FOLDER_KEY = 'editFolder';
+
     /**
      * Extends constructor
      *
-     * @param string $table
-     * @param string $identifier
-     * @param string $context
+     * @param string $table      TableName
+     * @param string $identifier Identifier
+     * @param string $context    Context
      */
     public function __construct(string $table, string $identifier, string $context = '')
     {
-        $this->itemsConfiguration['editFolder'] = [
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:cm.edit',
+        $this->itemsConfiguration[self::EDIT_FOLDER_KEY] = [
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.edit',
             'iconIdentifier' => 'actions-page-open',
-            'callbackAction' => 'editFolder'
+            'callbackAction' => self::EDIT_FOLDER_KEY,
         ];
         parent::__construct($table, $identifier, $context);
     }
 
     /**
-     * Checks whether certain item can be rendered (e.g. check for disabled items or permissions)
+     * Checks whether certain item can be rendered
+     * (e.g. check for disabled items or permissions)
      *
-     * @param string $itemName
-     * @param string $type
+     * @param string $itemName ItemName
+     * @param string $type     Type
+     *
      * @return bool
      */
     protected function canRender(string $itemName, string $type): bool
     {
-        if ($itemName == 'editFolder') {
+        if ($itemName === self::EDIT_FOLDER_KEY) {
             return true;
         }
         return parent::canRender($itemName, $type);
     }
 
     /**
-     * @param string $itemName
+     * Returns additional attributes
+     *
+     * @param string $itemName Name of the item
+     *
      * @return array
      */
     protected function getAdditionalAttributes(string $itemName): array
-    {        
-        if ($itemName == 'editFolder') {
-            return [
-                'data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'
-            ];
+    {
+        if ($itemName === self::EDIT_FOLDER_KEY) {
+            return ['data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'];
         }
         return parent::getAdditionalAttributes($itemName);
     }

@@ -1,8 +1,10 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -16,17 +18,16 @@ use Ameos\AmeosFilemanager\Utility\AccessUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class CanAddFileViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
-{
 
+class CanAddFileViewHelper extends AbstractConditionViewHelper
+{
     /**
      * Initializes arguments
      */
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('folder',    Folder::class, 'Folder value.', false);
+        $this->registerArgument('folder', Folder::class, 'Folder value.', false);
         $this->registerArgument('arguments', 'array', 'Arguments.', false);
     }
 
@@ -36,9 +37,9 @@ class CanAddFileViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCond
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.
      * @return bool
      */
-    static protected function evaluateCondition($arguments = null)
+    public static function evaluateCondition($arguments = null)
     {
         $user = $GLOBALS['TSFE']->fe_user->user;
-		return AccessUtility::userHasAddFileAccess($user, $arguments['folder'], $arguments['arguments']);
+        return AccessUtility::userHasAddFileAccess($user, $arguments['folder'], $arguments['arguments']);
     }
 }

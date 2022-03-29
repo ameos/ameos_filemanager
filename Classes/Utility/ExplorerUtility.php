@@ -1,4 +1,5 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -15,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class ExplorerUtility
 {
     /**
@@ -26,19 +27,20 @@ class ExplorerUtility
      */
     public static function getDisplayMode($availableMode, $contentUid)
     {
+        $displayMode = 'mosaic';
         if (!is_array($availableMode)) {
             $availableMode = GeneralUtility::trimExplode(',', $availableMode);
         }
-        if (count($availableMode) == 0) {
-            return 'mosaic';
+        if (empty($availableMode)) {
+            $displayMode = 'mosaic';
         }
         if (count($availableMode) == 1) {
-            return $availableMode[0];
+            $displayMode = $availableMode[0];
         }
         if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'display_mode_' . $contentUid)) {
-            return $GLOBALS['TSFE']->fe_user->getKey('ses', 'display_mode_' . $contentUid);
+            $displayMode = $GLOBALS['TSFE']->fe_user->getKey('ses', 'display_mode_' . $contentUid);
         }
-        return 'mosaic';
+        return $displayMode;
     }
 
     /**
@@ -68,5 +70,4 @@ class ExplorerUtility
 
         return $options;
     }
-    
 }

@@ -12,7 +12,12 @@
             </td>
         </f:if>
         <f:if condition="{column} == 'title'">
-            <td><f:link.action action="index" arguments="{folder: folder.uid}">{folder.title}</f:link.action> </td>
+            <f:if condition="{folderTitle}">
+                <f:else>
+                    <f:variable name="folderTitle" value="{folder.title}" />
+                </f:else>
+            </f:if>
+            <td><f:link.action action="index" arguments="{folder: folder.uid}">{folderTitle}</f:link.action> </td>
         </f:if>    
         <f:if condition="{column} == 'createdAt'">
             <td><f:format.date format="%d/%m/%Y">@{folder.crdate}</f:format.date></td>
@@ -42,7 +47,7 @@
                 <f:for each="{allowed_actions_folders}" as="action">
                     <f:if condition="{action} == 'edit'">
                         <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-                            <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'edit')}">
+                            <f:link.action action="edit" controller="Explorer\Folder" arguments="{parentfolder: current_folder.uid, folder: folder.uid}" title="{f:translate(key:'edit')}">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </f:link.action>
                         </filemanager:checkAccess>

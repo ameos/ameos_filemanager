@@ -1,6 +1,7 @@
 {namespace filemanager=Ameos\Ameosfilemanager\ViewHelpers}
 <filemanager:checkAccess folder="{current_folder}" right="w" arguments="{folderRoot:settings.startFolder}">
 <div class="form-inline pull-right massaction-toolbar">
+    <f:form.hidden id="folder" name="folder" value="{current_folder.uid}" />
     <f:form.select class="form-control" id="massaction" name="massaction" options="{massactions}" />
     <f:form.select class="form-control" id="targetfolder" name="targetfolder" options="{folders_options}" />        
     <f:form.submit class="btn btn-primary" name="submit" value="OK" />

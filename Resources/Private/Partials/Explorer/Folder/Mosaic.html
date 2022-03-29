@@ -2,14 +2,19 @@
 <div class="col-md-2 item">
     <f:link.action action="index" arguments="{folder: folder.uid}">
         <i class="fa fa-2x fa-folder" aria-hidden="true"></i><br>
-        {folder.title}
+        <f:if condition="{folderTitle}">
+            <f:else>
+                <f:variable name="folderTitle" value="{folder.title}" />
+            </f:else>
+        </f:if>
+        {folderTitle}
     </f:link.action>
     <p class="toolbar-file">
         <f:form.checkbox name="selectedfolders[]" value="{folder.uid}" />
         <f:for each="{allowed_actions_folders}" as="action">
             <f:if condition="{action} == 'edit'">
                 <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
-                    <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}" title="{f:translate(key:'edit')}">
+                    <f:link.action action="edit" controller="Explorer\Folder" arguments="{parentfolder: current_folder.uid, folder: folder.uid}" title="{f:translate(key:'edit')}">
                         <i class="fa fa-pencil" aria-hidden="true"></i>
                     </f:link.action>
                 </filemanager:checkAccess>

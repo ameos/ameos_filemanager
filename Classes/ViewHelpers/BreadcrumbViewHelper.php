@@ -1,7 +1,10 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /*
@@ -17,39 +20,40 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * The TYPO3 project - inspiring people to share!
  */
 
-class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class BreadcrumbViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
     /**
      * Arguments initialization
-     *
-     * @return void
      */
-    public function initializeArguments() 
+    public function initializeArguments()
     {
-        $this->registerArgument('folder', \Ameos\AmeosFilemanager\Domain\Model\Folder::class, 'Current folder', true);
+        $this->registerArgument('folder', Folder::class, 'Current folder', true);
         $this->registerArgument('startFolder', 'int', 'Start folder', true);
     }
 
     /**
      * Renders line for folder or file
      *
-     * @return string 
+     * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-    	if ($arguments['folder'] != null) {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        if ($arguments['folder'] != null) {
             $breadcrumb = [];
             return static::getBreadcrumb(
                 $breadcrumb,
@@ -59,7 +63,7 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
                 $renderingContext,
                 $renderChildrenClosure
             );
-    	}
+        }
         return '';
     }
 
@@ -68,39 +72,43 @@ class BreadcrumbViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * $param Ameos\AmeosFilemanager\Domain\Model\Folder $folder
      * $param int $startFolder
      * @param string $separator
-     * @param RenderingContextInterface $renderingContext 
-     * @param Closure $renderChildrenClosure 
+     * @param RenderingContextInterface $renderingContext
+     * @param Closure $renderChildrenClosure
      * @return string
-     */ 
-    protected static function getBreadcrumb($breadcrumb = [], $folder, $activeFolder, $startFolder, $renderingContext, $renderChildrenClosure)
-    {
+     */
+    protected static function getBreadcrumb(
+        $breadcrumb,
+        $folder,
+        $activeFolder,
+        $startFolder,
+        $renderingContext,
+        $renderChildrenClosure
+    ) {
         $uri = $renderingContext->getControllerContext()->getUriBuilder()->reset()
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString(['id'])
             ->uriFor('index', ['folder' => $folder->getUid()]);
-        
 
         $templateVariableContainer = $renderingContext->getVariableProvider();
         $templateVariableContainer->add('item', [
             'uri'       => $uri,
             'title'     => $folder->getTitle(),
-            'is_active' => $folder->getUid() == $activeFolder->getUid()
+            'is_active' => $folder->getUid() == $activeFolder->getUid(),
         ]);
         $output = $renderChildrenClosure();
         $templateVariableContainer->remove('item');
 
-    	if ($folder->getParent() && $folder->getUid() != $startFolder) {
+        if ($folder->getParent() && $folder->getUid() != $startFolder) {
             $parentOutput = static::getBreadcrumb(
                 $breadcrumb,
-                $folder->getParent(), 
+                $folder->getParent(),
                 $activeFolder,
                 $startFolder,
                 $renderingContext,
                 $renderChildrenClosure
             );
             return $parentOutput . $output;
-    	} else {
-            return $output;
         }
-    }   
+        return $output;
+    }
 }

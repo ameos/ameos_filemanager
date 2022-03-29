@@ -1,5 +1,6 @@
 <?php
-namespace Ameos\AmeosFilemanager\Slots;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,13 +14,9 @@ namespace Ameos\AmeosFilemanager\Slots;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class Install
+
+namespace Ameos\AmeosFilemanager\Exception;
+
+class MissingArgumentException extends \RuntimeException
 {
-    public function execute($extname = null)
-    {
-        if($extname === 'ameos_filemanager') {
-            \Ameos\AmeosFilemanager\Service\IndexationService::runForDefaultStorage();
-        }
-    }
 }

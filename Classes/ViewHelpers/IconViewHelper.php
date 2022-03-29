@@ -1,8 +1,10 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /*
@@ -18,26 +20,24 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * The TYPO3 project - inspiring people to share!
  */
 
-class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IconViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
     /**
      * Arguments initialization
-     *
-     * @return void
      */
-    public function initializeArguments() 
+    public function initializeArguments()
     {
         $this->registerArgument('type', 'string', 'File type', true);
     }
@@ -45,12 +45,15 @@ class IconViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
     /**
      * Renders icon of extension $type
      *
-     * @param string $type 
+     * @param string $type
      * @param string $iconFolder
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         return FilemanagerUtility::getImageIconeTagForType($arguments['type']);
     }
 }

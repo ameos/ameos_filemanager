@@ -1,9 +1,11 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use Ameos\AmeosFilemanager\Domain\Model\File;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Utility\AccessUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,8 +19,8 @@ use Ameos\AmeosFilemanager\Utility\AccessUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
-class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+
+class CheckAccessViewHelper extends AbstractConditionViewHelper
 {
     /**
      * Initializes arguments
@@ -26,10 +28,10 @@ class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCon
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('folder',    Folder::class, 'Folder', false);
-        $this->registerArgument('file',      File::class, 'File', false);
+        $this->registerArgument('folder', Folder::class, 'Folder', false);
+        $this->registerArgument('file', File::class, 'File', false);
         $this->registerArgument('arguments', 'array', 'Arguments.', false);
-        $this->registerArgument('right',     'string', 'right.', false);
+        $this->registerArgument('right', 'string', 'right.', false);
     }
 
     /**
@@ -37,32 +39,50 @@ class CheckAccessViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCon
      *
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.
      * @return bool
-     */ 
-    static protected function evaluateCondition($arguments = null)
+     */
+    public static function evaluateCondition($arguments = null)
     {
+        $access = false;
         $user = ($GLOBALS['TSFE']->fe_user->user);
-        if (($arguments['file']==null && $arguments['folder']==null) || $arguments['right']==null) {
-            return false;
-        }
-        if ($arguments['folder'] != null) {   
-            if($arguments['right'] == "r") {
-                return AccessUtility::userHasFolderReadAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
-            } elseif ($arguments['right'] == "w") {
-                return AccessUtility::userHasFolderWriteAccess($user, $arguments['folder'], $arguments['arguments']) ? true : false;
-            } else {
-                return false;
-            }
+        if (($arguments['file'] == null && $arguments['folder'] == null) || $arguments['right'] == null) {
+            $access = false;
+        } elseif ($arguments['folder'] != null) {
+            $access = self::getFolderAccess($arguments, $user);
         } elseif ($arguments['file'] != null) {
-            if ($arguments['right'] == "r") {
-                return AccessUtility::userHasFileReadAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
-            } elseif ($arguments['right'] == "w") {
-                return AccessUtility::userHasFileWriteAccess($user, $arguments['file'], $arguments['arguments']) ? true : false;
-            } else {
-                return false;                
-            }
-        } else {
-            return false;
+            $access = self::getFileAccess($arguments, $user);
         }
-        return false;
+        return $access;
+    }
+
+    private static function getFolderAccess($arguments, $user)
+    {
+        if ($arguments['right'] == 'r') {
+            $access = AccessUtility::userHasFolderReadAccess($user, $arguments['folder'], $arguments['arguments'])
+                ? true
+                : false;
+        } elseif ($arguments['right'] == 'w') {
+            $access = AccessUtility::userHasFolderWriteAccess($user, $arguments['folder'], $arguments['arguments'])
+                ? true
+                : false;
+        } else {
+            $access = false;
+        }
+        return $access;
+    }
+
+    private static function getFileAccess($arguments, $user)
+    {
+        if ($arguments['right'] == 'r') {
+            $access = AccessUtility::userHasFileReadAccess($user, $arguments['file'], $arguments['arguments'])
+                ? true
+                : false;
+        } elseif ($arguments['right'] == 'w') {
+            $access = AccessUtility::userHasFileWriteAccess($user, $arguments['file'], $arguments['arguments'])
+                ? true
+                : false;
+        } else {
+            $access = false;
+        }
+        return $access;
     }
 }

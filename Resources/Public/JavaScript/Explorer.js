@@ -1,6 +1,6 @@
 (function() {
 
-    FileManagerTree = (function(tree) {
+    let FileManagerTree = (function(tree) {
         if (tree) {
             var parents = function(element, parentSelector) {
                 if (parentSelector === undefined) {
@@ -52,7 +52,7 @@
     var tree = new FileManagerTree(document.querySelector('.tree'));
 
 
-    FileManagerToolbar = (function(toolbar) {
+    let FileManagerToolbar = (function(toolbar) {
         if (toolbar) {
             var item = toolbar.querySelector("select[data-update-display]");
             if (item) {
@@ -64,7 +64,7 @@
     });
     var toolbar = new FileManagerToolbar(document.querySelector('.toolbar'));
 
-    FileManagerMassaction = (function(massaction) {
+    let FileManagerMassaction = (function(massaction) {
         if (massaction) {
             massaction.querySelector("#targetfolder").style.display = "none";
             massaction.querySelector("#massaction").addEventListener("change", function(event) {

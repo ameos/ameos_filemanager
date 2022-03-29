@@ -18,36 +18,4 @@ plugin.tx_ameosfilemanager {
         includeDefaultCss = {$plugin.tx_ameosfilemanager.includeDefaultCss}
         includeFontawesome = {$plugin.tx_ameosfilemanager.includeFontawesome}
 	}
-	persistence {
-		classes {
-			Ameos\AmeosFilemanager\Domain\Model\Folder {
-				mapping {
-            		columns.crdate.mapOnProperty = crdate
-            	}
-			}
-			Ameos\AmeosFilemanager\Domain\Model\File {
-				mapping {
-					tableName = sys_file
-				}
-			}
-			Ameos\AmeosFilemanager\Domain\Model\Category {
-				mapping {
-					tableName = sys_category
-				}
-			}
-			TYPO3\CMS\Core\Resource\ResourceStorage {
-				mapping {
-					tableName = sys_file_storage
-				}
-			}
-		}
-	}
-}
-
-config.tx_extbase {
-	objects {
-		TYPO3\CMS\Extbase\Domain\Model\Category {
-			className = Ameos\AmeosFilemanager\Domain\Model\Category
-		}
-	}
 }

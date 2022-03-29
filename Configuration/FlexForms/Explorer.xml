@@ -16,6 +16,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.storage</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <internal_type>db</internal_type>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
@@ -33,7 +34,7 @@
                                 <renderType>selectTree</renderType>
                                 <foreign_table>tx_ameosfilemanager_domain_model_folder</foreign_table>
                                 <minitems>1</minitems>
-                                <maxitems>1</maxitems>                                
+                                <maxitems>1</maxitems>
                                 <treeConfig>
                                     <dataProvider>Ameos\AmeosFilemanager\DataProvider\FileTreeFolder</dataProvider>
                                     <expandAll>true</expandAll>
@@ -51,6 +52,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.recursion</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <multiple>false</multiple>
                                 <size>1</size>
                                 <minitems>1</minitems>
@@ -179,6 +181,7 @@
                             <displayCond>FIELD:settings.availableMode:IN:list</displayCond>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <size>10</size>
                                 <minitems>1</minitems>
                                 <maxitems>11</maxitems>
@@ -233,6 +236,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.allowedActionsOnFiles</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <size>5</size>
                                 <minitems>0</minitems>
                                 <maxitems>5</maxitems>
@@ -263,6 +267,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.allowedActionsOnFolders</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <size>5</size>
                                 <minitems>0</minitems>
                                 <maxitems>6</maxitems>
@@ -311,6 +316,7 @@
                             <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.authorizedGroup</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <foreign_table>fe_groups</foreign_table>
                                 <size>5</size>
                                 <minitems>0</minitems>
@@ -334,6 +340,7 @@
                           <label>LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:flexform.authorizedCategories</label>
                           <config>
                             <type>select</type>
+                            <renderType>selectTree</renderType>
                             <foreign_table>sys_category</foreign_table>
                             <foreign_table_where> AND sys_category.sys_language_uid IN (-1, 0) ORDER BY sys_category.title ASC</foreign_table_where>
                             <maxitems>9999</maxitems>

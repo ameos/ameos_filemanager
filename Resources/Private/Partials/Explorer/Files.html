@@ -16,11 +16,12 @@
     <div class="row">
         <f:if condition="{settings.displayFolders}">
             <f:if condition="{settings.displayParentFolder} && {current_folder.parent}">
-                {current_folder.parent -> v:variable.set(name: 'folder')}
-                {v:variable.set(name: 'folder.title', value: '..')}
+                <f:variable name="folder" value="{current_folder.parent}" />
+                <f:variable name="folderTitle" value=".." />
                 <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
                     <f:render partial="Explorer/Folder/Mosaic" arguments="{_all}" />
                 </filemanager:canDisplayRow>
+                <f:variable name="folderTitle" value="" />
             </f:if>
             <f:for each="{current_folder.folders}" as="folder">
                 <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
@@ -28,10 +29,10 @@
                 </filemanager:canDisplayRow>
             </f:for>
         </f:if>
-        
+
         <f:for each="{files}" as="file">
             <filemanager:canDisplayRow file="{file}" settings="{settings}" folderRoot="{settings.startFolder}">
-            <f:render partial="Explorer/File/Mosaic" arguments="{_all}" />
+                <f:render partial="Explorer/File/Mosaic" arguments="{_all}" />
             </filemanager:canDisplayRow>
         </f:for>
     </div>
@@ -39,26 +40,44 @@
     <f:if condition="{display_mode} == 'list'">
     <table class="table table-striped">
         <f:render partial="Explorer/HeaderTable" arguments="{_all}" />
-        <f:if condition="{settings.displayFolders}">
-            <f:if condition="{settings.displayParentFolder} && {current_folder.parent}">
-                {current_folder.parent -> v:variable.set(name: 'folder')}
-                {v:variable.set(name: 'folder.title', value: '..')}
-                <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
-                    <f:render partial="Explorer/Folder/List" arguments="{_all}" />
-                </filemanager:canDisplayRow>
-            </f:if>
-            <f:for each="{current_folder.folders}" as="folder">
-                <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
-                    <f:render partial="Explorer/Folder/List" arguments="{_all}" />
-                </filemanager:canDisplayRow>
-            </f:for>
+        <f:if condition="{settings.displayFolders} && {direction} != 'DESC'">
+            <f:render section="FoldersList" arguments="{_all}" />
         </f:if>
         <f:for each="{files}" as="file">
             <filemanager:canDisplayRow file="{file}" settings="{settings}" folderRoot="{settings.startFolder}">
-            <f:render partial="Explorer/File/List" arguments="{_all}" />
+                <f:render partial="Explorer/File/List" arguments="{_all}" />
             </filemanager:canDisplayRow>
         </f:for>
+        <f:if condition="{settings.displayFolders} && {direction} == 'DESC'">
+            <f:render section="FoldersList" arguments="{_all}" />
+        </f:if>
     </table>
     </f:if>
 <f:render partial="Explorer/MassActions" arguments="{_all}" />
 </f:form>
+
+
+<f:section name="FoldersList">
+    <f:if condition="{direction} != 'DESC'">
+        <f:render section="ParentFolder" arguments="{_all}" />
+    </f:if>
+    <f:for each="{current_folder.folders}" as="folder">
+        <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
+            <f:render partial="Explorer/Folder/List" arguments="{_all}" />
+        </filemanager:canDisplayRow>
+    </f:for>
+    <f:if condition="{direction} == 'DESC'">
+        <f:render section="ParentFolder" arguments="{_all}" />
+    </f:if>
+</f:section>
+
+<f:section name="ParentFolder">
+    <f:if condition="{settings.displayParentFolder} && {current_folder.parent}">
+        <f:variable name="folder" value="{current_folder.parent}" />
+        <f:variable name="folderTitle" value=".." />
+        <filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{settings.startFolder}">
+            <f:render partial="Explorer/Folder/List" arguments="{_all}" />
+        </filemanager:canDisplayRow>
+        <f:variable name="folderTitle" value="" />
+    </f:if>
+</f:section>

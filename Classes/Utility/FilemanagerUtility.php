@@ -1,13 +1,13 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,7 +21,7 @@ use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class FilemanagerUtility
 {
     /**
@@ -32,10 +32,10 @@ class FilemanagerUtility
      */
     public static function hasTooMuchRecursion($rootFolder, $childFolder, $recursion)
     {
-        if (!$recursion) {
+        if (is_null($recursion) || $recursion === '') {
             return false;
-        }        
-        return self::calculRecursion($rootFolder, $childFolder) > $recursion;
+        }
+        return self::calculRecursion($rootFolder, $childFolder) > (int)$recursion;
     }
 
     /**
@@ -46,12 +46,12 @@ class FilemanagerUtility
      */
     public static function isTheLastRecursion($rootFolder, $childFolder, $recursion)
     {
-        if (!$recursion) {
+        if (is_null($recursion) || $recursion === '') {
             return false;
-        }        
-        return self::calculRecursion($rootFolder, $childFolder) >= $recursion;
+        }
+        return self::calculRecursion($rootFolder, $childFolder) >= (int)$recursion;
     }
-    
+
     /**
      * calcul recursion
      * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
@@ -75,30 +75,31 @@ class FilemanagerUtility
      */
     public static function getImageIconeTagForType($type)
     {
+        $iconTag = '';
         switch (strtolower($type)) {
             case 'folder':
-                return '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
                 break;
             case 'previous_folder':
-                return '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
                 break;
             case 'pdf':
-                return '<i class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>';
                 break;
             case 'xls':
             case 'xlsx':
             case 'ods':
-                return '<i class="fa fa-2x fa-file-excel-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-excel-o" aria-hidden="true"></i>';
                 break;
             case 'doc':
             case 'docx':
             case 'odt':
-                return '<i class="fa fa-2x fa-file-word-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-word-o" aria-hidden="true"></i>';
                 break;
             case 'ppt':
             case 'pptx':
             case 'odp':
-                return '<i class="fa fa-2x fa-file-powerpoint-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-powerpoint-o" aria-hidden="true"></i>';
                 break;
             case 'avi':
             case 'mpeg':
@@ -108,7 +109,7 @@ class FilemanagerUtility
             case 'youtube':
             case 'vimeo':
             case 'dailymotion':
-                return '<i class="fa fa-2x fa-file-video-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-video-o" aria-hidden="true"></i>';
                 break;
             case 'jpg':
             case 'jpeg':
@@ -118,21 +119,21 @@ class FilemanagerUtility
             case 'gif':
             case 'eps':
             case 'tiff':
-                return '<i class="fa fa-2x fa-file-image-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-image-o" aria-hidden="true"></i>';
                 break;
             case 'mp3':
             case 'oga':
             case 'ogg':
             case 'midi':
-                return '<i class="fa fa-2x fa-file-audio-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-audio-o" aria-hidden="true"></i>';
                 break;
             default:
-                return '<i class="fa fa-2x fa-file-text-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-text-o" aria-hidden="true"></i>';
                 break;
         }
+        return $iconTag;
     }
 
-    
     /**
      * return objects of $repo where uid in $uids
      * @param Repository $repo
@@ -151,7 +152,7 @@ class FilemanagerUtility
 
     /**
      * return folder parent
-     * @param integer $uid uid of the child folder
+     * @param int $uid uid of the child folder
      * @return string
      */
     public static function getFolderPathFromUid($uid)
@@ -172,16 +173,19 @@ class FilemanagerUtility
 
     /**
      * parse folder for indexing new content
-     */ 
+     */
     public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
     {
         if (is_numeric($storage)) {
-            $storage = ResourceFactory::getInstance()->getStorageObject($storage);
+            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($storage);
         }
-        $folderRepository = GeneralUtility::makeInstance(ObjectManager::class)->get(FolderRepository::class);
-        $slotFolder = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFolder::class);
-        $slotFile = GeneralUtility::makeInstance(\Ameos\AmeosFilemanager\Slots\SlotFile::class);
-        $falFolder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Folder::class, $storage, $folderIdentifier, $folderName);
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
+        $falFolder = GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Resource\Folder::class,
+            $storage,
+            $folderIdentifier,
+            $folderName
+        );
         $subfolders = $falFolder->getSubfolders();
         foreach ($subfolders as $folder) {
             $folderRecord = $folderRepository->findRawByStorageAndIdentifier(
@@ -189,13 +193,13 @@ class FilemanagerUtility
                 $folder->getIdentifier()
             );
             if (!$folderRecord) {
-                $slotFolder->add($folder);
+                FolderUtility::add($folder);
             }
         }
-        
+
         $files = $falFolder->getFiles();
         foreach ($files as $file) {
-            $slotFile->add($file, $falFolder);
+            FileUtility::add($file, $falFolder);
         }
     }
 
@@ -204,7 +208,7 @@ class FilemanagerUtility
      */
     public static function fileContentSearchEnabled()
     {
-        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ameos_filemanager']);
+        $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('ameos_filemanager');
         return $configuration['enable_filecontent_search'] == 1;
     }
 }

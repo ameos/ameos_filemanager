@@ -1,4 +1,5 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -15,21 +16,21 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class FiledownloadRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     /**
      * @var array
-     */ 
+     */
     protected $defaultOrderings = ['crdate' => QueryInterface::ORDER_DESCENDING];
-    
+
     /**
      * Initialization
      */
     public function initializeObject()
     {
         $querySettings = $this->createQuery()->getQuerySettings();
-        $querySettings->setRespectStoragePage(FALSE);
+        $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
     }
 }

@@ -1,21 +1,23 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\File as ResourceFile;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
-use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use Ameos\AmeosFilemanager\Utility\DownloadUtility;
-use Ameos\AmeosFilemanager\Utility\AccessUtility;
-use Ameos\AmeosFilemanager\Utility\FileUtility;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+use Ameos\AmeosFilemanager\Configuration\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\File;
+use Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository;
+use Ameos\AmeosFilemanager\Utility\DownloadUtility;
+use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+use Ameos\AmeosFilemanager\Utility\FileUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
+use TYPO3\CMS\Core\Resource\File as ResourceFile;
+use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
+use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -29,87 +31,96 @@ use Ameos\AmeosFilemanager\Domain\Model\File;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 class FileController extends AbstractController
-{ 
+{
     /**
-    * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-    * @inject
-    */
-    protected $persistenceManager;
+     * MetaDataRepository object
+     *
+     * @var MetaDataRepository
+     * @Inject
+     */
+    protected $metaDataRepository;
 
     /**
-     * @var \Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository
-     * @inject
+     * Inject MetaDataRepository
+     *
+     * @param MetaDataRepository $metaDataRepository MetadataRepository object
+     */
+    public function injectMetaDataRepository(MetaDataRepository $metaDataRepository)
+    {
+        $this->metaDataRepository = $metaDataRepository;
+    }
+
+    /**
+     * FiledownloadRepository object
+     *
+     * @var FiledownloadRepository
+     * @Inject
      */
     protected $filedownloadRepository;
 
     /**
-     * edit file
+     * Inject FiledownloadRepository
+     *
+     * @param FiledownloadRepository $filedownloadRepository FiledownloadRepository object
+     */
+    public function injectFiledownloadRepository(
+        FiledownloadRepository $filedownloadRepository
+    ) {
+        $this->filedownloadRepository = $filedownloadRepository;
+    }
+
+    /**
+     * Errors array
+     *
+     * @var array
+     */
+    protected $errors = [];
+
+    /**
+     * Edit file
      */
     protected function editAction()
     {
-        if (!$this->settingsIsValid()) {
-            $this->forward('errors', 'Explorer\\Explorer');
-        }
+        $isNewFile = $this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) == 'new';
 
-        $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
-        $isNewFile = $this->request->getArgument('file') == 'new';
-        
         if ($isNewFile) {
-            $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
+            $folder = $this->folderRepository
+                ->findByUid($this->request->getArgument(Configuration::FOLDER_ARGUMENT_KEY));
         } else {
-            $file   = $this->fileRepository->findByUid($this->request->getArgument('file'));
+            $file = $this->fileRepository->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
             $folder = $file->getParentFolder();
-            $this->view->assign('file', $file);
+            $this->view->assign(Configuration::FILE_ARGUMENT_KEY, $file);
         }
 
         if ($this->request->getMethod() == 'POST') {
-            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
-            $driver = $this->objectManager->get(LocalDriver::class);
-
+            $storage = $this->resourceFactory->getStorageObject($this->settings[Configuration::STORAGE_SETTINGS_KEY]);
             $arguments = $this->request->getArguments();
 
-            $hasError = false;
-            if ($isNewFile && $arguments['upload']['tmp_name'] == '') {
-                $hasError = true;
-                $this->addFlashMessage(LocalizationUtility::translate('fileMissing', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            }
+            $this->checkUploadedFileExistence($isNewFile, $arguments, Configuration::UPLOAD_ARGUMENT_KEY);
+            $this->checkAllowedFileType($arguments, Configuration::UPLOAD_ARGUMENT_KEY);
 
-            if ($arguments['upload']['name'] != ''
-                && !in_array(strtolower(pathinfo($arguments['upload']['name'], PATHINFO_EXTENSION)), $allowedFileExtension)) {
-                $hasError = true;
-                $this->addFlashMessage(LocalizationUtility::translate('notAllowedFileType', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            }
+            $newFilePath = $storage->getConfiguration()['basePath']
+                . $folder->getGedPath()
+                . '/'
+                . $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name'];
 
-            if ($arguments['upload']['name'] != ''
-                && file_exists($storage->getConfiguration()['basePath'] . $folder->getGedPath() . '/' . $arguments['upload']['name'])) {
-                $hasError = true;
-                $this->addFlashMessage(LocalizationUtility::translate('fileAlreadyExist', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            }
+            $this->checkFileAlreadyExists($arguments, Configuration::UPLOAD_ARGUMENT_KEY, $newFilePath);
 
-            $newFileAdded = false;
-            if (!$hasError) {
-                $fileIsMoved = move_uploaded_file(
-                    $arguments['upload']['tmp_name'],
-                    $storage->getConfiguration()['basePath'] . $folder->getGedPath() . '/' . $arguments['upload']['name']
-                );
-                if ($arguments['upload']['name'] != '' && !$fileIsMoved) {
-                    $hasError = true;
-                    $this->addFlashMessage(LocalizationUtility::translate('fileUploadError', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-                } else {
-                    $newFileAdded = true;
-                }
-            }
+            $newFileAdded = $this->uploadNewFile($arguments, Configuration::UPLOAD_ARGUMENT_KEY, $newFilePath);
 
-            if (!$hasError) {
+            if (empty($this->errors)) {
                 // create or update file
-                $fileIdentifier = $folder->getGedPath() . '/' . $arguments['upload']['name'];
+                $fileIdentifier = $folder->getGedPath() . '/' . $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name'];
                 if ($isNewFile) {
-                    $newfile = $storage->getFile($fileIdentifier);                
-                } elseif ($arguments['upload']['name']) {
-                    $storage->replaceFile($file->getOriginalResource(), $someFileIdentifier);
-                    $storage->renameFile($file->getOriginalResource(), $arguments['upload']['name']);    
+                    $newfile = $storage->getFile($fileIdentifier);
+                } elseif ($arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']) {
+                    $storage->replaceFile($file->getOriginalResource(), $newFilePath);
+                    $storage->renameFile(
+                        $file->getOriginalResource(),
+                        $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']
+                    );
                 }
 
                 $this->persistenceManager->persistAll();
@@ -118,217 +129,179 @@ class FileController extends AbstractController
                 }
 
                 // update file's properties
-                $properties = [];
-                if ($isNewFile && $GLOBALS['TSFE']->loginUser) {
-                    $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
-                }
-                if ($arguments['title']) { $properties['title'] = $arguments['title']; }
-                if ($arguments['description']) { $properties['description'] = $arguments['description']; }
-                if ($arguments['keywords']) { $properties['keywords'] = $arguments['keywords']; }
-                if ($arguments['fe_group_read']) { $properties['fe_group_read'] = implode(',', $arguments['fe_group_read']); }
-                if ($arguments['fe_group_write']) { $properties['fe_group_write'] = implode(',', $arguments['fe_group_write']); }
+                $properties = array_merge([], $this->getFileProperties($isNewFile, $folder));
+                $properties = array_merge($properties, $this->getFilePropertiesFromArguments($arguments));
+                $properties = array_merge($properties, $this->getFilePropertiesFromSettings());
 
-                $properties['no_read_access']  = $arguments['no_read_access'] ? 1 : 0;
-                $properties['no_write_access'] = $arguments['no_write_access'] ? 1 : 0;
-                $properties['owner_has_read_access']  = isset($this->settings['newFile']['owner_has_read_access'])
-                    ? $this->settings['newFile']['owner_has_read_access']  : 1;
-                $properties['owner_has_write_access'] = isset($this->settings['newFile']['owner_has_write_access'])
-                    ? $this->settings['newFile']['owner_has_write_access'] : 1;
-
-                if ($isNewFile) {
-                    $properties['folder_uid'] = $folder->getUid();                    
-                }
-                $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
-                $metaDataRepository->update($file->getUid(), $properties);
+                $this->metaDataRepository->update($file->getUid(), $properties);
                 $file->setCategories($arguments['categories']);
 
-                if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
-                    $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
-                    try {
-                        $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
-                        if (!is_null($textExtractor)) {
-                            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                            $connectionPool
-                                ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
-                                ->insert('tx_ameosfilemanager_domain_model_filecontent', [
-                                    'file'    => $file->getUid(),
-                                    'content' => $textExtractor->extractText($file->getOriginalResource())
-                                ]);
-                        }    
-                    } catch (\Exception $e) {
-                        
-                    }
-                }
-                
-                $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
+                $this->indexFileContent($newFileAdded, $file);
+
+                $this->redirect(
+                    Configuration::INDEX_ACTION_KEY,
+                    Configuration::EXPLORER_CONTROLLER_KEY,
+                    null,
+                    [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()]
+                );
+            } else {
+                $this->queueErrorFlashMessages();
             }
         }
-  
-        $this->view->assign('folder', $folder->getUid());
+
+        $this->view->assign(Configuration::FOLDER_ARGUMENT_KEY, $folder->getUid());
         $this->view->assign('usergroups', $this->getAvailableUsergroups());
         $this->view->assign('categories', $this->getAvailableCategories());
+        $this->view->assign('isUserLoggedIn', $this->isUserLoggedIn());
     }
 
     /**
-     * info file
+     * Info file
      */
     protected function infoAction()
     {
-        if (!$this->settingsIsValid()) {
-            $this->forward('errors', 'Explorer\\Explorer');
+        if (
+            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
+            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
+                '',
+                FlashMessage::ERROR
+            );
+            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
         }
 
-        if (!$this->request->hasArgument('file') || (int)$this->request->getArgument('file') === 0) {
-            $this->addFlashMessage(LocalizationUtility::translate('missingFileArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            $this->forward('errors', 'Explorer\\Explorer');
-        }
-        
-        $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
-        $this->view->assign('file', $file);
+        $file = $this->fileRepository
+            ->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
+        $this->view->assign(Configuration::FILE_ARGUMENT_KEY, $file);
         $this->view->assign('file_isimage', $file->getOriginalResource()->getType() == ResourceFile::FILETYPE_IMAGE);
         $this->view->assign('filemetadata_isloaded', ExtensionManagementUtility::isLoaded('filemetadata'));
     }
 
     /**
-     * upload files
+     * Upload files
      */
     protected function uploadAction()
     {
-        if (!$this->settingsIsValid()) {
-            $this->forward('errors', 'Explorer\\Explorer');
-        }
-
-        if (!$this->request->hasArgument('folder') || (int)$this->request->getArgument('folder') === 0) {
-            $this->addFlashMessage(LocalizationUtility::translate('missingFolderArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            $this->forward('errors', 'Explorer\\Explorer');
-        }
+        $this->checkFolderArgumentExistence();
 
         // get folder
-        $folder = $this->folderRepository->findByUid($this->request->getArgument('folder'));
+        $folder = $this->folderRepository->findByUid($this->request->getArgument(Configuration::FOLDER_ARGUMENT_KEY));
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            $storage = ResourceFactory::getInstance()->getStorageObject($this->settings['storage']);
-            $driver = $this->objectManager->get(LocalDriver::class);
+            $storage = $this->resourceFactory->getStorageObject($this->settings[Configuration::STORAGE_SETTINGS_KEY]);
 
-            $errors = [];
-            if ($_FILES['file']['tmp_name'] == '') {
-                $errors[] = LocalizationUtility::translate('fileMissing', 'AmeosFilemanager');
-            }
+            $this->checkUploadedFileExistence(true, $_FILES, Configuration::FILE_ARGUMENT_KEY);
+            $this->checkAllowedFileType($_FILES, Configuration::FILE_ARGUMENT_KEY);
 
-            $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
-            if (!in_array(strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION)), $allowedFileExtension)) {
-                $errors[] = LocalizationUtility::translate('notAllowedFileType', 'AmeosFilemanager');
-            }
+            $newFilePath = $storage->getConfiguration()['basePath']
+                . $folder->getGedPath()
+                . '/'
+                . $_FILES[Configuration::FILE_ARGUMENT_KEY]['name'];
+            $this->checkFileAlreadyExists($_FILES, Configuration::FILE_ARGUMENT_KEY, $newFilePath);
 
-            if (file_exists($storage->getConfiguration()['basePath'] . $folder->getGedPath() . '/' . $_FILES['file']['name'])) {
-                $errors[] = LocalizationUtility::translate('fileAlreadyExist', 'AmeosFilemanager');
-            }
-
-            if (empty($errors)) {
-                $fileIsMoved = move_uploaded_file(
-                    $_FILES['file']['tmp_name'],
-                    $storage->getConfiguration()['basePath'] . $folder->getGedPath() . '/' . $_FILES['file']['name']
-                );
-                if (!$fileIsMoved) {
-                    $errors[] = LocalizationUtility::translate('missingFolderArgument', 'AmeosFilemanager');
-                }
-            }
-
-            if (empty($errors)) {
+            if (
+                empty($this->errors)
+                && $this->uploadNewFile($_FILES, Configuration::FILE_ARGUMENT_KEY, $newFilePath)
+            ) {
                 try {
                     // create or update file
-                    $fileIdentifier = $folder->getGedPath() . '/' . $_FILES['file']['name'];
+                    $fileIdentifier = $folder->getGedPath() . '/' . $_FILES[Configuration::FILE_ARGUMENT_KEY]['name'];
                     $file = $storage->getFile($fileIdentifier);
 
                     $this->persistenceManager->persistAll();
 
+                    $driver = GeneralUtility::makeInstance(LocalDriver::class);
+                    $title = $driver->sanitizeFileName(
+                        pathinfo($_FILES[Configuration::FILE_ARGUMENT_KEY]['name'], PATHINFO_FILENAME)
+                    );
                     // update file's properties
-                    $properties = [];
-                    if ($GLOBALS['TSFE']->loginUser) {
-                        $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
-                    }
-                    $properties['owner_has_read_access']  = isset($this->settings['newFile']['owner_has_read_access'])
-                        ? $this->settings['newFile']['owner_has_read_access']  : 1;
-                    $properties['owner_has_write_access'] = isset($this->settings['newFile']['owner_has_write_access'])
-                        ? $this->settings['newFile']['owner_has_write_access'] : 1;
+                    $properties = array_merge([], $this->getFileProperties(true, $folder));
+                    $properties = array_merge($properties, $this->getFilePropertiesFromSettings());
+                    $properties['title'] = $title;
 
-                    $properties['title'] = pathinfo($_FILES['file']['name'], PATHINFO_FILENAME);
-                    $properties['folder_uid'] = $folder->getUid();                    
-
-                    $metaDataRepository = $this->objectManager->get(MetaDataRepository::class);
-                    $metaDataRepository->update($file->getUid(), $properties);
+                    $this->metaDataRepository->update($file->getUid(), $properties);
                     $this->persistenceManager->persistAll();
 
-                    if (FilemanagerUtility::fileContentSearchEnabled()) {
-                        $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
-                        try {
-                            $textExtractor = $textExtractorRegistry->getTextExtractor($file);
-                            if (!is_null($textExtractor)) {
-                                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                                $connectionPool
-                                    ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
-                                    ->insert('tx_ameosfilemanager_domain_model_filecontent', [
-                                        'file'    => $file->getUid(),
-                                        'content' => $textExtractor->extractText($file)
-                                    ]);
-                            }    
-                        } catch (\Exception $e) {
-                            
-                        }
-                    }
+                    $this->indexFileContent(true, $file);
 
-                    $editUri = $this->uriBuilder->reset()->uriFor('edit', ['file' => $file->getUid()]);
-                    $infoUri = $this->uriBuilder->reset()->uriFor('info', ['file' => $file->getUid()]);
+                    $editUri = $this->uriBuilder->reset()
+                        ->uriFor('edit', [Configuration::FILE_ARGUMENT_KEY => $file->getUid()]);
+                    $infoUri = $this->uriBuilder->reset()
+                        ->uriFor('info', [Configuration::FILE_ARGUMENT_KEY => $file->getUid()]);
 
                     header('Content-Type: text/json');
-                    echo json_encode([
-                        'success' => true,
-                        'file'    => $file->getUid(),
-                        'editUri' => $editUri,
-                        'infoUri' => $infoUri,
-                    ], true);
+                    echo json_encode(
+                        [
+                            'success' => true,
+                            Configuration::FILE_ARGUMENT_KEY => $file->getUid(),
+                            'editUri' => $editUri,
+                            'infoUri' => $infoUri,
+                        ],
+                        true
+                    );
                     exit;
                 } catch (\Exception $e) {
                     $errors[] = 'Error during file creation';
                 }
             } else {
                 header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-                echo implode("\n", $errors);
+                echo implode("\n", $this->errors);
                 exit;
             }
             header('Content-Type: text/json');
-            echo json_encode([
-                'success' => false,
-                'errors'  => $errors,
-                'debug'   => $_FILES
-            ], true);
+            echo json_encode(
+                [
+                    'success' => false,
+                    'errors' => $errors,
+                    'debug' => $_FILES,
+                ],
+                true
+            );
             exit;
         }
 
-        // assign to view        
-        $this->view->assign('folder', $folder);
+        // assign to view
+        $this->view->assign(Configuration::FOLDER_ARGUMENT_KEY, $folder);
         $this->view->assign('includeDropzone', true);
-        $this->view->assign('upload_uri', $this->uriBuilder->reset()->uriFor('upload', ['folder' => $folder->getUid()]));
-        $this->view->assign('upload_label_edit', LocalizationUtility::translate('edit', 'AmeosFilemanager'));
-        $this->view->assign('upload_label_detail', LocalizationUtility::translate('detail', 'AmeosFilemanager'));
+        $this->view->assign(
+            'upload_uri',
+            $this->uriBuilder->reset()
+                ->uriFor(Configuration::UPLOAD_ARGUMENT_KEY, [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()])
+        );
+        $this->view->assign(
+            'upload_label_edit',
+            LocalizationUtility::translate('edit', Configuration::EXTENSION_KEY)
+        );
+        $this->view->assign(
+            'upload_label_detail',
+            LocalizationUtility::translate('detail', Configuration::EXTENSION_KEY)
+        );
     }
 
     /**
-     * download file
+     * Download file
      */
     protected function downloadAction()
     {
-        if (!$this->settingsIsValid()) {
-            $this->forward('errors', 'Explorer\\Explorer');
+        if (
+            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
+            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
+                '',
+                FlashMessage::ERROR
+            );
+            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
         }
 
-        if (!$this->request->hasArgument('file') || (int)$this->request->getArgument('file') === 0) {
-            $this->addFlashMessage(LocalizationUtility::translate('missingFileArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            $this->forward('errors', 'Explorer\\Explorer');
-        }
-        
-        DownloadUtility::downloadFile((int)$this->request->getArgument('file'), $this->settings['startFolder']);
+        DownloadUtility::downloadFile(
+            (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY),
+            $this->settings[Configuration::START_FOLDER_SETTINGS_KEY]
+        );
     }
 
     /**
@@ -336,21 +309,181 @@ class FileController extends AbstractController
      */
     protected function removeAction()
     {
-        if (!$this->request->hasArgument('file') || (int)$this->request->getArgument('file') === 0) {
-            $this->addFlashMessage(LocalizationUtility::translate('missingFileArgument', 'AmeosFilemanager'), '', FlashMessage::ERROR);
-            $this->forward('errors', 'Explorer\\Explorer');
+        if (
+            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
+            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
+                '',
+                FlashMessage::ERROR
+            );
+            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
         }
 
-        $file = $this->fileRepository->findByUid($this->request->getArgument('file'));
+        $file = $this->fileRepository->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
         $folder = $file->getParentFolder();
 
         FileUtility::remove(
-            $this->request->getArgument('file'),
-            $this->settings['storage'],
-            $this->settings['startFolder']
+            $this->request->getArgument(Configuration::FILE_ARGUMENT_KEY),
+            $this->settings[Configuration::STORAGE_SETTINGS_KEY],
+            $this->settings[Configuration::START_FOLDER_SETTINGS_KEY]
         );
 
-        $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', 'AmeosFilemanager'));
-        $this->redirect('index', 'Explorer\\Explorer', null, ['folder' => $folder->getUid()]);
+        $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', Configuration::EXTENSION_KEY));
+        $this->redirect(
+            Configuration::INDEX_ACTION_KEY,
+            Configuration::EXPLORER_CONTROLLER_KEY,
+            null,
+            [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()]
+        );
+    }
+
+    private function checkUploadedFileExistence($isNewFile, $arguments, $argumentKey)
+    {
+        if ($isNewFile && $arguments[$argumentKey]['tmp_name'] == '') {
+            $this->errors[] = LocalizationUtility::translate('fileMissing', Configuration::EXTENSION_KEY);
+        }
+    }
+
+    private function checkAllowedFileType($arguments, $argumentKey)
+    {
+        $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
+        if (
+            $arguments[$argumentKey]['name'] != ''
+            && !in_array(
+                strtolower(
+                    pathinfo(
+                        $arguments[$argumentKey]['name'],
+                        PATHINFO_EXTENSION
+                    )
+                ),
+                $allowedFileExtension
+            )
+        ) {
+            $this->errors[] = LocalizationUtility::translate('notAllowedFileType', Configuration::EXTENSION_KEY);
+        }
+    }
+
+    private function checkFileAlreadyExists($arguments, $argumentKey, $newFilePath)
+    {
+        if ($arguments[$argumentKey]['name'] != '' && file_exists($newFilePath)) {
+            $this->errors[] = LocalizationUtility::translate('fileAlreadyExist', Configuration::EXTENSION_KEY);
+        }
+    }
+
+    private function uploadNewFile($arguments, $argumentKey, $newFilePath)
+    {
+        if (empty($this->errors)) {
+            if ($arguments[$argumentKey]['name'] != '') {
+                if (move_uploaded_file($arguments[$argumentKey]['tmp_name'], $newFilePath)) {
+                    return true;
+                }
+                $this->errors[] = LocalizationUtility::translate('fileUploadError', Configuration::EXTENSION_KEY);
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private function getFileProperties($isNewFile, $folder)
+    {
+        $properties = [];
+        if ($isNewFile) {
+            if ($this->isUserLoggedIn()) {
+                $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
+            }
+            $properties['folder_uid'] = $folder->getUid();
+        }
+        return $properties;
+    }
+
+    private function getFilePropertiesFromArguments($arguments)
+    {
+        $properties = [];
+
+        if ($arguments[Configuration::TITLE_ARGUMENT_KEY]) {
+            $driver = GeneralUtility::makeInstance(LocalDriver::class);
+            $properties['title'] = $driver->sanitizeFileName($arguments[Configuration::TITLE_ARGUMENT_KEY]);
+        }
+        if (isset($arguments[Configuration::DESCRIPTION_ARGUMENT_KEY])) {
+            $properties['description'] = $arguments[Configuration::DESCRIPTION_ARGUMENT_KEY];
+        }
+        if (isset($arguments[Configuration::KEYWORDS_ARGUMENT_KEY])) {
+            $properties['keywords'] = $arguments[Configuration::KEYWORDS_ARGUMENT_KEY];
+        }
+        if (isset($arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY])) {
+            if (is_array($arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY])) {
+                $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY]
+                    = implode(',', $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY]);
+            }
+            $properties[Configuration::FE_GROUP_READ_ARGUMENT_KEY]
+                = $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY];
+        }
+        if (isset($arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY])) {
+            if (is_array($arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY])) {
+                $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]
+                    = implode(',', $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]);
+            }
+            $properties[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]
+                = $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY];
+        }
+
+        $properties['no_read_access'] = $arguments['no_read_access'] ? 1 : 0;
+        $properties['no_write_access'] = $arguments['no_write_access'] ? 1 : 0;
+
+        return $properties;
+    }
+
+    private function getFilePropertiesFromSettings()
+    {
+        $properties = [];
+        $properties[Configuration::OWNER_HAS_READ_ACCESS_KEY]
+            = isset($this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_READ_ACCESS_KEY])
+                ? $this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_READ_ACCESS_KEY]
+                : 1;
+        $properties[Configuration::OWNER_HAS_WRITE_ACCESS_KEY]
+            = isset($this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_WRITE_ACCESS_KEY])
+                ? $this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_WRITE_ACCESS_KEY]
+                : 1;
+        return $properties;
+    }
+
+    private function indexFileContent($newFileAdded, $file)
+    {
+        if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
+            $textExtractorRegistry = TextExtractorRegistry::getInstance();
+            try {
+                $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
+                if (!is_null($textExtractor)) {
+                    $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+                    $connectionPool->getConnectionForTable(Configuration::FILECONTENT_TABLENAME)
+                        ->insert(
+                            Configuration::FILECONTENT_TABLENAME,
+                            [
+                                Configuration::FILE_ARGUMENT_KEY => $file->getUid(),
+                                'content' => $textExtractor
+                                    ->extractText(
+                                        $file->getOriginalResource()
+                                    ),
+                            ]
+                        );
+                }
+            } catch (\Exception $e) {
+                //
+            }
+        }
+    }
+
+    private function queueErrorFlashMessages()
+    {
+        foreach ($this->errors as $error) {
+            $this->addFlashMessage(
+                $error,
+                '',
+                FlashMessage::ERROR
+            );
+        }
     }
 }

@@ -1,7 +1,9 @@
 <?php
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -16,9 +18,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The TYPO3 project - inspiring people to share!
  */
 
-class IsInListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+class IsInListViewHelper extends AbstractConditionViewHelper
 {
-
     /**
      * Initializes arguments
      */
@@ -35,12 +36,12 @@ class IsInListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCondit
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.
      * @return bool
      */
-    static protected function evaluateCondition($arguments = null)
+    public static function evaluateCondition($arguments = null)
     {
         if (is_string($arguments['list'])) {
             $arguments['list'] = GeneralUtility::trimExplode(',', $arguments['list']);
         }
 
-        return is_array($arguments['list']) && in_array($arguments['uid'], $arguments['list']);        
+        return is_array($arguments['list']) && in_array($arguments['uid'], $arguments['list']);
     }
 }

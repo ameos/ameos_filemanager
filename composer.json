@@ -4,10 +4,9 @@
     "type": "typo3-cms-extension",
     "homepage": "https://github.com/ameos/ameos_filemanager",
     "require": {
-        "typo3/cms-core": "^8.7 | ^9 | dev-master",
-        "typo3/cms-fluid": "^8.7 | ^9 | dev-master",
-        "typo3/cms-extbase": "^8.7 | ^9 | dev-master",
-        "fluidtypo3/vhs": "^5.1",
+        "typo3/cms-core": "^10.4 | ^11 | dev-master",
+        "typo3/cms-fluid": "^10.4 | ^11 | dev-master",
+        "typo3/cms-extbase": "^10.4 | ^11 | dev-master",
         "php": ">=7.0.0"
     },
     "keywords": [
@@ -28,5 +27,11 @@
         "psr-4": {
             "Ameos\\AmeosFilemanager\\": "Classes"
         }
-    }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "ameos_filemanager"
+        }
+    },
+    "version": "2.0.0"
 }

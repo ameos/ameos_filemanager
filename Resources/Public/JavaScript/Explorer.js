@@ -40,11 +40,16 @@
             };
 
             if (tree.querySelector(".current")) {
-                parents(tree.querySelector(".current"), tree).forEach(function(item, i) {
+                parents(tree.querySelector(".current"), tree).forEach(function(item, i, listItems) {
                     item.classList.add("active");
+
+                    // listItems.length === 2 : Only one folder open, so it's the first one
+                    if ((item.nodeName === 'UL') && (listItems.length > 2))
+                    {
+                        item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
+                        item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
+                    }
                 });
-                $(".tree ul.active li.active > a i").removeClass("fa-folder");
-                $(".tree ul.active li.active > a i").addClass("fa-folder-open");
             }
             loadEventListener();
         }

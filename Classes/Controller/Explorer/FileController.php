@@ -116,9 +116,10 @@ class FileController extends AbstractController
                 if ($isNewFile) {
                     $newfile = $storage->getFile($fileIdentifier);
                 } elseif ($arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']) {
-                    $storage->replaceFile($file->getOriginalResource(), $newFilePath);
+                    $originalResource = $this->getOriginalFileResource($file);
+                    $storage->replaceFile($originalResource, $newFilePath);
                     $storage->renameFile(
-                        $file->getOriginalResource(),
+                        $originalResource,
                         $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']
                     );
                 }
@@ -175,7 +176,10 @@ class FileController extends AbstractController
         $file = $this->fileRepository
             ->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
         $this->view->assign(Configuration::FILE_ARGUMENT_KEY, $file);
-        $this->view->assign('file_isimage', $file->getOriginalResource()->getType() == ResourceFile::FILETYPE_IMAGE);
+        $this->view->assign(
+            'file_isimage',
+            $this->getOriginalFileResource($file)->getType() == ResourceFile::FILETYPE_IMAGE
+        );
         $this->view->assign('filemetadata_isloaded', ExtensionManagementUtility::isLoaded('filemetadata'));
     }
 
@@ -455,7 +459,8 @@ class FileController extends AbstractController
         if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
             $textExtractorRegistry = TextExtractorRegistry::getInstance();
             try {
-                $textExtractor = $textExtractorRegistry->getTextExtractor($file->getOriginalResource());
+                $originalResource = $this->getOriginalFileResource($file);
+                $textExtractor = $textExtractorRegistry->getTextExtractor($originalResource);
                 if (!is_null($textExtractor)) {
                     $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
                     $connectionPool->getConnectionForTable(Configuration::FILECONTENT_TABLENAME)
@@ -464,9 +469,7 @@ class FileController extends AbstractController
                             [
                                 Configuration::FILE_ARGUMENT_KEY => $file->getUid(),
                                 'content' => $textExtractor
-                                    ->extractText(
-                                        $file->getOriginalResource()
-                                    ),
+                                    ->extractText($originalResource),
                             ]
                         );
                 }
@@ -485,5 +488,10 @@ class FileController extends AbstractController
                 FlashMessage::ERROR
             );
         }
+    }
+
+    private function getOriginalFileResource($file)
+    {
+        return $this->resourceFactory->getFileObject($file->getUid());
     }
 }

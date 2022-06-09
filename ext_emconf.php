@@ -18,7 +18,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company'   => 'Ameos',
     'author_email'     => 'typo3dev@ameos.com',
     'state'            => 'beta',
-    'version'          => '2.0.2',
+    'version'          => '2.0.3',
     'autoload'         => ['psr-4' => ['Ameos\\AmeosFilemanager\\' => 'Classes']],
     'constraints'      => [
         'depends' => [

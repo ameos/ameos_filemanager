@@ -142,7 +142,8 @@ class DownloadUtility
         // We check if the user has access to the file.
         if (AccessUtility::userHasFileReadAccess($user, $file, ['folderRoot' => $folderRoot])) {
             if ($file) {
-                $filename = urldecode($file->getPublicUrl());
+                // Remove '/' at the beginning of publicUrl added by TYPO3 11
+                $filename = preg_replace('/^\//i', '', urldecode($file->getPublicUrl()));
             }
 
             if (

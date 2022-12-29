@@ -131,47 +131,49 @@ class FileUtility
             $targetFolder->getIdentifier()
         );
 
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $connectionPool
-            ->getConnectionForTable('sys_file_metadata')
-            ->update(
-                'sys_file_metadata',
-                ['folder_uid' => $folderRecord['uid']],
-                ['file' => $file->getUid() ]
-            );
+        if ($folderRecord !== false) {
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $connectionPool
+                ->getConnectionForTable('sys_file_metadata')
+                ->update(
+                    'sys_file_metadata',
+                    ['folder_uid' => $folderRecord['uid']],
+                    ['file' => $file->getUid() ]
+                );
 
-        if (FilemanagerUtility::fileContentSearchEnabled()) {
-            $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
-            try {
-                $textExtractor = $textExtractorRegistry->getTextExtractor($file);
-                if (!is_null($textExtractor)) {
-                    $fileContentTable = 'tx_ameosfilemanager_domain_model_filecontent';
-                    $fileContentConnection = $connectionPool->getConnectionForTable($fileContentTable);
-                    $fileContent = $fileContentConnection
-                        ->select(
-                            ['file'],
-                            $fileContentTable,
-                            ['file' => $file->getUid()]
-                        )
-                        ->fetch();
-
-                    if ($fileContent) {
-                        $fileContentConnection
-                            ->update(
+            if (FilemanagerUtility::fileContentSearchEnabled()) {
+                $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                try {
+                    $textExtractor = $textExtractorRegistry->getTextExtractor($file);
+                    if (!is_null($textExtractor)) {
+                        $fileContentTable = 'tx_ameosfilemanager_domain_model_filecontent';
+                        $fileContentConnection = $connectionPool->getConnectionForTable($fileContentTable);
+                        $fileContent = $fileContentConnection
+                            ->select(
+                                ['file'],
                                 $fileContentTable,
-                                ['content' => $textExtractor->extractText($file)],
                                 ['file' => $file->getUid()]
-                            );
-                    } else {
-                        $fileContentConnection
-                            ->insert($fileContentTable, [
-                                'file' => $file->getUid(),
-                                'content' => $textExtractor->extractText($file),
-                            ]);
+                            )
+                            ->fetch();
+
+                        if ($fileContent) {
+                            $fileContentConnection
+                                ->update(
+                                    $fileContentTable,
+                                    ['content' => $textExtractor->extractText($file)],
+                                    ['file' => $file->getUid()]
+                                );
+                        } else {
+                            $fileContentConnection
+                                ->insert($fileContentTable, [
+                                    'file' => $file->getUid(),
+                                    'content' => $textExtractor->extractText($file),
+                                ]);
+                        }
                     }
+                } catch (\Exception $e) {
+                    //
                 }
-            } catch (\Exception $e) {
-                //
             }
         }
     }

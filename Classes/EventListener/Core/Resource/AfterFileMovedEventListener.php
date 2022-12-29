@@ -16,12 +16,14 @@ class AfterFileMovedEventListener extends AbstractFileEventListener
             $targetFolder->getIdentifier()
         );
 
-        $this->connectionPool
-            ->getConnectionForTable('sys_file_metadata')
-            ->update(
-                'sys_file_metadata',
-                ['folder_uid' => $folderRecord['uid']],
-                ['file' => $file->getUid()]
-            );
+        if (!empty($folderRecord['uid'])) {
+            $this->connectionPool
+                ->getConnectionForTable('sys_file_metadata')
+                ->update(
+                    'sys_file_metadata',
+                    ['folder_uid' => $folderRecord['uid']],
+                    ['file' => $file->getUid()]
+                );
+        }
     }
 }

@@ -16,28 +16,30 @@ class AfterFileCopiedEventListener extends AbstractFileEventListener
             $targetFolder->getIdentifier()
         );
 
-        $this->connectionPool
-            ->getConnectionForTable('sys_file_metadata')
-            ->update(
-                'sys_file_metadata',
-                ['folder_uid' => $folderRecord['uid']],
-                ['file' => $file->getUid() ]
-            );
+        if (!empty($folderRecord['uid']) && $file !== null) {
+            $this->connectionPool
+                ->getConnectionForTable('sys_file_metadata')
+                ->update(
+                    'sys_file_metadata',
+                    ['folder_uid' => $folderRecord['uid']],
+                    ['file' => $file->getUid() ]
+                );
 
-        if ($this->isFileContentSearchEnabled()) {
-            $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
-            try {
-                $textExtractor = $textExtractorRegistry->getTextExtractor($file);
-                if (!is_null($textExtractor)) {
-                    $this->connectionPool
-                        ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
-                        ->insert('tx_ameosfilemanager_domain_model_filecontent', [
-                            'file'    => $file->getUid(),
-                            'content' => $textExtractor->extractText($file),
-                        ]);
+            if ($this->isFileContentSearchEnabled()) {
+                $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
+                try {
+                    $textExtractor = $textExtractorRegistry->getTextExtractor($file);
+                    if (!is_null($textExtractor)) {
+                        $this->connectionPool
+                            ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
+                            ->insert('tx_ameosfilemanager_domain_model_filecontent', [
+                                'file'    => $file->getUid(),
+                                'content' => $textExtractor->extractText($file),
+                            ]);
+                    }
+                } catch (\Exception $e) {
+                    //
                 }
-            } catch (\Exception $e) {
-                //
             }
         }
     }

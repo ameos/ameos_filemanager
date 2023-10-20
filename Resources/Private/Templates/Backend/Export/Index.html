@@ -1,6 +1,3 @@
-<f:be.container pageTitle="Filemanager Export">
-
-
 <div class="typo3-fullDoc">
 	<div id="typo3-docheader">
 		<div class="typo3-docheader-functions"></div>
@@ -8,34 +5,32 @@
 	</div>
 	<div id="typo3-docbody">
 		<div id="typo3-inner-docbody">
-			<h1><f:translate key="export.moduletitle" arguments="{0: folder.title}" /></h1>
+			<h1><f:translate key="export.moduletitle" arguments="{0: folder.title}" extensionName="ameos_filemanager" /></h1>
 			<div>
-                <f:be.infobox state="-1" title="{f:translate(key: 'export.title')}">
-                    <p><f:translate key="export.info"/></p>
+                <f:be.infobox state="-1" title="{f:translate(key: 'export.title', extensionName: 'ameos_filemanager')}">
+                    <p><f:translate key="export.info" extensionName="ameos_filemanager"/></p>
                 </f:be.infobox>
-                <f:form action="export" class="form-inline form-inline-spaced">
+                <form method="post" class="form-inline form-inline-spaced">
                     <div class="form-group">
-                        <f:form.hidden name="folder" value="{folder.uid}" />
+                        <input type="hidden" name="folder" value="{folder.uid}" />
                         <label for="subfolders">
-                            {f:translate(key:'export.subfolders')} 
-                            <f:form.checkbox value="1" name="subfolders" id="subfolders" />
+                            {f:translate(key:'export.subfolders', extensionName: 'ameos_filemanager')} 
+                            <input type="checkbox" value="1" name="subfolders" id="subfolders" />
                         </label>
                     </div>
                     <div class="form-group">
-                        <label for="start">{f:translate(key:'export.start')}</label>
-                        <f:form.textfield name="start" class="form-control input-sm" id="start"  />
+                        <label for="start">{f:translate(key:'export.start', extensionName: 'ameos_filemanager')}</label>
+                        <input type="text" name="start" class="form-control input-sm" id="start"  />
                     </div>
                     <div class="form-group">
-                        <label for="end">{f:translate(key:'export.end')}</label>
-                        <f:form.textfield name="end" class="form-control input-sm" id="end"  />
+                        <label for="end">{f:translate(key:'export.end', extensionName: 'ameos_filemanager')}</label>
+                        <input type="text" name="end" class="form-control input-sm" id="end"  />
                     </div>
                     <div class="form-group">
-                        <f:form.submit class="btn btn-default" name="export" value="{f:translate(key:'export.submit')}" />
+                        <input type="submit" class="btn btn-default" name="export" value="{f:translate(key:'export.submit', extensionName: 'ameos_filemanager')}" />
                     </div>              
-                </f:form>
+                </form>
 			</div>
 		</div>
 	</div>
 </div>
-
-</f:be.container>

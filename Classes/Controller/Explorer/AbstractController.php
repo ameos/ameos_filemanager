@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use Ameos\AmeosFilemanager\Configuration\Configuration;
@@ -11,153 +13,50 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup;
-use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository;
-use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
 abstract class AbstractController extends ActionController
 {
     /**
-     * FolderRepository object
-     *
      * @var FolderRepository
-     * @Inject
      */
-    protected $folderRepository;
+    protected FolderRepository $folderRepository;
 
     /**
-     * FileRepository object
-     *
      * @var FileRepository
-     * @Inject
      */
-    protected $fileRepository;
+    protected FileRepository $fileRepository;
 
     /**
-     * FrontendUserRepository object
-     *
-     * @var FrontendUserRepository
-     * @Inject
-     */
-    protected $frontendUserRepository;
-
-    /**
-     * FrontendUserGroupRepository object
-     *
-     * @var FrontendUserGroupRepository
-     * @Inject
-     */
-    protected $frontendUserGroupRepository;
-
-    /**
-     * CategoryRepository object
-     *
      * @var CategoryRepository
-     * @Inject
      */
-    protected $categoryRepository;
+    protected CategoryRepository $categoryRepository;
 
     /**
-     * PersistenceManager object
-     *
      * @var PersistenceManager
-     * @Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
     /**
-     * ResourceFactory object
-     *
      * @var ResourceFactory
-     * @Inject
      */
-    protected $resourceFactory;
+    protected ResourceFactory $resourceFactory;
 
-    /**
-     * Inject FolderRepository
-     *
-     * @param FolderRepository $folderRepository FolderRepository object
-     */
-    public function injectFolderRepository(FolderRepository $folderRepository)
-    {
+    public function __construct(
+        FolderRepository $folderRepository,
+        FileRepository $fileRepository,
+        CategoryRepository $categoryRepository,
+        PersistenceManager $persistenceManager,
+        ResourceFactory $resourceFactory
+    ) {
         $this->folderRepository = $folderRepository;
-    }
-
-    /**
-     * Inject FileRepository
-     *
-     * @param FileRepository $fileRepository FileRepository object
-     */
-    public function injectFileRepository(FileRepository $fileRepository)
-    {
         $this->fileRepository = $fileRepository;
-    }
-
-    /**
-     * Inject FrontendUserRepository
-     *
-     * @param FrontendUserRepository $frontendUserRepository FrontendUserRepository object
-     */
-    public function injectFrontendUserRepository(FrontendUserRepository $frontendUserRepository)
-    {
-        $this->frontendUserRepository = $frontendUserRepository;
-    }
-
-    /**
-     * Inject FrontendUserGroupRepository
-     *
-     * @param FrontendUserGroupRepository $frontendUserGroupRepository FrontendUserGroupRepository object
-     */
-    public function injectFrontendUserGroupRepository(FrontendUserGroupRepository $frontendUserGroupRepository)
-    {
-        $this->frontendUserGroupRepository = $frontendUserGroupRepository;
-    }
-
-    /**
-     * Inject CategoryRepository
-     *
-     * @param CategoryRepository $categoryRepository CategoryRepository object
-     */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository)
-    {
         $this->categoryRepository = $categoryRepository;
-    }
-
-    /**
-     * Inject PersistenceManager
-     *
-     * @param PersistenceManager $persistenceManager PersistenceManager object
-     */
-    public function injectPersistenceManager(PersistenceManager $persistenceManager)
-    {
         $this->persistenceManager = $persistenceManager;
-    }
-
-    /**
-     * Inject ResourceFactory
-     *
-     * @param ResourceFactory $resourceFactory ResourceFactory object
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
-    {
         $this->resourceFactory = $resourceFactory;
     }
 
@@ -220,7 +119,7 @@ abstract class AbstractController extends ActionController
         }
 
         // Setting feUser Repository
-        if ($this->settings['stockageGroupPid'] != '') {
+      /*  if ($this->settings['stockageGroupPid'] != '') {
             $querySettings = $this->frontendUserGroupRepository->createQuery()->getQuerySettings();
             $querySettings->setStoragePageIds(GeneralUtility::trimExplode(',', $this->settings['stockageGroupPid']));
             $this->frontendUserGroupRepository->setDefaultQuerySettings($querySettings);
@@ -228,7 +127,7 @@ abstract class AbstractController extends ActionController
             $querySettings = $this->frontendUserGroupRepository->createQuery()->getQuerySettings();
             $querySettings->setRespectStoragePage(false);
             $this->frontendUserGroupRepository->setDefaultQuerySettings($querySettings);
-        }
+        } */
 
         return $settingsIsValid;
     }
@@ -240,6 +139,7 @@ abstract class AbstractController extends ActionController
      */
     protected function getAvailableUsergroups()
     {
+        return [];
         if ($this->isUserLoggedIn()) {
             if ($this->settings['authorizedGroups']) {
                 $query = $this->frontendUserGroupRepository->createQuery();
@@ -286,6 +186,7 @@ abstract class AbstractController extends ActionController
      */
     protected function getAvailableCategories()
     {
+        return [];
         if ($this->settings['authorizedCategories']) {
             $query = $this->categoryRepository->createQuery();
             $categories = $query->matching(

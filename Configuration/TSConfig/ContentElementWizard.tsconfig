@@ -6,7 +6,7 @@ mod.wizards.newContentElement.wizardItems.plugins {
 			description = LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager_explorer.description
 			tt_content_defValues {
 				CType = list
-				list_type = ameosfilemanager_fe_filemanager_explorer
+				list_type = ameosfilemanager_fefilemanagerexplorer
 			}
 		}
 	}

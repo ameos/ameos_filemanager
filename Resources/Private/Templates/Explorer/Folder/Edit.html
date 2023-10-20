@@ -1,7 +1,7 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
 <f:flashMessages />
 <p class="toolbar">
-<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: back}">
+<f:link.action action="index" controller="Explorer\Explorer" arguments="{folder: parent.uid}">
     <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;{f:translate(key:"back")}
 </f:link.action>
 </p>
@@ -76,7 +76,7 @@
         </f:then>
         <f:else>
             <f:form.hidden name="folder" value="new" />
-            <f:form.hidden name="parentfolder" value="{parent}" />
+            <f:form.hidden name="parentfolder" value="{parent.uid}" />
         </f:else>
     </f:if>
     <f:form.submit class="btn btn-primary" name="save" value="{f:translate(key:'form.submit')}" />

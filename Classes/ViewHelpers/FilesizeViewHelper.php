@@ -1,25 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
 class FilesizeViewHelper extends AbstractViewHelper
 {
@@ -30,7 +19,7 @@ class FilesizeViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('size', 'string', 'File Size', true);
+        $this->registerArgument('size', 'mixed', 'File Size', true);
     }
 
     /**
@@ -46,13 +35,13 @@ class FilesizeViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $stringLength = strlen($arguments['size']);
+        $stringLength = strlen((string)$arguments['size']);
         $temp = $stringLength % 3;
         $packOfThree = (int)floor($stringLength / 3);
         if ($temp != 0) {
-            $newString = substr($arguments['size'], 0, $temp) . '.' . substr($arguments['size'], $temp);
+            $newString = substr((string)$arguments['size'], 0, $temp) . '.' . substr((string)$arguments['size'], $temp);
         } else {
-            $newString = substr($arguments['size'], 0, 3) . '.' . substr($arguments['size'], 3);
+            $newString = substr((string)$arguments['size'], 0, 3) . '.' . substr((string)$arguments['size'], 3);
             $packOfThree--;
         }
         return round((float)$newString, 2) . ' ' . static::getUnit($packOfThree);

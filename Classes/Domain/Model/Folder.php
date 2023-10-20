@@ -1,53 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
 use Ameos\AmeosFilemanager\Configuration\Configuration;
-use Ameos\AmeosFilemanager\Domain\Repository\CategoryRepository;
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
+use TYPO3\CMS\Extbase\Annotation\Validate;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 {
     /**
-     * @var FolderRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $folderRepository;
-
-    /** @param FolderRepository $folderRepository */
-    public function injectFolderRepository(FolderRepository $folderRepository)
-    {
-        $this->folderRepository = $folderRepository;
-    }
-
-    /** @var CategoryRepository */
-    protected $categoryRepository;
-
-    /** @param CategoryRepository $categoryRepository */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
-    /**
      * @var string
-     * @TYPO3\CMS\Extbase\Annotation\Validate("NotEmpty")
+     * Validate("NotEmpty")
      */
     protected $title;
 
@@ -62,12 +30,12 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     protected $keywords;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
+     * @var ObjectStorage<Folder>
      */
     protected $folders;
 
     /**
-     * @var \Ameos\AmeosFilemanager\Domain\Model\Folder
+     * @var Folder
      */
     protected $uidParent;
 
@@ -218,15 +186,15 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Ameos\AmeosFilemanager\Domain\Model\Folder>
+     * @return ObjectStorage<Folder>
      */
     public function getFolders()
     {
-        return $this->folderRepository->getSubFolderFromFolder($this->getUid());
+        return $this->folders;
     }
 
     /**
-     * @return \Ameos\AmeosFilemanager\Domain\Model\Folder
+     * @return Folder
      */
     public function getParent($rootFolderUid = null)
     {
@@ -454,7 +422,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     /**
      * Setter for uidParent
      *
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $uidParent
+     * @param Folder $uidParent
      */
     public function setUidParent($uidParent)
     {
@@ -555,7 +523,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getFileNumber()
     {
-        return $this->folderRepository->countFilesForFolder($this);
+        return 0; 
+        // TODOV12 return $this->folderRepository->countFilesForFolder($this);
     }
 
     /**
@@ -564,7 +533,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getReadyFileNumber()
     {
-        return $this->folderRepository->countFilesForFolder($this, false);
+        return 0;
+        // TODOV12 return $this->folderRepository->countFilesForFolder($this, false);
     }
 
     /**
@@ -573,7 +543,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getFilesSize()
     {
-        return $this->folderRepository->countFilesizeForFolder($this);
+        return 0;
+        // TODOV12 return $this->folderRepository->countFilesizeForFolder($this);
     }
 
     /**
@@ -582,7 +553,8 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
      */
     public function getFolderNumber()
     {
-        return $this->folderRepository->countFoldersForFolder($this->getUid());
+        return 0;
+        // TODOV12  return $this->folderRepository->countFoldersForFolder($this->getUid());
     }
 
     public function hasFolder($folderName, $uid = null)
@@ -597,6 +569,9 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
 
     public function getCategories()
     {
+        return [];
+        // TODOV12
+        /*
         if (!$this->getUid()) {
             return [];
         }
@@ -606,7 +581,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         if (!empty($uidsCategories)) {
             return FilemanagerUtility::getByUids($this->categoryRepository, $uidsCategories);
         }
-        return [];
+        return [];*/
     }
 
     public function getCategoriesUids()
@@ -656,7 +631,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         $queryBuilder
             ->delete('sys_category_record_mm')
             ->where(...$constraints)
-            ->execute();
+            ->executeStatement();
 
         $i = 1;
         if (is_array($categories) && !empty($categories)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent;

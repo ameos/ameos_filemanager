@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+defined('TYPO3') or die('Access denied');
 
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_folder';
 $corell = 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf';
@@ -18,17 +16,21 @@ return [
         'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
-        'iconfile'       => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ameos_filemanager') . 'Resources/Public/IconsBackend/folder.svg',
+        'iconfile'       => 'EXT:ameos_filemanager/Resources/Public/IconsBackend/folder.svg',
         'searchFields'   => 'title, description, keywords',
         'rootLevel'      => 1,
         'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],
     ],
     'palettes' => [
-        'owner' => ['showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access'],
+        'owner' => [
+            'showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,
+                no_read_access,owner_has_write_access,no_write_access'
+        ],
     ],
     'types' => ['0' => [
         'showitem' => 'description,keywords,
-            --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write,fe_group_addfolder,fe_group_addfile',
+            --div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,
+                fe_group_write,fe_group_addfolder,fe_group_addfile,cats',
     ]],
     'columns' => [
         'hidden' => [
@@ -248,5 +250,12 @@ return [
                 'foreign_field' => 'folder_uid',
             ],
         ],
+        'cats' => [
+            'exclude' => 1,
+            'label'   => $ll . '.cats',
+            'config'  => [
+                'type' => 'category',
+            ],
+        ],        
     ],
 ];

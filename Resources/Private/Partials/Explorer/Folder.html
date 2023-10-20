@@ -1,8 +1,8 @@
 {namespace filemanager=Ameos\AmeosFilemanager\ViewHelpers}
-<filemanager:canDisplayRow folder="{folder}" settings="{settings}" folderRoot="{root_folder.uid}">
+<filemanager:access.canRead folder="{folder}">
 <li class="folder {f:if(condition: "{current_folder} == {folder}", then: "current")}" id="folder-{folder.uid}">
     <f:link.action additionalAttributes="{data-action: 'expand', data-folder: folder.uid}" action="index" arguments="{folder: folder.uid}"><i class="fa fa-folder" aria-hidden="true"></i></f:link.action>
     <f:link.action additionalAttributes="{data-action: 'open', data-folder: folder.uid}" action="index" arguments="{folder: folder.uid}">{folder.title}</f:link.action>
-    <f:render partial="Explorer/Folders" arguments="{folders: folder.folders, current_folder: current_folder, root_folder: root_folder}" />
+    <f:render partial="Explorer/Folders" arguments="{tree: tree, current_folder: current_folder}" />
 </li>
-</filemanager:canDisplayRow>
+</filemanager:access.canRead>

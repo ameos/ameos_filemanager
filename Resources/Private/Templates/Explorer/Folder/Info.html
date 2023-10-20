@@ -7,11 +7,11 @@
 <f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid}">
     <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
 </f:link.action>
-<filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+<filemanager:access.canWrite folder="{folder}">
     <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}">
         <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
     </f:link.action>
-</filemanager:checkAccess>
+</filemanager:access.canWrite>
 </p>
 
 <div class="row">

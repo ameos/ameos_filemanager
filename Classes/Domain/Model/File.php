@@ -1,84 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
-use Ameos\AmeosFilemanager\Domain\Repository\CategoryRepository;
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
+use TYPO3\CMS\Core\Resource\MetaDataAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Extbase\Domain\Model\File as ModelFile;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-class File extends \TYPO3\CMS\Extbase\Domain\Model\File
+class File extends ModelFile
 {
-    /**
-     * @var MetaDataRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $metaDataRepository;
-
-    /** @param MetaDataRepository $metaDataRepository */
-    public function injectMetaDataRepository(MetaDataRepository $metaDataRepository)
-    {
-        $this->metaDataRepository = $metaDataRepository;
-    }
-
-    /**
-     * @var FolderRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $folderRepository;
-
-    /** @param FolderRepository $folderRepository */
-    public function injectFolderRepository(FolderRepository $folderRepository)
-    {
-        $this->folderRepository = $folderRepository;
-    }
-
-    /**
-     * @var FrontendUserRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $frontendUserRepository;
-
-    /** @param FrontendUserRepository $frontendUserRepository */
-    public function injectFrontendUserRepository(FrontendUserRepository $frontendUserRepository)
-    {
-        $this->frontendUserRepository = $frontendUserRepository;
-    }
-
-    /** @var CategoryRepository */
-    protected $categoryRepository;
-
-    /** @param CategoryRepository $categoryRepository */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
     /**
      * @var array folders
      */
-    protected static $folders = [];
+    protected static array $folders = [];
 
     /**
-     * @var object meta
+     * @var MetaDataAspect
      */
-    protected $meta = false;
+    protected $metaDataAspect;
 
     /**
      * @var object meta
@@ -91,14 +32,14 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
     protected $feuser = false;
 
     /**
-     * @return array
+     * Loads the metadata of a file in an encapsulated aspect
      */
-    public function getMeta($reload = false)
+    public function getMetaData(): MetaDataAspect
     {
-        if ($this->meta === false || $reload) {
-            $this->meta = $this->metaDataRepository->findByFileUid($this->getUid());
+        if ($this->metaDataAspect === null) {
+            $this->metaDataAspect = GeneralUtility::makeInstance(MetaDataAspect::class, $this->getOriginalResource());
         }
-        return $this->meta;
+        return $this->metaDataAspect;
     }
 
     /**
@@ -106,7 +47,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getCrdate()
     {
-        return $this->getMeta()['crdate'];
+        return $this->getMetaData()->offsetGet('crdate');
     }
 
     /**
@@ -114,7 +55,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getFeGroupRead()
     {
-        return $this->getMeta()['fe_group_read'];
+        return $this->getMetaData()->offsetGet('fe_group_read') ?? false;
     }
 
     /**
@@ -122,7 +63,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getFeGroupWrite()
     {
-        return $this->getMeta()['fe_group_write'];
+        return $this->getMetaData()->offsetGet('fe_group_write') ?? false;
     }
 
     /**
@@ -130,7 +71,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getTitle()
     {
-        return $this->getMeta()['title'] ?: $this->getOriginalResource()->getName();
+        return $this->getMetaData()->offsetGet('title') ?? $this->getOriginalResource()->getName();
     }
 
     /**
@@ -138,7 +79,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getDescription()
     {
-        return $this->getMeta()['description'];
+        return $this->getMetaData()->offsetGet('description');
     }
 
     /**
@@ -258,7 +199,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
             $beUserRepository = GeneralUtility::makeInstance(
                 \TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository::class
             );
-            $this->cruser = $beUserRepository->findByUid($this->getMeta()['cruser_id']);
+            $this->cruser = $beUserRepository->findByUid($this->getMetaData()->offsetGet('cruser_id'));
         }
         return $this->cruser;
     }
@@ -268,7 +209,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getTstamp()
     {
-        return $this->getMeta()['tstamp'];
+        return $this->getMetaData()->offsetGet('tstamp');
     }
 
     /**
@@ -276,10 +217,14 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getFeUser()
     {
+        return null;
+        /**
+         * TODO V12
         if ($this->feuser === false) {
-            $this->feuser = $this->frontendUserRepository->findByUid($this->getMeta()['fe_user_id']);
+            $this->feuser = $this->frontendUserRepository->findByUid($this->getMetaData()->offsetGet('fe_user_id'));
         }
         return $this->feuser;
+        */
     }
 
     /**
@@ -287,7 +232,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getKeywords()
     {
-        return $this->getMeta()['keywords'];
+        return $this->getMetaData()->offsetGet('keywords');
     }
 
     /**
@@ -303,11 +248,13 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getParentFolder()
     {
-        if (!isset(self::$folders[$this->getMeta()['folder_uid']])) {
-            self::$folders[$this->getMeta()['folder_uid']] = $this->folderRepository
-                ->findByUid($this->getMeta()['folder_uid']);
+        return null;
+        /* TODO V12
+        if (!isset(self::$folders[$this->getMetaData()->offsetGet('folder_uid')])) {
+            self::$folders[$this->getMetaData()->offsetGet('folder_uid')] = $this->folderRepository
+                ->findByUid($this->getMetaData()->offsetGet('folder_uid'));
         }
-        return self::$folders[$this->getMeta()['folder_uid']];
+        return self::$folders[$this->getMetaData()->offsetGet('folder_uid')];*/
     }
 
     /**
@@ -315,7 +262,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getNoReadAccess()
     {
-        return $this->getMeta()['no_read_access'];
+        return $this->getMetaData()->offsetGet('no_read_access')?? false;
     }
 
     /**
@@ -323,7 +270,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getNoWriteAccess()
     {
-        return $this->getMeta()['no_write_access'];
+        return $this->getMetaData()->offsetGet('no_write_access')?? false;
     }
 
     /**
@@ -331,7 +278,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getOwnerHasReadAccess()
     {
-        return $this->getMeta()['owner_has_read_access'];
+        return $this->getMetaData()->offsetGet('owner_has_read_access') ?? false;
     }
 
     /**
@@ -339,7 +286,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getOwnerHasWriteAccess()
     {
-        return $this->getMeta()['owner_has_write_access'];
+        return $this->getMetaData()->offsetGet('owner_has_write_access') ?? false;
     }
 
     /**
@@ -347,7 +294,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getOwnerReadOnly()
     {
-        return $this->getMeta()['owner_read_only'];
+        return $this->getMetaData()->offsetGet('owner_read_only') ?? false;
     }
 
     /**
@@ -373,11 +320,13 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
      */
     public function getCategories()
     {
+        return [];
+/** TODO V12
         $uidsCat = $this->getCategoriesUids();
         if (!empty($uidsCat)) {
             return FilemanagerUtility::getByUids($this->categoryRepository, $uidsCat);
         }
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class);
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class);*/
     }
 
     /**
@@ -396,7 +345,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
                 $queryBuilder->createNamedParameter('sys_file_metadata')
             ),
             $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMeta()['uid'])),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMetaData()->offsetGet('uid'))),
         ];
         $categories = $queryBuilder
             ->select('uid_local')
@@ -422,13 +371,13 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
                 $queryBuilder->createNamedParameter('sys_file_metadata')
             ),
             $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMeta()['uid'])),
+            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMetaData()->offsetGet('uid'))),
         ];
 
         $queryBuilder
             ->delete('sys_category_record_mm')
             ->where(...$constraints)
-            ->execute();
+            ->executeStatement();
 
         $i = 1;
         if (is_array($categories) && !empty($categories)) {
@@ -437,7 +386,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File
                     ->getConnectionForTable('sys_category_record_mm')
                     ->insert('sys_category_record_mm', [
                         'uid_local' => $category,
-                        'uid_foreign' => $this->getMeta()['uid'],
+                        'uid_foreign' => $this->getMetaData()->offsetGet('uid'),
                         'tablenames' => 'sys_file_metadata',
                         'fieldname' => 'categories',
                         'sorting_foreign' => $i,

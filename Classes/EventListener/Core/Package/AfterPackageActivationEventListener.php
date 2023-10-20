@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\EventListener\Core\Package;
 
 use TYPO3\CMS\Core\Package\Event\AfterPackageActivationEvent;

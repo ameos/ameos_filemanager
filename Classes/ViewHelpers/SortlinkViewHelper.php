@@ -1,21 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
 class SortlinkViewHelper extends AbstractTagBasedViewHelper
 {
@@ -52,15 +43,13 @@ class SortlinkViewHelper extends AbstractTagBasedViewHelper
      */
     public function render()
     {
-        $controllerContext = $this->renderingContext->getControllerContext();
-        $uriBuilder = $controllerContext->getUriBuilder();
-        $currentDirection = $controllerContext->getRequest()->hasArgument('direction')
-            ? $controllerContext->getRequest()->getArgument('direction')
-            : 'ASC';
+        /** @var RenderingContext $renderingContext */
+        $renderingContext = $this->renderingContext;
+        $request = $renderingContext->getRequest();
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
 
-        $currentColumn = $controllerContext->getRequest()->hasArgument('sort')
-            ? $controllerContext->getRequest()->getArgument('sort')
-            : false;
+        $currentDirection = $request->hasArgument('direction') ? $request->getArgument('direction') : 'ASC';
+        $currentColumn = $request->hasArgument('sort') ? $request->getArgument('sort') : false;
 
         $direction = 'ASC';
         if ($currentColumn == $this->arguments['column'] && $currentDirection == 'ASC') {

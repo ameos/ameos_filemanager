@@ -91,19 +91,19 @@
 				</f:if>
 
 				<f:if condition="{action} == 'edit'">
-					<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+					<filemanager:access.canWrite file="{file}">
 						<f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'edit')}">
 							<i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;
 						</f:link.action>
-					</filemanager:checkAccess>
+					</filemanager:access.canWrite>
 				</f:if>
 
 				<f:if condition="{action} == 'delete'">
-					<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot: settings.startFolder}">
+					<filemanager:access.canWrite file="{file}">
 						<f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
 							<i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;
 						</f:link.action>
-					</filemanager:checkAccess>
+					</filemanager:access.canWrite>
 				</f:if>
 				</f:for>
 			</td>

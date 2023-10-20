@@ -1,25 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
 class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
@@ -40,9 +33,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * find files for a folder
-     * @param mixed $folder
+     * @param Folder $folder
+     * @return QueryResult
      */
-    public function findFilesForFolder($folder, $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager')
+    public function findFilesForFolder(Folder $folder): QueryResult
     {
         if (empty($folder)) {
             return $this->findAll();
@@ -65,16 +59,12 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 'fe_users',
                 'fe_users',
                 'fe_users.uid = sys_file_metadata.fe_user_id'
-            );
+            )
+            ->where($queryBuilder->expr()->eq('sys_file_metadata.folder_uid', $folder->getUid()));
 
-        if (is_array($folder)) {
-            $folders = array_map('intval', $folder);
-            $queryBuilder->where($queryBuilder->expr()->in('sys_file_metadata.folder_uid', $folders));
-        } else {
-            $queryBuilder->where($queryBuilder->expr()->eq('sys_file_metadata.folder_uid', (int)$folder));
-        }
-
-        return $this->buildQueryWithSorting($queryBuilder, $pluginNamespace)->execute();
+        $query = $this->createQuery();
+        $query->statement($queryBuilder->getSQL());
+        return $query->execute();
     }
 
     /**
@@ -234,21 +224,21 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * return file by uid
      * @param int $fileUid file uid
-     * @param bool $writeRight if true, use write access instead of read access
+     * @param string $access
      */
-    public function findByUid($fileUid, $writeRight = false)
+    public function findByUid($fileUid, $access = Access::ACCESS_READ)
     {
         if (empty($fileUid)) {
             return 0;
         }
 
-        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+        $context = GeneralUtility::makeInstance(Context::class);
 
         // filter by uid
         $where = 'sys_file.uid = ' . (int)$fileUid;
 
         // check group access
-        $column = $writeRight ? 'fe_group_write' : 'fe_group_read';
+        $column = $access === Access::ACCESS_WRITE ? 'fe_group_write' : 'fe_group_read';
         $userGroups = $context->getPropertyFromAspect('frontend.user', 'groupIds');
         $where .= ' AND (
             ( 
@@ -263,7 +253,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         // check owner access
         if ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
-            $ownerAccessField = $writeRight ? 'owner_has_write_access' : 'owner_has_read_access';
+            $ownerAccessField = $access === Access::ACCESS_WRITE ? 'owner_has_write_access' : 'owner_has_read_access';
             $where .= ' OR (
                 sys_file_metadata.fe_user_id = ' . (int)$GLOBALS['TSFE']->fe_user->user['uid'] . '
                 AND sys_file_metadata.' . $ownerAccessField . ' = 1
@@ -294,7 +284,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute()->getFirst();
     }
 
-    protected function buildQueryWithSorting($queryBuilder)
+    protected function buildQueryWithSorting($queryBuilder, $pluginNamespace = '')
     {
         $get = GeneralUtility::_GET($pluginNamespace);
         $availableSorting = [

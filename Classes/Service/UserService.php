@@ -13,7 +13,7 @@ class UserService
     /**
      * @param FrontendUserGroupRepository $frontendUserGroupRepository
      */
-    public function __construct(protected FrontendUserGroupRepository $frontendUserGroupRepository)
+    public function __construct(private readonly FrontendUserGroupRepository $frontendUserGroupRepository)
     {
         
     }

@@ -12,7 +12,7 @@ class CategoryService
     /**
      * @param CategoryRepository $categoryRepository
      */
-    public function __construct(protected CategoryRepository $categoryRepository)
+    public function __construct(private readonly CategoryRepository $categoryRepository)
     {
         
     }

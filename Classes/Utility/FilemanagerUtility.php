@@ -4,59 +4,11 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Utility;
 
-use Ameos\AmeosFilemanager\Domain\Model\Folder;
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FilemanagerUtility
 {
-    /**
-     * check recursion
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
-     * @param int $recursion
-     */
-    public static function hasTooMuchRecursion($rootFolder, $childFolder, $recursion)
-    {
-        if (is_null($recursion) || $recursion === '') {
-            return false;
-        }
-        return self::calculRecursion($rootFolder, $childFolder) > (int)$recursion;
-    }
-
-    /**
-     * check is is the last recursion
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
-     * @param int $recursion
-     */
-    public static function isTheLastRecursion($rootFolder, $childFolder, $recursion)
-    {
-        if (is_null($recursion) || $recursion === '') {
-            return false;
-        }
-        return self::calculRecursion($rootFolder, $childFolder) >= (int)$recursion;
-    }
-
-    /**
-     * calcul recursion
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $rootFolder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $childFolder
-     * @return int $recursion
-     */
-    public static function calculRecursion($rootFolder, $childFolder)
-    {
-        if ($rootFolder->getGedPath() == $childFolder->getGedPath()) {
-            return 0;
-        }
-        $deltaPath = trim(str_replace($rootFolder->getGedPath(), '', $childFolder->getGedPath()), '/');
-        $deltaPart = GeneralUtility::trimExplode('/', $deltaPath);
-        return count($deltaPart);
-    }
-
     /**
      * return the image corresponding to the given extension
      * @param string $type extension of the file
@@ -73,7 +25,7 @@ class FilemanagerUtility
                 $iconTag = '<i class="fa fa-2x fa-folder" aria-hidden="true"></i>';
                 break;
             case 'pdf':
-                $iconTag = '<i class="fa fa-2x fa-file-pdf-o" aria-hidden="true"></i>';
+                $iconTag = '<i class="fa fa-2x fa-file-pdf" aria-hidden="true"></i>';
                 break;
             case 'xls':
             case 'xlsx':
@@ -124,80 +76,14 @@ class FilemanagerUtility
     }
 
     /**
-     * return objects of $repo where uid in $uids
-     * @param Repository $repo
-     * @param array $uids
-     * @return object
-     */
-    public static function getByUids($repo, $uids)
-    {
-        if (!is_array($uids)) {
-            $uids = explode(',', $uids);
-        }
-        $query = $repo->createQuery();
-        $query->matching($query->in('uid', $uids));
-        return $query->execute();
-    }
-
-    /**
-     * return folder parent
-     * @param int $uid uid of the child folder
-     * @return string
-     */
-    public static function getFolderPathFromUid($uid)
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
-        $folder = $queryBuilder
-            ->select('uid_parent', 'title')
-            ->from('tx_ameosfilemanager_domain_model_folder', 'folder')
-            ->where($queryBuilder->expr()->eq('uid', (int)$uid))
-            ->execute()
-            ->fetch();
-        if ($folder && $folder['uid_parent'] > 0) {
-            return self::getFolderPathFromUid($folder['uid_parent']) . '/' . $folder['title'];
-        }
-        return '/' . $folder['title'];
-    }
-
-    /**
-     * parse folder for indexing new content
-     */
-    public static function parseFolderForNewElements($storage, $folderIdentifier, $folderName)
-    {
-        if (is_numeric($storage)) {
-            $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($storage);
-        }
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        $falFolder = GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Resource\Folder::class,
-            $storage,
-            $folderIdentifier,
-            $folderName
-        );
-        $subfolders = $falFolder->getSubfolders();
-        foreach ($subfolders as $folder) {
-            $folderRecord = $folderRepository->findRawByStorageAndIdentifier(
-                $folder->getStorage()->getUid(),
-                $folder->getIdentifier()
-            );
-            if (!$folderRecord) {
-                FolderUtility::add($folder);
-            }
-        }
-
-        $files = $falFolder->getFiles();
-        foreach ($files as $file) {
-            FileUtility::add($file, $falFolder);
-        }
-    }
-
-    /**
      * return true if file content search is enable and tika installed
+     * 
+     * @return bool
      */
-    public static function fileContentSearchEnabled()
+    public static function fileContentSearchEnabled(): bool
     {
         $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('ameos_filemanager');
-        return $configuration['enable_filecontent_search'] == 1;
+        return isset($configuration['enable_filecontent_search'])
+            && (int)$configuration['enable_filecontent_search'] === 1;
     }
 }

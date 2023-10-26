@@ -77,7 +77,7 @@ class AccessService
         ) {
             $can = true;
         } else {
-            $can = $fileRepository->findByUid($file->getUid()) ? true : false;
+            $can = $fileRepository->findByUid($file->getUid(), Access::ACCESS_WRITE) ? true : false;
         }
 
         return $can;

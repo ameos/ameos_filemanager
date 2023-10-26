@@ -9,7 +9,10 @@ use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 
 class TreeService
 {
-    public function __construct(protected FolderRepository $folderRepository)
+    /**
+     * @param FolderRepository $folderRepository
+     */
+    public function __construct(private readonly FolderRepository $folderRepository)
     {
     }
 

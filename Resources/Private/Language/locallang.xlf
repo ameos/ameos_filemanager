@@ -79,6 +79,7 @@
             <trans-unit id="titleRequired" xml:space="preserve"><source>Title required</source></trans-unit>
             <trans-unit id="folderCreated" xml:space="preserve"><source>Folder %s created</source></trans-unit>
             <trans-unit id="folderUpdated" xml:space="preserve"><source>Folder %s updated</source></trans-unit>
+			<trans-unit id="fileUpdated" xml:space="preserve"><source>File %s updated</source></trans-unit>
             <trans-unit id="infofolder" xml:space="preserve"><source>Information on folder %s</source></trans-unit>
             <trans-unit id="uploadfolder" xml:space="preserve"><source>Upload on folder %s</source></trans-unit>
             <trans-unit id="infofile" xml:space="preserve"><source>Information on file %s</source></trans-unit>

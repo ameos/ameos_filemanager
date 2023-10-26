@@ -110,7 +110,6 @@ class FileList extends \TYPO3\CMS\FileList\FileList
      *
      * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
      * @return string HTML-table
-     * @todo Define visibility
      */
     public function makeEdit($fileOrFolderObject)
     {

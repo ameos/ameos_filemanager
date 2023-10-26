@@ -104,8 +104,7 @@ class File extends ModelFile
             'image/png',
             'image/gif',
             'image/bmp',
-            'image/svg+xml',
-            'application/pdf',
+            'image/svg+xml'
         ]);
     }
 
@@ -244,17 +243,11 @@ class File extends ModelFile
     }
 
     /**
-     * @return \Ameos\AmeosFilemanager\Domain\Model\Folder
+     * @return int
      */
-    public function getParentFolder()
+    public function getFolder()
     {
-        return null;
-        /* TODO V12
-        if (!isset(self::$folders[$this->getMetaData()->offsetGet('folder_uid')])) {
-            self::$folders[$this->getMetaData()->offsetGet('folder_uid')] = $this->folderRepository
-                ->findByUid($this->getMetaData()->offsetGet('folder_uid'));
-        }
-        return self::$folders[$this->getMetaData()->offsetGet('folder_uid')];*/
+        return (int)$this->getMetaData()->offsetGet('folder_uid');
     }
 
     /**

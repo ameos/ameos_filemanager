@@ -48,4 +48,5 @@ class Configuration
     public const SETTINGS_RECURSION = 'recursion';
 
     public const TABLENAME_FOLDER = 'tx_ameosfilemanager_domain_model_folder';
+    public const TABLENAME_CONTENT = 'tx_ameosfilemanager_domain_model_filecontent';
 }

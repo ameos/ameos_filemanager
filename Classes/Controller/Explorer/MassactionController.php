@@ -7,9 +7,10 @@ namespace Ameos\AmeosFilemanager\Controller\Explorer;
 use Ameos\AmeosFilemanager\Configuration\Configuration;
 use Ameos\AmeosFilemanager\Utility\FileUtility;
 use Ameos\AmeosFilemanager\Utility\FolderUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-class MassactionController extends AbstractController
+class MassactionController extends ActionController
 {
     /**
      * Index action

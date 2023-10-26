@@ -6,20 +6,12 @@ namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\CategoryService;
 use Ameos\AmeosFilemanager\Service\FolderService;
 use Ameos\AmeosFilemanager\Service\UserService;
-use Ameos\AmeosFilemanager\Utility\DownloadUtility;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
-use Ameos\AmeosFilemanager\Utility\FolderUtility;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -32,11 +24,13 @@ class FolderController extends ActionController
      * @param FolderService $folderService
      * @param CategoryService $categoryService
      * @param UserService $userService
+     * @param AssetService $assetService
      */
     public function __construct(
-        protected FolderService $folderService,
-        protected CategoryService $categoryService,
-        protected UserService $userService
+        private readonly FolderService $folderService,
+        private readonly CategoryService $categoryService,
+        private readonly UserService $userService,
+        private readonly AssetService $assetService
     ) {
     }
 
@@ -47,6 +41,8 @@ class FolderController extends ActionController
      */
     protected function editAction()
     {
+        $this->assetService->addCommonAssets($this->settings);
+
         $isNewFolder = $this->request->getArgument(self::ARG_FOLDER) === 'new';
         
         $fid = $this->request->getArgument(self::ARG_FOLDER) ? (int)$this->request->getArgument(self::ARG_FOLDER) : 0;
@@ -67,9 +63,9 @@ class FolderController extends ActionController
                 );
             } else {
                 if ($isNewFolder) {
-                    $folder = $this->folderService->createFolder($parent, $this->request, $this->settings);
+                    $folder = $this->folderService->create($parent, $this->request, $this->settings);
                 } else {
-                    $folder = $this->folderService->updateFolder($folder, $this->request, $this->settings);
+                    $folder = $this->folderService->update($folder, $this->request, $this->settings);
                 }
 
                 $this->addFlashMessage(
@@ -82,7 +78,7 @@ class FolderController extends ActionController
 
                 $this->redirect(
                     'index',
-                    'Explorer/Explorer',
+                    ExplorerController::CONTROLLER_KEY,
                     null,
                     [ExplorerController::ARG_FOLDER => $folder->getUid()]
                 );
@@ -125,7 +121,7 @@ class FolderController extends ActionController
                 '',
                 ContextualFeedbackSeverity::ERROR
             );
-            return $this->redirect('errors', 'Explorer/Explorer');
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
         $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));
@@ -136,7 +132,7 @@ class FolderController extends ActionController
         $this->addFlashMessage(LocalizationUtility::translate('folderRemoved', Configuration::EXTENSION_KEY));
         return $this->redirect(
             'index',
-            'Explorer/Explorer',
+            ExplorerController::CONTROLLER_KEY,
             null,
             [ExplorerController::ARG_FOLDER => $parentFolder->getUid()]
         );
@@ -149,6 +145,8 @@ class FolderController extends ActionController
      */
     protected function infoAction(): ResponseInterface
     {
+        $this->assetService->addCommonAssets($this->settings);
+
         if (
             !$this->request->hasArgument(self::ARG_FOLDER)
             || (int)$this->request->getArgument(self::ARG_FOLDER) === 0
@@ -158,7 +156,7 @@ class FolderController extends ActionController
                 '',
                 ContextualFeedbackSeverity::ERROR
             );
-            return $this->redirect('errors', 'Explorer/Explorer');
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
         $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));

@@ -15,8 +15,13 @@
     <f:if condition="{display_mode} == 'mosaic'">
         <div class="row">
             <f:if condition="{settings.displayFolders}">
-                <f:if condition="{settings.displayParentFolder} && {current_folder.parent}">
-                    TODO V12
+                <f:if condition="{settings.displayParentFolder} && {current_folder.parent} && {current_folder} !== {root_folder}">
+                    <f:variable name="folder" value="{current_folder.parent}" />
+                    <f:variable name="folderTitle" value=".." />
+                    <filemanager:access.canRead folder="{folder}">
+                        <f:render partial="Explorer/Folder/Mosaic" arguments="{_all}" />
+                    </filemanager:access.canRead>
+                    <f:variable name="folderTitle" value="" />
                 </f:if>
                 <f:for each="{current_folder_childs}" as="folder">
                     <filemanager:access.canRead folder="{folder}">
@@ -67,7 +72,7 @@
 </f:section>
 
 <f:section name="ParentFolder">
-    <f:if condition="{settings.displayParentFolder} && {current_folder.parent}">
+    <f:if condition="{settings.displayParentFolder} && {current_folder.parent} && {current_folder} !== {root_folder}">
         <f:variable name="folder" value="{current_folder.parent}" />
         <f:variable name="folderTitle" value=".." />
         <filemanager:access.canRead folder="{folder}">

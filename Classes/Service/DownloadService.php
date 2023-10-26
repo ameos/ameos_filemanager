@@ -18,11 +18,17 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class DownloadService
 {
+    /**
+     * @param AccessService $accessService
+     * @param FileRepository $fileRepository
+     * @param FiledownloadRepository $filedownloadRepository
+     * @param StreamFactoryInterface $streamFactory
+     */
     public function __construct(
-        protected AccessService $accessService,
-        protected FileRepository $fileRepository,
-        protected FiledownloadRepository $filedownloadRepository,
-        protected StreamFactoryInterface $streamFactory
+        private readonly AccessService $accessService,
+        private readonly FileRepository $fileRepository,
+        private readonly FiledownloadRepository $filedownloadRepository,
+        private readonly StreamFactoryInterface $streamFactory
     ) {
         
     }

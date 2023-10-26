@@ -44,7 +44,7 @@ class CanWriteViewHelper extends AbstractConditionViewHelper
         if (is_a($arguments['folder'], Folder::class)) {
             $granted = $accessService->canWriteFolder($GLOBALS['TSFE']->fe_user->user, $arguments['folder']);
         }
-        if (is_a($arguments['folder'], File::class)) {
+        if (is_a($arguments['file'], File::class)) {
             $granted = $accessService->canWriteFile($GLOBALS['TSFE']->fe_user->user, $arguments['file']);
         }
         

@@ -31,10 +31,10 @@ class FolderService
      * @param ResourceFactory $resourceFactory
      */
     public function __construct(
-        protected FolderRepository $folderRepository,
-        protected FileRepository $fileRepository,
-        protected AccessService $accessService,
-        protected ResourceFactory $resourceFactory
+        private readonly FolderRepository $folderRepository,
+        private readonly FileRepository $fileRepository,
+        private readonly AccessService $accessService,
+        private readonly ResourceFactory $resourceFactory
     ) {
     }
 
@@ -127,7 +127,7 @@ class FolderService
      * @param array $settings
      * @return Folder
      */
-    public function createFolder(Folder $parent, RequestInterface $request, array $settings): Folder
+    public function create(Folder $parent, RequestInterface $request, array $settings): Folder
     {
         $folder = new Folder();
         $storage = $this->resourceFactory->getStorageObject($settings['storage']);
@@ -158,7 +158,7 @@ class FolderService
      * @param array $settings
      * @return Folder
      */
-    public function updateFolder(Folder $folder, RequestInterface $request, array $settings): Folder
+    public function update(Folder $folder, RequestInterface $request, array $settings): Folder
     {
         $storage = $this->resourceFactory->getStorageObject($settings['storage']);
         $driver = GeneralUtility::makeInstance(LocalDriver::class);

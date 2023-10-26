@@ -21,9 +21,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class ExportController extends ActionController
 {
     public function __construct(
-        protected readonly ResourceFactory $resourceFactory,
-        protected readonly FolderRepository $folderRepository,
-        protected readonly ModuleTemplateFactory $moduleTemplateFactory
+        private readonly ResourceFactory $resourceFactory,
+        private readonly FolderRepository $folderRepository,
+        private readonly ModuleTemplateFactory $moduleTemplateFactory
     ) {
     }
 

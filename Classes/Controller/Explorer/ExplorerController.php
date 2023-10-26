@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
+use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\ExplorerService;
 use Ameos\AmeosFilemanager\Service\FolderService;
 use Ameos\AmeosFilemanager\Service\TreeService;
@@ -13,17 +14,21 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class ExplorerController extends ActionController
 {
+    public const CONTROLLER_KEY = 'Explorer\Explorer';
     public const ARG_FOLDER = 'folder';
     public const ARG_DISPLAYMODE = 'displaymode';
 
     /**
      * @param ExplorerService $explorerService
      * @param FolderService $folderService
+     * @param TreeService $treeService
+     * @param AssetService $assetService
      */
     public function __construct(
-        protected ExplorerService $explorerService,
-        protected FolderService $folderService,
-        protected TreeService $treeService
+        private readonly ExplorerService $explorerService,
+        private readonly FolderService $folderService,
+        private readonly TreeService $treeService,
+        private readonly AssetService $assetService
     ) {
     }
 
@@ -34,6 +39,8 @@ class ExplorerController extends ActionController
      */
     protected function indexAction(): ResponseInterface
     {
+        $this->assetService->addCommonAssets($this->settings);
+
         $contentId = (int)$this->request->getAttribute('currentContentObject')->data['uid'];
 
         $folderIdentifier = null;
@@ -104,6 +111,7 @@ class ExplorerController extends ActionController
      */
     protected function errorsAction(): ResponseInterface
     {
+        $this->assetService->addCommonAssets($this->settings);
         return $this->htmlResponse();
     }
 
@@ -115,6 +123,7 @@ class ExplorerController extends ActionController
      */
     protected function searchAction(): ResponseInterface
     {
+        $this->assetService->addCommonAssets($this->settings);
         /*
         TODO V12
         if (

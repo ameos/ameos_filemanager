@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Controller\Backend;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -55,7 +55,7 @@ class ExportController extends ActionController
             $folderResource->getIdentifier()
         );
 
-        $view->assign(Configuration::FOLDER_ARGUMENT_KEY, $folder);
+        $view->assign('folder', $folder);
         return $view->renderResponse('Backend/Export/Index');
     }
     
@@ -126,9 +126,9 @@ class ExportController extends ActionController
             ->executeQuery();
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(Configuration::FILEDOWNLOAD_TABLENAME)
+            ->getQueryBuilderForTable(Configuration::TABLENAME_DOWNLOAD)
             ->count('uid', 'nb_downloads')
-            ->from(Configuration::FILEDOWNLOAD_TABLENAME);
+            ->from(Configuration::TABLENAME_DOWNLOAD);
 
         $constraints = [];
         if ($this->request->hasArgument('start')) {

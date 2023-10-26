@@ -9,10 +9,7 @@ class Configuration
     /*public const EXTENSION_KEY = 'AmeosFilemanager';
     public const PLUGIN_NAMESPACE_KEY = 'pluginNamespace';
 
-    public const FILECONTENT_TABLENAME = 'tx_ameosfilemanager_domain_model_filecontent';
-    public const FILEDOWNLOAD_TABLENAME = 'tx_ameosfilemanager_domain_model_filedownload';
-    public const FOLDER_TABLENAME = 'tx_ameosfilemanager_domain_model_folder';
-
+    
     public const EXPLORER_CONTROLLER_KEY = 'Explorer\\Explorer';
 
     public const INDEX_ACTION_KEY = 'index';
@@ -49,4 +46,5 @@ class Configuration
 
     public const TABLENAME_FOLDER = 'tx_ameosfilemanager_domain_model_folder';
     public const TABLENAME_CONTENT = 'tx_ameosfilemanager_domain_model_filecontent';
+    public const TABLENAME_DOWNLOAD = 'tx_ameosfilemanager_domain_model_filedownload';
 }

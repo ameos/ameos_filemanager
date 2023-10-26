@@ -60,3 +60,9 @@ services:
       - name: event.listener
         identifier: "ameosFilemanager_afterExtensionInstall"
         event: TYPO3\CMS\Core\Package\Event\AfterPackageActivationEvent
+
+  Ameos\AmeosFilemanager\EventListener\Backend\PreviewEventListener:
+    tags:
+      - name: event.listener
+        identifier: "ameosFilemanager_preview"
+        event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent

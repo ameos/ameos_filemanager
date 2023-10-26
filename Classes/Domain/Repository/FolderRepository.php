@@ -271,7 +271,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $where;
     }
 
-    public function findByUid($folderUid, $accessMode = Access::ACCESS_READ)
+    public function findByUid($folderUid, $accessMode = Access::ACCESS_READ): Folder
     {
         if (empty($folderUid)) {
             return 0;

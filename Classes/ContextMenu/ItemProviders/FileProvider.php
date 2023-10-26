@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\ContextMenu\ItemProviders;
 
-class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider
+use TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider as TYPO3FileProvider;
+
+class FileProvider extends TYPO3FileProvider
 {
     private const EDIT_FOLDER_KEY = 'editFolder';
 
@@ -48,7 +50,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     protected function getAdditionalAttributes(string $itemName): array
     {
         if ($itemName === self::EDIT_FOLDER_KEY) {
-            return ['data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'];
+            return ['data-callback-module' => '@ameos_filemanager/FilemanagerContextMenuActions'];
         }
         return parent::getAdditionalAttributes($itemName);
     }

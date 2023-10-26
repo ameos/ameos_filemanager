@@ -9,45 +9,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class AjaxController extends ActionController
 {
-    /**
-     * ResourceFactory object
-     *
-     * @var ResourceFactory
-     * @Inject
-     */
-    protected $resourceFactory;
-
-    /**
-     * FolderRepository object
-     *
-     * @var FolderRepository
-     * @Inject
-     */
-    protected $folderRepository;
-
-    /**
-     * Inject ResourceFactory object
-     *
-     * @param ResourceFactory $resourceFactory ResourceFactory object
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    public function __construct(
+        private readonly ResourceFactory $resourceFactory,
+        private readonly FolderRepository $folderRepository
+    )
     {
-        $this->resourceFactory = $resourceFactory;
-    }
-
-    /**
-     * Inject FolderRepository object
-     *
-     * @param FolderRepository $folderRepository FolderRepository object
-     */
-    public function injectFolderRepository(FolderRepository $folderRepository)
-    {
-        $this->folderRepository = $folderRepository;
     }
 
     /**
@@ -57,16 +27,15 @@ class AjaxController extends ActionController
      *
      * @return ResponseInterface
      */
-    public function getFolderId(ServerRequestInterface $request)
+    public function getFolderId(ServerRequestInterface $request): ResponseInterface
     {
-        $folder = $this->resourceFactory->retrieveFileOrFolderObject(
-            $request->getParsedBody()['folderIdentifier']
-        );
+        $body = json_decode($request->getBody()->getContents(), true);
+        $folder = $this->resourceFactory->retrieveFileOrFolderObject($body['folderIdentifier']);
 
         $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
             $folder->getStorage()->getUid(),
             $folder->getIdentifier()
         );
-        return (new JsonResponse())->setPayload(['uid' => $folderRecord['uid']]);
+        return (new JsonResponse())->setPayload(['result' => $folderRecord['uid']]);
     }
 }

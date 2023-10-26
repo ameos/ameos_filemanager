@@ -1,8 +1,10 @@
 <?php
 
+use Ameos\AmeosFilemanager\Controller\Backend\AjaxController;
+
 return [
     'filemanager_folder_getid' => [
         'path' => '/filemanager/folder/getid',
-        'target' => \Ameos\AmeosFilemanager\Controller\Backend\AjaxController::class . '::getFolderId',
+        'target' => AjaxController::class . '::getFolderId',
     ],
 ];

@@ -93,9 +93,9 @@ class IndexationService
                             $identifier,
                             $storage
                         );
-                        $this->indexFolder($storage, $folder . $entry . '/', $uid);
+                        $this->indexFolder($storage, $folder . $entry . '/', (int)$uid);
                     } else {
-                        $this->indexFile($storage, $folder, $entry, $uidParent);
+                        $this->indexFile($storage, $folder, $entry, (int)$uidParent);
                     }
                 }
             }

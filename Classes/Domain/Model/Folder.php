@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\Validate;
@@ -311,17 +310,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     /**
      * @return string
      */
-    public function getGedPath()
-    {
-        if ($parent = $this->getParent()) {
-            return $parent->getGedPath() . '/' . $this->title;
-        }
-        return '/' . $this->title;
-    }
-
-    /**
-     * @return string
-     */
     public function getOwnerUsername()
     {
         return $this->getFeUser() ? $this->getFeUser()->getUsername() : '';
@@ -596,7 +584,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         $constraints = [
             $queryBuilder->expr()->like(
                 'tablenames',
-                $queryBuilder->createNamedParameter(Configuration::FOLDER_TABLENAME)
+                $queryBuilder->createNamedParameter(Configuration::TABLENAME_FOLDER)
             ),
             $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
             $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
@@ -622,7 +610,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         $constraints = [
             $queryBuilder->expr()->like(
                 'tablenames',
-                $queryBuilder->createNamedParameter(Configuration::FOLDER_TABLENAME)
+                $queryBuilder->createNamedParameter(Configuration::TABLENAME_FOLDER)
             ),
             $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
             $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
@@ -641,7 +629,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
                     ->insert('sys_category_record_mm', [
                         'uid_local' => $category,
                         'uid_foreign' => $this->getUid(),
-                        'tablenames' => Configuration::FOLDER_TABLENAME,
+                        'tablenames' => Configuration::TABLENAME_FOLDER,
                         'fieldname' => 'cats',
                         'sorting_foreign' => $i,
                     ]);

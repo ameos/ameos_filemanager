@@ -16,49 +16,55 @@ services:
   Ameos\AmeosFilemanager\EventListener\Core\Resource\BeforeFolderRenamedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_preFolderRename"
+        identifier: "ameosFilemanager_BeforeFolderRenamedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\BeforeFolderRenamedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\BeforeFolderMovedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFolderMove"
+        identifier: "ameosFilemanager_BeforeFolderMovedEvent"
         event: TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent
+
+  Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFolderAddedEventListener:
+    tags:
+      - name: event.listener
+        identifier: "ameosFilemanager_AfterFolderAddedEvent"
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderAddedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFolderCopiedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFolderCopy"
+        identifier: "ameosFilemanager_AfterFolderCopiedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFolderDeletedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFolderDelete"
+        identifier: "ameosFilemanager_AfterFolderDeletedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFileAddedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFileAdd"
+        identifier: "ameosFilemanager_AfterFileAddedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFileCopiedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFileCopy"
+        identifier: "ameosFilemanager_AfterFileCopiedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFileCopiedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFileMovedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_postFileMove"
+        identifier: "ameosFilemanager_AfterFileMovedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFileMovedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Package\AfterPackageActivationEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_afterExtensionInstall"
+        identifier: "ameosFilemanager_AfterPackageActivationEventListener"
         event: TYPO3\CMS\Core\Package\Event\AfterPackageActivationEvent
 
   Ameos\AmeosFilemanager\EventListener\Backend\PreviewEventListener:

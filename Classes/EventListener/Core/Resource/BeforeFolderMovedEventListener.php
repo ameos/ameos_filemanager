@@ -24,6 +24,6 @@ class BeforeFolderMovedEventListener
      */
     public function __invoke(BeforeFolderMovedEvent $event): void
     {
-        $this->folderService->move($event->getFolder(), $event->getTargetParentFolder());
+        $this->folderService->move($event->getFolder(), $event->getTargetParentFolder()->getIdentifier());
     }
 }

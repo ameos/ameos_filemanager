@@ -18,6 +18,14 @@ class IndexCommand extends Command
     private const STORAGE_OPTION_KEY = 'storage';
 
     /**
+     * @param IndexationService $indexationService
+     */
+    public function __construct(private readonly IndexationService $indexationService)
+    {
+        parent::__construct();
+    }
+
+    /**
      * Configure the command by defining the name, options and arguments
      */
     public function configure()
@@ -60,7 +68,7 @@ class IndexCommand extends Command
         }
 
         if ($storage) {
-            GeneralUtility::makeInstance(IndexationService::class)->run($storage);
+            $this->indexationService->run($storage);
             $io->success(sprintf('Indexation of %s finished.', $storage->getName()));
         } else {
             $io->error('No storage found.');

@@ -11,14 +11,6 @@ use TYPO3\CMS\FrontendLogin\Domain\Repository\FrontendUserGroupRepository;
 class UserService
 {
     /**
-     * @param FrontendUserGroupRepository $frontendUserGroupRepository
-     */
-    public function __construct(private readonly FrontendUserGroupRepository $frontendUserGroupRepository)
-    {
-        
-    }
-
-    /**
      * Check if user is logged in
      *
      * @return bool
@@ -38,9 +30,11 @@ class UserService
     {
         // TODO V12
         return [];
+        
+        $frontendUserGroupRepository = GeneralUtility::makeInstance(FrontendUserGroupRepository::class);
         if ($this->isUserLoggedIn()) {
             if ($settings['authorizedGroups']) {
-                $query = $this->frontendUserGroupRepository->createQuery();
+                $query = $frontendUserGroupRepository->createQuery();
                 $usergroups = $query->matching(
                     $query->in(
                         'uid',
@@ -51,7 +45,7 @@ class UserService
                     )
                 )->execute();
             } else {
-                $usergroups = $this->frontendUserGroupRepository->findAll();
+                $usergroups = $frontendUserGroupRepository->findAll();
             }
             $usergroups = $usergroups->toArray();
 

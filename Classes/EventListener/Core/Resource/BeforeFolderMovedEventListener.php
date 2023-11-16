@@ -4,33 +4,26 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
+use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent;
 
-class BeforeFolderMovedEventListener extends AbstractFolderEventListener
+class BeforeFolderMovedEventListener
 {
-    public function __invoke(BeforeFolderMovedEvent $event)
+    /**
+     * @param FolderService $folderService
+     */
+    public function __construct(private readonly FolderService $folderService)
     {
-        $folder = $event->getFolder();
-        $targetParentFolder = $event->getTargetParentFolder();
+    }
 
-        $folderParentRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $targetParentFolder->getStorage()->getUid(),
-            $targetParentFolder->getIdentifier()
-        );
-
-        $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $folder->getStorage()->getUid(),
-            $folder->getIdentifier()
-        );
-
-        $newIdentifier = $targetParentFolder->getIdentifier() . $event->getTargetFolderName() . '/';
-        $this->folderRepository->requestUpdate(
-            $folderRecord['uid'],
-            [
-                'uid_parent' => $folderParentRecord['uid'],
-                'title'      => $folder->getName(),
-                'identifier' => $newIdentifier,
-            ]
-        );
+    /**
+     * invoke event
+     *
+     * @param BeforeFolderMovedEvent $event
+     * @return void
+     */
+    public function __invoke(BeforeFolderMovedEvent $event): void
+    {
+        $this->folderService->move($event->getFolder(), $event->getTargetParentFolder());
     }
 }

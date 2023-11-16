@@ -1,3 +1,5 @@
-<ul><f:for each="{tree}" as="treeItem">
-<f:render partial="Explorer/Folder" arguments="{folder: treeItem.folder, current_folder: current_folder, tree: treeItem.children}" />
-</f:for></ul>
+<ul class="active">
+    <f:for each="{tree}" as="treeItem">
+        <f:render partial="Explorer/Folder" arguments="{folder: treeItem.folder, current_folder: current_folder, tree: treeItem.children}" />
+    </f:for>
+</ul>

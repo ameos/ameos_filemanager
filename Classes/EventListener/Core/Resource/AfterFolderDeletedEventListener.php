@@ -4,32 +4,43 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
+use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent;
+use TYPO3\CMS\Core\Resource\Folder as ResourceFolder;
 
-class AfterFolderDeletedEventListener extends AbstractFolderEventListener
+class AfterFolderDeletedEventListener
 {
-    public function __invoke(AfterFolderDeletedEvent $event)
+    /**
+     * @param FolderService $folderService
+     */
+    public function __construct(private readonly FolderService $folderService)
     {
-        $folder = $event->getFolder();
-        $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $folder->getStorage()->getUid(),
-            $folder->getIdentifier()
-        );
-        $this->deleteRecursive($folderRecord['uid']);
     }
 
     /**
-     * Delete subfolders recursively
-     * @param int $folderUid
+     * invoke event
+     *
+     * @param AfterFolderDeletedEvent $event
+     * @return void
      */
-    protected function deleteRecursive($folderUid)
+    public function __invoke(AfterFolderDeletedEvent $event): void
     {
-        $subFolders = $this->folderRepository->getSubFolderFromFolder($folderUid);
-        if (!empty($subFolders)) {
-            foreach ($subFolders as $subFolder) {
-                $this->deleteRecursive($subFolder->getUid());
-            }
+        $this->unindex($event->getFolder());
+    }
+
+    /**
+     * unindex
+     *
+     * @param ResourceFolder $folder
+     * @return void
+     */
+    protected function unindex(ResourceFolder $folder): void
+    {
+        $this->folderService->unindex($folder);
+        foreach ($folder->getSubfolders() as $subFolder) {
+            $this->unindex($subFolder);
         }
-        $this->folderRepository->requestDelete($folderUid);
+        
+        // todo unindex files
     }
 }

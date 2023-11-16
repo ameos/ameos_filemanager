@@ -9,8 +9,6 @@ use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Exception\AccessDeniedException;
-use Ameos\AmeosFilemanager\Exception\TooMuchRecursionException;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
@@ -36,35 +34,6 @@ class FolderService
         private readonly AccessService $accessService,
         private readonly ResourceFactory $resourceFactory
     ) {
-    }
-
-    /**
-     * load Folder
-     *
-     * @param int $identifier
-     * @return ?Folder
-     */
-    public function load(int $identifier): ?Folder
-    {
-        return $this->folderRepository->findByUid($identifier) ?? null;
-    }
-
-    /**
-     * remove folder
-     *
-     * @param Folder $folder
-     * @return bool
-     */
-    public function remove(Folder $folder): bool
-    {
-        $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
-
-        if ($folder && $this->accessService->canWriteFolder($GLOBALS['TSFE']->fe_user->user, $folder)) {
-            $storage->deleteFolder($storage->getFolder($folder->getGedPath()), true);
-            $this->folderRepository->remove($folder);
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -94,8 +63,8 @@ class FolderService
             throw new AccessDeniedException(LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY));
         }
 
-        // check recursion
-        if (
+        // check recursion TODO V12
+      /*  if (
             FilemanagerUtility::hasTooMuchRecursion(
                 $rootFolder,
                 $currentFolder,
@@ -103,9 +72,54 @@ class FolderService
             )
         ) {
             throw new TooMuchRecursionException(LocalizationUtility::translate('tooMuchRecursion', Configuration::EXTENSION_KEY));
-        }
+        }*/
+
 
         return $currentFolder;
+    }
+
+    /**
+     * load Folder
+     *
+     * @param int $identifier
+     * @return ?Folder
+     */
+    public function load(int $identifier): ?Folder
+    {
+        return $this->folderRepository->findByUid($identifier) ?? null;
+    }
+
+    /**
+     * load Folder
+     *
+     * @param ResourceFolder $folder
+     * @return ?Folder
+     */
+    public function loadByResourceFolder(ResourceFolder $folder): ?Folder
+    {
+        $data = $this->folderRepository->findRawByStorageAndIdentifier(
+            $folder->getStorage()->getUid(),
+            $folder->getIdentifier()
+        );
+        return $data ? $this->load((int)$data['uid']) : null;
+    }
+
+    /**
+     * remove folder
+     *
+     * @param Folder $folder
+     * @return bool
+     */
+    public function remove(Folder $folder): bool
+    {
+        $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
+
+        if ($folder && $this->accessService->canWriteFolder($GLOBALS['TSFE']->fe_user->user, $folder)) {
+            $storage->deleteFolder($storage->getFolder($folder->getGedPath()), true);
+            $this->folderRepository->remove($folder);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -180,6 +194,97 @@ class FolderService
     }
 
     /**
+     * unindex folder
+     *
+     * @param ResourceFolder $resourceFolder
+     * @return void
+     */
+    public function unindex(ResourceFolder $resourceFolder): void
+    {
+        $folder = $this->loadByResourceFolder($resourceFolder);
+        $this->folderRepository->remove($folder);
+        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persitenceManager->persistAll();
+    }
+
+    /**
+     * index resource folder
+     *
+     * @param ResourceFolder $resourceFolder
+     * @return Folder
+     */
+    public function index(ResourceFolder $resourceFolder): Folder
+    {
+        $parent = $this->loadByResourceFolder($resourceFolder->getParentFolder());
+
+        $title = $resourceFolder->getName();
+
+        $folder = new Folder();
+        $folder->setUidParent($parent->getUid());
+        $folder->setIdentifier($parent->getGedPath() . '/' . $title . '/');
+        $folder->setTitle($title);
+        $folder->setStorage($resourceFolder->getStorage()->getUid());
+
+        $this->folderRepository->add($folder);
+        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persitenceManager->persistAll();
+
+        return $folder;
+    }
+
+    /**
+     * rename folder
+     *
+     * @param ResourceFolder $resourceFolder
+     * @param string $name
+     * @return Folder
+     */
+    public function rename(ResourceFolder $resourceFolder, string $name): Folder
+    {
+        $folder = $this->loadByResourceFolder($resourceFolder);
+        $parent = $this->loadByResourceFolder($resourceFolder->getParentFolder());
+
+        $folder->setTitle($name);
+        $folder->setIdentifier($parent->getGedPath() . '/' . $resourceFolder->getName() . '/');
+
+        $this->folderRepository->add($folder);
+        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persitenceManager->persistAll();
+
+        foreach ($resourceFolder->getSubfolders() as $subFolder) {
+            $this->move($subFolder, $resourceFolder);
+        }
+
+        return $folder;
+    }
+
+    /**
+     * rename folder
+     *
+     * @param ResourceFolder $resourceFolder
+     * @param ResourceFolder $targetFolder
+     * @return Folder
+     */
+    public function move(ResourceFolder $resourceFolder, ResourceFolder $targetFolder): Folder
+    {
+        $target = $this->loadByResourceFolder($targetFolder);
+        $folder = $this->loadByResourceFolder($resourceFolder);
+        
+        $folder->setUidParent($target->getUid());
+        $folder->setIdentifier($target->getGedPath() . '/' . $resourceFolder->getName() . '/');
+
+        $this->folderRepository->add($folder);
+        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persitenceManager->persistAll();
+
+        foreach ($resourceFolder->getSubfolders() as $subFolder) {
+            $this->move($subFolder, $resourceFolder);
+        }
+
+        return $folder;
+    }
+
+    /**
      * create physical folder and return title
      * 
      * @param ResourceFolder $resourceFolder
@@ -244,7 +349,7 @@ class FolderService
      * @param array $settings
      * @return void
      */
-    public function populateFolderFromRequest(Folder $folder, RequestInterface $request, array $settings): void
+    private function populateFolderFromRequest(Folder $folder, RequestInterface $request, array $settings): void
     {
         $folder->setStorage((int)$settings['storage']);
         $folder->setDescription($request->getArgument('description'));

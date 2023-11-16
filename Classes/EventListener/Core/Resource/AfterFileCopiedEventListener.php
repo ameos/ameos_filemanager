@@ -4,45 +4,32 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
+use Ameos\AmeosFilemanager\Service\FileService;
+use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Resource\Event\AfterFileCopiedEvent;
 
-class AfterFileCopiedEventListener extends AbstractFileEventListener
+class AfterFileCopiedEventListener
 {
-    public function __invoke(AfterFileCopiedEvent $event)
+    /**
+     * @param FileService $fileService
+     * @param FolderService $folderService
+     */
+    public function __construct(
+        private readonly FileService $fileService,
+        private readonly FolderService $folderService
+    ) {
+    }
+
+    /**
+     * invoke event
+     *
+     * @param AfterFileCopiedEvent $event
+     * @return void
+     */
+    public function __invoke(AfterFileCopiedEvent $event): void
     {
-        $file = $event->getNewFile();
-        $targetFolder = $event->getFolder();
-
-        $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $targetFolder->getStorage()->getUid(),
-            $targetFolder->getIdentifier()
-        );
-
-        if (!empty($folderRecord['uid']) && $file !== null) {
-            $this->connectionPool
-                ->getConnectionForTable('sys_file_metadata')
-                ->update(
-                    'sys_file_metadata',
-                    ['folder_uid' => $folderRecord['uid']],
-                    ['file' => $file->getUid() ]
-                );
-
-            if ($this->isFileContentSearchEnabled()) {
-                $textExtractorRegistry = \TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry::getInstance();
-                try {
-                    $textExtractor = $textExtractorRegistry->getTextExtractor($file);
-                    if (!is_null($textExtractor)) {
-                        $this->connectionPool
-                            ->getConnectionForTable('tx_ameosfilemanager_domain_model_filecontent')
-                            ->insert('tx_ameosfilemanager_domain_model_filecontent', [
-                                'file'    => $file->getUid(),
-                                'content' => $textExtractor->extractText($file),
-                            ]);
-                    }
-                } catch (\Exception $e) {
-                    //
-                }
-            }
-        }
+        $folder = $this->folderService->loadByResourceFolder($event->getFolder());
+        $file = $this->fileService->add($event->getNewFile(), $folder);
+        $this->fileService->indexContent($file);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\Service;
 
 use Ameos\AmeosFilemanager\Domain\Model\File;
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -31,7 +32,6 @@ class FileService
     ) {
     }
 
-
     /**
      * load File
      *
@@ -44,25 +44,19 @@ class FileService
     }
 
     /**
-     * return true if file is an image
+     * add a new File to Folder
      *
-     * @param File $file
-     * @return bool
+     * @param ResourceFile $file
+     * @param Folder $folder
+     * @return ?File
      */
-    public function isImage(File $file): bool
+    public function add(ResourceFile $file, Folder $folder): ?File
     {
-        return $this->getOriginalFileResource($file)->getType() === ResourceFile::FILETYPE_IMAGE;
-    }
+        $file = $this->load($file->getUid());
 
-    /**
-     * return ResourceFile corresponding to File
-     *
-     * @param File $file
-     * @return ResourceFile
-     */
-    private function getOriginalFileResource(File $file): ResourceFile
-    {
-        return $this->resourceFactory->getFileObject($file->getUid());
+        $this->metaDataRepository->update($file->getUid(), ['folder_uid' => $folder->getUid()]);
+
+        return $file;
     }
 
     /**
@@ -94,6 +88,28 @@ class FileService
         $this->indexContent($file);
 
         return $file;
+    }
+
+    /**
+     * return true if file is an image
+     *
+     * @param File $file
+     * @return bool
+     */
+    public function isImage(File $file): bool
+    {
+        return $this->getOriginalFileResource($file)->getType() === ResourceFile::FILETYPE_IMAGE;
+    }
+
+    /**
+     * return ResourceFile corresponding to File
+     *
+     * @param File $file
+     * @return ResourceFile
+     */
+    private function getOriginalFileResource(File $file): ResourceFile
+    {
+        return $this->resourceFactory->getFileObject($file->getUid());
     }
 
     /**
@@ -131,11 +147,11 @@ class FileService
 
     /**
      * index file content
-     * 
+     *
      * @param File $file
      * @return void
      */
-    private function indexContent($file): void
+    public function indexContent($file): void
     {
         if (FilemanagerUtility::fileContentSearchEnabled()) {
             $textExtractorRegistry = GeneralUtility::makeInstance(TextExtractorRegistry::class);

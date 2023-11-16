@@ -15,20 +15,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class IndexationService
 {
     /**
-     * @var ConnectionPool
+     * @param ConnectionPool $connectionPool
      */
-    protected ConnectionPool $connectionPool;
-
-    public function __construct()
+    public function __construct(private readonly ConnectionPool $connectionPool)
     {
-        $this->connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
-    public static function runForDefaultStorage()
+    /**
+     * run indexation for default storage
+     *
+     * @return void
+     */
+    public function runForDefaultStorage(): void
     {
         $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage();
         if ($storage) {
-            GeneralUtility::makeInstance(IndexationService::class)->run($storage);
+            $this->run($storage);
         }
     }
 
@@ -36,8 +38,9 @@ class IndexationService
      * run indexation for a storage
      *
      * @param ResourceStorage $storage storage
+     * @return void
      */
-    public function run($storage)
+    public function run($storage): void
     {
         $this->connectionPool
             ->getConnectionForTable(Configuration::TABLENAME_FOLDER)
@@ -56,8 +59,9 @@ class IndexationService
      * @param ResourceStorage $storage storage
      * @param string $folder the folder currently in treatment
      * @param int $uidParent his parent's uid
+     * @return void
      */
-    protected function indexFolder($storage, $folder, $uidParent = 0)
+    protected function indexFolder(ResourceStorage $storage, string $folder, int $uidParent = 0): void
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
         $queryBuilder->getRestrictions()->removeAll();
@@ -240,10 +244,10 @@ class IndexationService
 
     /**
      * return storage root path
-     * @param \TYPO3\CMS\Core\Resource\ResourceStorage $storage
+     * @param ResourceStorage $storage
      * @return string
      */
-    protected function getStorageRootpath($storage)
+    protected function getStorageRootpath(ResourceStorage $storage): string
     {
         if ($storage->getConfiguration()['pathType'] == 'relative') {
             return Environment::getPublicPath() . '/' . $storage->getConfiguration()['basePath'];
@@ -254,9 +258,10 @@ class IndexationService
     /**
      * Gets the Indexer.
      *
-     * @return Index\Indexer
+     * @param ResourceStorage $storage
+     * @return Indexer
      */
-    protected function getIndexer($storage)
+    protected function getIndexer(ResourceStorage $storage): Indexer
     {
         return GeneralUtility::makeInstance(Indexer::class, $storage);
     }

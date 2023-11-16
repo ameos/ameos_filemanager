@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Controller\Backend;
 
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
+use Ameos\AmeosFilemanager\Service\FolderService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -15,7 +15,7 @@ class AjaxController extends ActionController
 {
     public function __construct(
         private readonly ResourceFactory $resourceFactory,
-        private readonly FolderRepository $folderRepository
+        private readonly FolderService $folderService
     )
     {
     }
@@ -30,12 +30,9 @@ class AjaxController extends ActionController
     public function getFolderId(ServerRequestInterface $request): ResponseInterface
     {
         $body = json_decode($request->getBody()->getContents(), true);
-        $folder = $this->resourceFactory->retrieveFileOrFolderObject($body['folderIdentifier']);
+        $resource = $this->resourceFactory->retrieveFileOrFolderObject($body['folderIdentifier']);
 
-        $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $folder->getStorage()->getUid(),
-            $folder->getIdentifier()
-        );
-        return (new JsonResponse())->setPayload(['result' => $folderRecord['uid']]);
+        $folder = $this->folderService->loadByResourceFolder($resource);
+        return (new JsonResponse())->setPayload(['result' => $folder ? $folder->getUid() : null]);
     }
 }

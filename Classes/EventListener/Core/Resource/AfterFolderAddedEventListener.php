@@ -4,13 +4,26 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
-use Ameos\AmeosFilemanager\Utility\FolderUtility;
+use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderAddedEvent;
 
-class AfterFolderAddedEventListener extends AbstractFolderEventListener
+class AfterFolderAddedEventListener
 {
-    public function __invoke(AfterFolderAddedEvent $event)
+    /**
+     * @param FolderService $folderService
+     */
+    public function __construct(private readonly FolderService $folderService)
     {
-        //FolderUtility::add($event->getFolder());
+    }
+
+    /**
+     * invoke event
+     *
+     * @param AfterFolderAddedEvent $event
+     * @return void
+     */
+    public function __invoke(AfterFolderAddedEvent $event): void
+    {
+        $this->folderService->index($event->getFolder());
     }
 }

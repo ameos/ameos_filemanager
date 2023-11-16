@@ -4,28 +4,31 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
+use Ameos\AmeosFilemanager\Service\FileService;
+use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Resource\Event\AfterFileMovedEvent;
 
-class AfterFileMovedEventListener extends AbstractFileEventListener
+class AfterFileMovedEventListener
 {
-    public function __invoke(AfterFileMovedEvent $event)
+    /**
+     * @param FileService $fileService
+     * @param FolderService $folderService
+     */
+    public function __construct(
+        private readonly FileService $fileService,
+        private readonly FolderService $folderService
+    ) {
+    }
+
+    /**
+     * invoke event
+     *
+     * @param AfterFileMovedEvent $event
+     * @return void
+     */
+    public function __invoke(AfterFileMovedEvent $event): void
     {
-        $file = $event->getFile();
-        $targetFolder = $event->getFolder();
-
-        $folderRecord = $this->folderRepository->findRawByStorageAndIdentifier(
-            $targetFolder->getStorage()->getUid(),
-            $targetFolder->getIdentifier()
-        );
-
-        if (!empty($folderRecord['uid'])) {
-            $this->connectionPool
-                ->getConnectionForTable('sys_file_metadata')
-                ->update(
-                    'sys_file_metadata',
-                    ['folder_uid' => $folderRecord['uid']],
-                    ['file' => $file->getUid()]
-                );
-        }
+        $folder = $this->folderService->loadByResourceFolder($event->getFolder());
+        $this->fileService->add($event->getFile(), $folder);
     }
 }

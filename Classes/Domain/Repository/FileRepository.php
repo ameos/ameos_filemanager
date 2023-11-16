@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
@@ -94,10 +94,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $currentRecursive++;
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(Configuration::FOLDER_TABLENAME);
+                ->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
             $statement = $queryBuilder
                 ->select('uid')
-                ->from(Configuration::FOLDER_TABLENAME)
+                ->from(Configuration::TABLENAME_FOLDER)
                 ->where($queryBuilder->expr()->in('uid_parent', $folders))
                 ->execute();
 
@@ -166,7 +166,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (FilemanagerUtility::fileContentSearchEnabled()) {
             $queryBuilder->leftJoin(
                 'sys_file_metadata',
-                Configuration::FILECONTENT_TABLENAME,
+                Configuration::TABLENAME_CONTENT,
                 'filecontent',
                 'filecontent.file = sys_file_metadata.file'
             );

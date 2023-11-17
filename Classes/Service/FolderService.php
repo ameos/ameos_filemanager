@@ -126,7 +126,7 @@ class FolderService
         $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
 
         if ($folder && $this->accessService->canWriteFolder($GLOBALS['TSFE']->fe_user->user, $folder)) {
-            $storage->deleteFolder($storage->getFolder($folder->getGedPath()), true);
+            $storage->deleteFolder($storage->getFolder($folder->getIdentifier()), true);
             $this->folderRepository->remove($folder);
             return true;
         }

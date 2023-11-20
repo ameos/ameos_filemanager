@@ -302,6 +302,28 @@ class FolderService
     }
 
     /**
+     * return number of files
+     *
+     * @param Folder $folder
+     * @return int
+     */
+    public function getNumberOfFiles(Folder $folder): int
+    {
+        return $this->folderRepository->countFilesForFolder($folder);
+    }
+
+    /**
+     * return size of files
+     *
+     * @param Folder $folder
+     * @return int
+     */
+    public function getSizeOfFiles(Folder $folder): int
+    {
+        return $this->folderRepository->countFilesizeForFolder($folder);
+    }
+
+    /**
      * create physical folder and return title
      * 
      * @param ResourceFolder $resourceFolder

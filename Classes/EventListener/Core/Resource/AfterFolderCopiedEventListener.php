@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use Ameos\AmeosFilemanager\Service\FolderService;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent;
 use TYPO3\CMS\Core\Resource\Folder as ResourceFolder;
 
@@ -39,11 +40,13 @@ class AfterFolderCopiedEventListener
      */
     protected function index(ResourceFolder $folder): void
     {
-        $this->folderService->index($folder);
-        foreach ($folder->getSubfolders() as $subFolder) {
-            $this->index($subFolder);
-        }
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            $this->folderService->index($folder);
+            foreach ($folder->getSubfolders() as $subFolder) {
+                $this->index($subFolder);
+            }
 
-        // todo index files
+            // todo index files
+        }
     }
 }

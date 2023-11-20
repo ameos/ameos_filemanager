@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ameos\AmeosFilemanager\ViewHelpers;
+namespace Ameos\AmeosFilemanager\ViewHelpers\File;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\DataProvider;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -27,17 +27,17 @@ class FileTreeFolder extends DatabaseTreeDataProvider
         $content = $queryBuilder
             ->select('pi_flexform')
             ->from('tt_content')
-            ->where($queryBuilder->expr()->eq('uid', (int)GeneralUtility::_GET('uid')))
-            ->execute()
-            ->fetch();
+            ->where($queryBuilder->expr()->eq('uid', (int)$_GET['uid']))
+            ->executeQuery()
+            ->fetchAssociative();
 
         $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage()->getUid();
         if ($content) {
             /** @var FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $flexformConfiguration = $flexFormService->convertFlexFormContentToArray($content['pi_flexform']);
-            if ($flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY]) {
-                $storage = $flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY];
+            if ($flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE]) {
+                $storage = $flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE];
             }
         }
 
@@ -63,7 +63,7 @@ class FileTreeFolder extends DatabaseTreeDataProvider
             );
         }
 
-        $records = $queryBuilder->execute()->fetchAll();
+        $records = $queryBuilder->executeQuery()->fetchAllAssociative();
         return is_array($records) ? array_column($records, 'uid') : [];
     }
 }

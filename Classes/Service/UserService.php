@@ -4,69 +4,96 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Service;
 
+use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\FrontendLogin\Domain\Repository\FrontendUserGroupRepository;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class UserService
 {
+    /**
+     * @param ConnectionPool $connectionPool
+     */
+    public function __construct(private readonly ConnectionPool $connectionPool)
+    {
+    }
+
     /**
      * Check if user is logged in
      *
      * @return bool
      */
-    public function isUserLoggedIn()
+    public function isUserLoggedIn(): bool
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return (bool)$context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 
     /**
+     * return user uid
+     *
+     * @return ?int
+     */
+    public function getUserId(): ?int
+    {
+        if ($this->isUserLoggedIn()) {
+            $context = GeneralUtility::makeInstance(Context::class);
+            return (int)$context->getPropertyFromAspect('frontend.user', 'uid');
+        }
+        return null;
+    }
+
+    /**
+     * return user group id
+     *
+     * @return array
+     */
+    public function getUserGroups(): array
+    {
+        if ($this->isUserLoggedIn()) {
+            $context = GeneralUtility::makeInstance(Context::class);
+            return $context->getPropertyFromAspect('frontend.user', 'groupIds');
+        }
+        return [];
+    }   
+
+    /**
      * Returns available usergroup for current user
      *
      * @return array
      */
-    public function getAvailableUsergroups($settings)
+    public function getAvailableUsergroups($settings): array
     {
-        // TODO V12
-        return [];
-        
-        $frontendUserGroupRepository = GeneralUtility::makeInstance(FrontendUserGroupRepository::class);
+        $usergroups = [];
         if ($this->isUserLoggedIn()) {
+            $usergroups[-2] = LocalizationUtility::translate(
+                'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                null
+            );
+            $currentUserGroups = $this->getUserGroups();
+            
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_groups');
+            $queryBuilder->select('*')->from('fe_groups');
             if ($settings['authorizedGroups']) {
-                $query = $frontendUserGroupRepository->createQuery();
-                $usergroups = $query->matching(
-                    $query->in(
+                $queryBuilder->where(
+                    $queryBuilder->expr()->in(
                         'uid',
-                        GeneralUtility::trimExplode(
-                            ',',
-                            $settings['authorizedGroups']
+                        $queryBuilder->createNamedParameter(
+                            GeneralUtility::trimExplode(',', $settings['authorizedGroups']),
+                            ArrayParameterType::INTEGER
                         )
                     )
-                )->execute();
-            } else {
-                $usergroups = $frontendUserGroupRepository->findAll();
+                );
             }
-            $usergroups = $usergroups->toArray();
-
-            $currentUserGroups = explode(',', $GLOBALS['TSFE']->fe_user->user['usergroup']);
-            foreach ($usergroups as $index => $group) {
-                if (!in_array($group->getUid(), $currentUserGroups)) {
-                    unset($usergroups[$index]);
+            $results = $queryBuilder->executeQuery()->fetchAllAssociative();            
+            
+            
+            foreach ($results as $index => $group) {
+                if (in_array($group['uid'], $currentUserGroups)) {
+                    $usergroups[(int)$group['uid']] = $group['title'];
                 }
             }
-
-            $anyUsergroup = GeneralUtility::makeInstance(FrontendUserGroup::class);
-            $anyUsergroup->_setProperty('uid', -2);
-            $anyUsergroup->setTitle(
-                LocalizationUtility::translate(
-                    'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                    null
-                )
-            );
-            $usergroups[] = $anyUsergroup;
-        } else {
-            $usergroups = [];
         }
         return $usergroups;
     }

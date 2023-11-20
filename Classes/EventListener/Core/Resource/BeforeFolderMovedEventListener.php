@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use Ameos\AmeosFilemanager\Service\FolderService;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent;
 
 class BeforeFolderMovedEventListener
@@ -24,6 +25,8 @@ class BeforeFolderMovedEventListener
      */
     public function __invoke(BeforeFolderMovedEvent $event): void
     {
-        $this->folderService->move($event->getFolder(), $event->getTargetParentFolder()->getIdentifier());
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            $this->folderService->move($event->getFolder(), $event->getTargetParentFolder()->getIdentifier());
+        }
     }
 }

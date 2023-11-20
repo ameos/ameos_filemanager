@@ -74,10 +74,10 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * count total files size for a folder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param Folder $folder
      * @return int
      */
-    public function countFilesizeForFolder($folder)
+    public function countFilesizeForFolder(Folder $folder): int
     {
         if (!$folder) {
             return 0;
@@ -85,7 +85,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('sys_file');
-        return $queryBuilder
+        return (int)$queryBuilder
             ->addSelectLiteral($queryBuilder->expr()->sum('file.size', 'total_size'))
             ->from('sys_file', 'file')
             ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
@@ -103,10 +103,10 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * count file for a folder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param Folder $folder
      * @return int
      */
-    public function countFilesForFolder($folder)
+    public function countFilesForFolder(Folder $folder): int
     {
         if (!$folder) {
             return 0;
@@ -114,7 +114,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('sys_file');
-        return $queryBuilder
+        return (int)$queryBuilder
             ->count('file.uid')
             ->from('sys_file', 'file')
             ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')

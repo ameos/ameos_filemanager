@@ -6,6 +6,7 @@ namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use Ameos\AmeosFilemanager\Service\FileService;
 use Ameos\AmeosFilemanager\Service\FolderService;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Event\AfterFileMovedEvent;
 
 class AfterFileMovedEventListener
@@ -28,7 +29,9 @@ class AfterFileMovedEventListener
      */
     public function __invoke(AfterFileMovedEvent $event): void
     {
-        $folder = $this->folderService->loadByResourceFolder($event->getFolder());
-        $this->fileService->add($event->getFile(), $folder);
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            $folder = $this->folderService->loadByResourceFolder($event->getFolder());
+            $this->fileService->add($event->getFile(), $folder);
+        }
     }
 }

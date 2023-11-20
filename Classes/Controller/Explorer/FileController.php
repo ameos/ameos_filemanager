@@ -13,6 +13,8 @@ use Ameos\AmeosFilemanager\Service\FolderService;
 use Ameos\AmeosFilemanager\Service\UploadService;
 use Ameos\AmeosFilemanager\Service\UserService;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -156,7 +158,11 @@ class FileController extends ActionController
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            return $this->uploadService->upload($folder, $GLOBALS['TYPO3_REQUEST']->getUploadedFiles());
+            throw new PropagateResponseException(
+                new JsonResponse(
+                    $this->uploadService->upload($folder, $GLOBALS['TYPO3_REQUEST']->getUploadedFiles(), true)
+                )
+            );
         }
 
         return $this->htmlResponse();

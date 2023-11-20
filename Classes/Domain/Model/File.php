@@ -235,14 +235,6 @@ class File extends ModelFile
     }
 
     /**
-     * @return string
-     */
-    public function getGedPath()
-    {
-        return $this->getOriginalResource()->getIdentifier();
-    }
-
-    /**
      * @return int
      */
     public function getFolder()

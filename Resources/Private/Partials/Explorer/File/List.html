@@ -60,7 +60,7 @@
 		<f:if condition="{column} == 'size'">
 			<td><f:if condition="{file.isRemote}">
 				<f:then>N/A</f:then>
-				<f:else><filemanager:filesize size="{file.originalResource.size}" /></f:else>
+				<f:else><filemanager:file.filesize size="{file.originalResource.size}" /></f:else>
 			</f:if></td>
 		</f:if>
 		<f:if condition="{column} == 'keywords'">

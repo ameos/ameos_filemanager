@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use Ameos\AmeosFilemanager\Service\FolderService;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Event\BeforeFolderRenamedEvent;
 
 class BeforeFolderRenamedEventListener
@@ -24,6 +25,8 @@ class BeforeFolderRenamedEventListener
      */
     public function __invoke(BeforeFolderRenamedEvent $event): void
     {
-        $this->folderService->rename($event->getFolder(), $event->getTargetName());
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            $this->folderService->rename($event->getFolder(), $event->getTargetName());
+        }
     }
 }

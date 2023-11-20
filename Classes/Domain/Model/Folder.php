@@ -505,46 +505,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
         $this->feGroupAddfile = $arrayFeGroupAddfile;
     }
 
-    /**
-     * return number of files in the folder
-     * @return int
-     */
-    public function getFileNumber()
-    {
-        return 0; 
-        // TODOV12 return $this->folderRepository->countFilesForFolder($this);
-    }
-
-    /**
-     * return number of ready files in the folder
-     * @return int
-     */
-    public function getReadyFileNumber()
-    {
-        return 0;
-        // TODOV12 return $this->folderRepository->countFilesForFolder($this, false);
-    }
-
-    /**
-     * return number of files in the folder
-     * @return int
-     */
-    public function getFilesSize()
-    {
-        return 0;
-        // TODOV12 return $this->folderRepository->countFilesizeForFolder($this);
-    }
-
-    /**
-     * return number of subfolders in the folder
-     * @return int
-     */
-    public function getFolderNumber()
-    {
-        return 0;
-        // TODOV12  return $this->folderRepository->countFoldersForFolder($this->getUid());
-    }
-
     public function hasFolder($folderName, $uid = null)
     {
         foreach ($this->getFolders() as $child) {
@@ -647,10 +607,5 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
             return $this->getParent()->isChildOf($uidFolder);
         }
         return false;
-    }
-
-    public function getIsEmpty()
-    {
-        return  $this->getFileNumber() == 0 && $this->getFolderNumber() == 0;
     }
 }

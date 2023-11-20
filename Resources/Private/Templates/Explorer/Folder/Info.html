@@ -41,11 +41,11 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "numberoffiles")}</td>
-                <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
+                <td><filemanager:folder.numberOfFiles folder="{folder}" /> <f:translate key="folderFiles"/></td>
             </tr>
             <tr>
                 <td>{f:translate(key: "size")}</td>
-                <td>{filemanager:filesize(size: folder.filesSize)}</td>
+                <td><filemanager:folder.sizeOfFiles folder="{folder}" /></td>
             </tr>
         </table>
     </div>

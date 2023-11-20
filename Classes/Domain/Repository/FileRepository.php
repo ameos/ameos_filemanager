@@ -10,7 +10,9 @@ use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -34,9 +36,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * find files for a folder
      * @param Folder $folder
+     * @param string $sort
+     * @param string $direction
      * @return QueryResult
      */
-    public function findFilesForFolder(Folder $folder): QueryResult
+    public function findFilesForFolder(Folder $folder, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
     {
         if (empty($folder)) {
             return $this->findAll();
@@ -62,9 +66,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )
             ->where($queryBuilder->expr()->eq('sys_file_metadata.folder_uid', $folder->getUid()));
 
-        $query = $this->createQuery();
-        $query->statement($queryBuilder->getSQL());
-        return $query->execute();
+        return $this->buildQueryWithSorting($queryBuilder, $sort, $direction)->execute();
     }
 
     /**
@@ -263,6 +265,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // clause access right
         $where .= ')';
 
+        /** @var Query */
         $query = $this->createQuery();
         $query->statement(
             '
@@ -284,9 +287,16 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute()->getFirst();
     }
 
-    protected function buildQueryWithSorting($queryBuilder, $pluginNamespace = '')
-    {
-        $get = GeneralUtility::_GET($pluginNamespace);
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param string $sort
+     * @param string $direction
+     */
+    protected function buildQueryWithSorting(
+        QueryBuilder $queryBuilder,
+        string $sort = 'sys_file.name',
+        string $direction = 'ASC'
+    ): Query {
         $availableSorting = [
             'sys_file.name', 'sys_file.creation_date', 'sys_file.modification_date', 'sys_file.size',
             'sys_file.tstamp', 'sys_file.crdate',
@@ -295,18 +305,13 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'fe_users.name', 'fe_users.username', 'fe_users.company',
         ];
 
-        if (isset($get['sort']) && $get['sort'] != '' && in_array($get['sort'], $availableSorting)) {
-            $direction = (
-                isset($get[Configuration::DIRECTION_ARGUMENT_KEY])
-                && $get[Configuration::DIRECTION_ARGUMENT_KEY] != ''
-            )
-                    ? $get[Configuration::DIRECTION_ARGUMENT_KEY]
-                    : 'ASC';
+        if ($sort && in_array($sort, $availableSorting)) {
             if ($direction == 'ASC' || $direction == 'DESC') {
-                $queryBuilder->orderBy($get['sort'], $direction);
+                $queryBuilder->orderBy($sort, $direction);
             }
         }
 
+        /** @var Query */
         $query = $this->createQuery();
         $query->statement($queryBuilder->getSQL());
         return $query;

@@ -23,7 +23,7 @@
                     </filemanager:access.canRead>
                     <f:variable name="folderTitle" value="" />
                 </f:if>
-                <f:for each="{current_folder_childs}" as="folder">
+                <f:for each="{current_folder_children}" as="folder">
                     <filemanager:access.canRead folder="{folder}">
                         <f:render partial="Explorer/Folder/Mosaic" arguments="{_all}" />
                     </filemanager:access.canRead>
@@ -61,7 +61,7 @@
     <f:if condition="{direction} != 'DESC'">
         <f:render section="ParentFolder" arguments="{_all}" />
     </f:if>
-    <f:for each="{current_folder.folders}" as="folder">
+    <f:for each="{current_folder_children}" as="folder">
         <filemanager:access.canRead folder="{folder}">
             <f:render partial="Explorer/Folder/List" arguments="{_all}" />
         </filemanager:access.canRead>

@@ -66,16 +66,21 @@ class TreeService
      * return folder children
      * 
      * @param array<Folder> $folders
+     * @param string $sort
+     * @param string $direction
      * @return array
      */
-    public function getFoldersChildren(array $folders): array
-    {
+    public function getFoldersChildren(
+        array $folders,
+        string $sort = 'sys_file.name',
+        string $direction = 'ASC'
+    ): array {
         $children = [];
 
         foreach ($folders as $folder) {
             $children = array_merge(
                 $children,
-                $this->folderRepository->findSubFolders($folder)->toArray()
+                $this->folderRepository->findSubFolders($folder, $sort, $direction)->toArray()
             );
         }
         

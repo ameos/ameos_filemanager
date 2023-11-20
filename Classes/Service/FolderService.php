@@ -137,11 +137,13 @@ class FolderService
      * find files for a folder
      *
      * @param Folder $folder
+     * @param string $sort
+     * @param string $direction
      * @return QueryResult
      */
-    public function findFiles(Folder $folder): QueryResult
+    public function findFiles(Folder $folder, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
     {
-        return $this->fileRepository->findFilesForFolder($folder);
+        return $this->fileRepository->findFilesForFolder($folder, $sort, $direction);
     }
 
     /**

@@ -9,6 +9,7 @@ use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -156,57 +157,43 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * find subfolders
      * 
      * @param Folder $folder
+     * @param string $sort
+     * @param string $direction
      * @return QueryResult
      */
-    public function findSubFolders(Folder $folder): QueryResult
+    public function findSubFolders(Folder $folder, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
     {
+        /** @var Query */
         $query = $this->createQuery();
         $where = 'tx_ameosfilemanager_domain_model_folder.uid_parent = ' . (int)$folder->getUid();
         $where .= $this->getModifiedEnabledFields();
 
-        /*
-        TODO V12
-        // Sort folders
-        if (
-            isset($GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-            && is_array($GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-            && array_key_exists('pluginNamespace', $GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-        ) {
-            $get = GeneralUtility::_GET($GLOBALS['TSFE']->register['tx_ameosfilemanager']['pluginNamespace']);
-            if (isset($get['sort'])) {
-                $availableSorting = [
-                    'sys_file.name' => 'title',
-                    'sys_file.creation_date' => 'crdate',
-                    'sys_file.modification_date' => 'tstamp',
-                    'sys_file.tstamp' => 'tstamp',
-                    'sys_file.crdate' => 'crdate',
-                    'sys_file_metadata.tstamp' => 'tstamp',
-                    'sys_file_metadata.crdate' => 'crdate',
-                    'sys_file_metadata.description' => 'description',
-                    'sys_file_metadata.title' => 'title',
-                    'sys_file_metadata.categories' => 'categories',
-                    'sys_file_metadata.keywords' => 'keywords',
-                    'fe_users.name' => 'fe_users.name',
-                    'fe_users.username' => 'fe_users.username',
-                    'fe_users.company' => 'fe_users.company',
-                ];
-                if (array_key_exists($get['sort'], $availableSorting)) {
-                    $sorting = $availableSorting[$get['sort']];
-                }
-                if (
-                    isset($get[Configuration::DIRECTION_ARGUMENT_KEY])
-                    && in_array($get[Configuration::DIRECTION_ARGUMENT_KEY], ['ASC', 'DESC'])
-                ) {
-                    $direction = $get[Configuration::DIRECTION_ARGUMENT_KEY];
-                }
+        $sorting = null;
+        if ($sort) {
+            $availableSorting = [
+                'sys_file.name' => 'title',
+                'sys_file.creation_date' => 'crdate',
+                'sys_file.modification_date' => 'tstamp',
+                'sys_file.tstamp' => 'tstamp',
+                'sys_file.crdate' => 'crdate',
+                'sys_file_metadata.tstamp' => 'tstamp',
+                'sys_file_metadata.crdate' => 'crdate',
+                'sys_file_metadata.description' => 'description',
+                'sys_file_metadata.title' => 'title',
+                'sys_file_metadata.categories' => 'categories',
+                'sys_file_metadata.keywords' => 'keywords',
+                'fe_users.name' => 'fe_users.name',
+                'fe_users.username' => 'fe_users.username',
+                'fe_users.company' => 'fe_users.company',
+            ];
+            if (array_key_exists($sort, $availableSorting)) {
+                $sorting = $availableSorting[$sort];
             }
         }
 
         if (isset($sorting)) {
             $query->statement($this->buildSubfolderStatement($where, $sorting, $direction), []);
         } else {
-            
-            */
             $query->statement(
                 '  SELECT tx_ameosfilemanager_domain_model_folder.* 
                     FROM tx_ameosfilemanager_domain_model_folder 
@@ -215,7 +202,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 ',
                 []
             );
-        //}
+        }
         return $query->execute();
     }
 
@@ -299,6 +286,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         $writeMode = $accessMode == 'read' ? false : true;
+        /** @var Query */
         $query = $this->createQuery();
         $where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
         $where .= $this->getModifiedEnabledFields($writeMode);

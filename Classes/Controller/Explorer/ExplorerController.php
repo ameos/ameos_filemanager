@@ -16,6 +16,8 @@ class ExplorerController extends ActionController
 {
     public const CONTROLLER_KEY = 'Explorer\Explorer';
     public const ARG_FOLDER = 'folder';
+    public const ARG_DIR = 'direction';
+    public const ARG_SORT = 'sort';
     public const ARG_DISPLAYMODE = 'displaymode';
 
     /**
@@ -52,14 +54,16 @@ class ExplorerController extends ActionController
         $rootFolder = $this->folderService->getRootFolder($this->settings);
         $currentFolder = $this->folderService->getCurrentFolder($folderIdentifier, $this->settings);
         $tree = $this->treeService->getFoldersTree([$rootFolder]);
+        $sort = $this->request->hasArgument(self::ARG_SORT) ? $this->request->getArgument(self::ARG_SORT) : 'sys_file.name';
+        $direction = $this->request->hasArgument(self::ARG_DIR) ? $this->request->getArgument(self::ARG_DIR) : 'ASC';
 
         // assign data to the view
         $this->view->assign('root_folder', $rootFolder);
         $this->view->assign('current_folder', $currentFolder);
         $this->view->assign('tree', $tree);
         $this->view->assign('flat_tree', $this->treeService->flatten($tree));
-        $this->view->assign('current_folder_childs', $this->treeService->getFoldersChildren([$currentFolder]));
-        $this->view->assign('files', $this->folderService->findFiles($currentFolder));
+        $this->view->assign('current_folder_children', $this->treeService->getFoldersChildren([$currentFolder], $sort, $direction));
+        $this->view->assign('files', $this->folderService->findFiles($currentFolder, $sort, $direction));
         $this->view->assign('has_many_display_mode', (count($this->settings['availableMode']) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
@@ -72,14 +76,9 @@ class ExplorerController extends ActionController
             GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
         );
         
-        /*
-        if ($this->request->hasArgument(Configuration::DIRECTION_ARGUMENT_KEY)) {
-            $this->view->assign(
-                Configuration::DIRECTION_ARGUMENT_KEY,
-                $this->request->getArgument(Configuration::DIRECTION_ARGUMENT_KEY)
-            );
-        }*/
-
+        if ($this->request->hasArgument(self::ARG_DIR)) {
+            $this->view->assign('direction', $this->request->getArgument(self::ARG_DIR));
+        }
 
         return $this->htmlResponse();
     }

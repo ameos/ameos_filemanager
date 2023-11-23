@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class FileService
 {
@@ -23,12 +24,14 @@ class FileService
      * @param FileRepository $fileRepository
      * @param MetaDataRepository $metaDataRepository
      * @param UserService $userService
+     * @param CategoryService $categoryService
      */
     public function __construct(
         private readonly ResourceFactory $resourceFactory,
         private readonly FileRepository $fileRepository,
         private readonly MetaDataRepository $metaDataRepository,
-        private readonly UserService $userService
+        private readonly UserService $userService,
+        private readonly CategoryService $categoryService
     ) {
     }
 
@@ -40,7 +43,20 @@ class FileService
      */
     public function load(int $identifier): ?File
     {
-        return $this->fileRepository->findByUid($identifier) ?? null;
+        /** @var ?File */
+        $file = $this->fileRepository->findByUid($identifier) ?? null;
+
+        if ($file) {
+            $categories = $this->categoryService->retrieveForFile($file);
+            $storage = new ObjectStorage();
+            foreach ($categories as $category) {
+                $storage->attach($category);
+            }
+            
+            $file->setCategories($storage);
+        }
+
+        return $file;
     }
 
     /**
@@ -82,8 +98,8 @@ class FileService
     public function update(File $file, RequestInterface $request, array $settings): File
     {
         $properties = $this->populatePropertiesFromRequest($request, $settings);
-        // $file->setCategories($arguments['categories']); // TODO V12
         $this->metaDataRepository->update($file->getUid(), $properties);
+        $this->categoryService->attachToFile(array_map('intval', $request->getArgument('categories')), $file);
 
         $this->indexContent($file);
 

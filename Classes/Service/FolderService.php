@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class FolderService
@@ -28,12 +29,14 @@ class FolderService
      * @param FolderRepository $folderRepository
      * @param FileRepository $fileRepository
      * @param AccessService $accessService
+     * @param CategoryService $categoryService
      * @param ResourceFactory $resourceFactory
      */
     public function __construct(
         private readonly FolderRepository $folderRepository,
         private readonly FileRepository $fileRepository,
         private readonly AccessService $accessService,
+        private readonly CategoryService $categoryService,
         private readonly ResourceFactory $resourceFactory
     ) {
     }
@@ -414,7 +417,12 @@ class FolderService
             $folder->setArrayFeGroupAddfolder($request->getArgument('fe_group_addfolder'));
         }
         if ($request->hasArgument('categories')) {
-            $folder->setCategories($request->getArgument('categories'));
+            $categories = $this->categoryService->getCategories($request->getArgument('categories'));
+            $newCategories = new ObjectStorage();
+            foreach ($categories as $category) {
+                $newCategories->attach($category);
+            }
+            $folder->setCategories($newCategories);
         }
         $folder->setOwnerHasReadAccess(
             isset($settings['newFolder']['owner_has_read_access'])

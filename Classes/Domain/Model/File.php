@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\MetaDataAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File as ModelFile;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class File extends ModelFile
 {
@@ -22,6 +22,11 @@ class File extends ModelFile
     protected $metaDataAspect;
 
     /**
+     * @var ObjectStorage
+     */
+    protected $categories;
+
+    /**
      * @var object meta
      */
     protected $cruser = false;
@@ -30,6 +35,14 @@ class File extends ModelFile
      * @var object meta
      */
     protected $feuser = false;
+
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->categories = new ObjectStorage();   
+    }
 
     /**
      * Loads the metadata of a file in an encapsulated aspect
@@ -301,83 +314,22 @@ class File extends ModelFile
     /**
      * Returns the cats
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category> $cats
+     * @return ObjectStorage<Category>
      */
     public function getCategories()
     {
-        return [];
-/** TODO V12
-        $uidsCat = $this->getCategoriesUids();
-        if (!empty($uidsCat)) {
-            return FilemanagerUtility::getByUids($this->categoryRepository, $uidsCat);
-        }
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\ObjectStorage::class);*/
+        return $this->categories;
     }
 
     /**
-     * Returns the cats
+     * set categories
      *
-     * @return array
+     * @param ObjectStorage $categories
+     * @return self
      */
-    public function getCategoriesUids()
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('sys_category_record_mm');
-
-        $constraints = [
-            $queryBuilder->expr()->like(
-                'tablenames',
-                $queryBuilder->createNamedParameter('sys_file_metadata')
-            ),
-            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMetaData()->offsetGet('uid'))),
-        ];
-        $categories = $queryBuilder
-            ->select('uid_local')
-            ->from('sys_category_record_mm')
-            ->where(...$constraints)
-            ->execute();
-
-        $uids = [];
-        while ($category = $categories->fetch()) {
-            $uids[] = $category['uid_local'];
-        }
-        return $uids;
-    }
-
     public function setCategories($categories)
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_category_record_mm');
-
-        $constraints = [
-            $queryBuilder->expr()->like(
-                'tablenames',
-                $queryBuilder->createNamedParameter('sys_file_metadata')
-            ),
-            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('categories')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getMetaData()->offsetGet('uid'))),
-        ];
-
-        $queryBuilder
-            ->delete('sys_category_record_mm')
-            ->where(...$constraints)
-            ->executeStatement();
-
-        $i = 1;
-        if (is_array($categories) && !empty($categories)) {
-            foreach ($categories as $category) {
-                $connectionPool
-                    ->getConnectionForTable('sys_category_record_mm')
-                    ->insert('sys_category_record_mm', [
-                        'uid_local' => $category,
-                        'uid_foreign' => $this->getMetaData()->offsetGet('uid'),
-                        'tablenames' => 'sys_file_metadata',
-                        'fieldname' => 'categories',
-                        'sorting_foreign' => $i,
-                    ]);
-                $i++;
-            }
-        }
+        $this->categories = $categories;
+        return $this;   
     }
 }

@@ -34,6 +34,11 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     protected $folders;
 
     /**
+     * @var ObjectStorage<Category>
+     */
+    protected $cats;
+
+    /**
      * @var Folder
      */
     protected $uidParent;
@@ -190,6 +195,32 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function getFolders()
     {
         return $this->folders;
+    }
+
+    /**
+     * @return ObjectStorage<Category>
+     */
+    public function getCats()
+    {
+        return $this->cats;
+    }
+
+    /**
+     * @return ObjectStorage<Category>
+     */
+    public function getCategories()
+    {
+        return $this->getCats();
+    }
+
+    /**
+     * @param ObjectStorage<Category>
+     * @return self
+     */
+    public function setCategories($categories)
+    {
+        $this->cats = $categories;
+        return $this;
     }
 
     /**
@@ -513,89 +544,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
             }
         }
         return false;
-    }
-
-    public function getCategories()
-    {
-        return [];
-        // TODOV12
-        /*
-        if (!$this->getUid()) {
-            return [];
-        }
-
-        $uidsCategories = $this->getCategoriesUids();
-
-        if (!empty($uidsCategories)) {
-            return FilemanagerUtility::getByUids($this->categoryRepository, $uidsCategories);
-        }
-        return [];*/
-    }
-
-    public function getCategoriesUids()
-    {
-        if (!$this->getUid()) {
-            return [];
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('sys_category_record_mm');
-
-        $constraints = [
-            $queryBuilder->expr()->like(
-                'tablenames',
-                $queryBuilder->createNamedParameter(Configuration::TABLENAME_FOLDER)
-            ),
-            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
-        ];
-        $categories = $queryBuilder
-            ->select('uid_local')
-            ->from('sys_category_record_mm')
-            ->where(...$constraints)
-            ->execute();
-
-        $uids = [];
-        while ($category = $categories->fetch()) {
-            $uids[] = $category['uid_local'];
-        }
-        return $uids;
-    }
-
-    public function setCategories($categories)
-    {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_category_record_mm');
-
-        $constraints = [
-            $queryBuilder->expr()->like(
-                'tablenames',
-                $queryBuilder->createNamedParameter(Configuration::TABLENAME_FOLDER)
-            ),
-            $queryBuilder->expr()->like('fieldname', $queryBuilder->createNamedParameter('cats')),
-            $queryBuilder->expr()->like('uid_foreign', $queryBuilder->createNamedParameter($this->getUid())),
-        ];
-
-        $queryBuilder
-            ->delete('sys_category_record_mm')
-            ->where(...$constraints)
-            ->executeStatement();
-
-        $i = 1;
-        if (is_array($categories) && !empty($categories)) {
-            foreach ($categories as $category) {
-                $connectionPool
-                    ->getConnectionForTable('sys_category_record_mm')
-                    ->insert('sys_category_record_mm', [
-                        'uid_local' => $category,
-                        'uid_foreign' => $this->getUid(),
-                        'tablenames' => Configuration::TABLENAME_FOLDER,
-                        'fieldname' => 'cats',
-                        'sorting_foreign' => $i,
-                    ]);
-                $i++;
-            }
-        }
     }
 
     public function isChildOf($uidFolder)

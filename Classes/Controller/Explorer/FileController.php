@@ -187,7 +187,8 @@ class FileController extends ActionController
             return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
-        return $this->downloadService->downloadFile((int)$this->request->getArgument(self::ARG_FILE));
+        $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+        return $this->downloadService->downloadFile($file);
     }
 
     /**

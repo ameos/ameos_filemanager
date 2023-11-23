@@ -8,6 +8,7 @@ use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\CategoryService;
+use Ameos\AmeosFilemanager\Service\DownloadService;
 use Ameos\AmeosFilemanager\Service\FolderService;
 use Ameos\AmeosFilemanager\Service\UserService;
 use Psr\Http\Message\ResponseInterface;
@@ -25,12 +26,14 @@ class FolderController extends ActionController
      * @param CategoryService $categoryService
      * @param UserService $userService
      * @param AssetService $assetService
+     * @param DownloadService $downloadService
      */
     public function __construct(
         private readonly FolderService $folderService,
         private readonly CategoryService $categoryService,
         private readonly UserService $userService,
-        private readonly AssetService $assetService
+        private readonly AssetService $assetService,
+        private readonly DownloadService $downloadService
     ) {
     }
 
@@ -101,8 +104,8 @@ class FolderController extends ActionController
      */
     protected function downloadAction(): ResponseInterface
     {
-        die('TODO V12 : dwonload ZIP');
-        return $this->htmlResponse();
+        $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));
+        return $this->downloadService->downloadFolder($folder);
     }
 
     /**

@@ -9,7 +9,6 @@ use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Exception\AccessDeniedException;
-use Symfony\Component\RateLimiter\Storage\StorageInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;

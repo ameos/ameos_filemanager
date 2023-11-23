@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class FileService
@@ -189,5 +190,19 @@ class FileService
                 //
             }
         }
+    }
+
+    /**
+     * search files in root folder
+     * 
+     * @param Folder $root
+     * @param string $query
+     * @param string $sort
+     * @param string $direction
+     * @return QueryResult
+     */
+    public function search(Folder $root, string $query, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
+    {
+        return $this->fileRepository->search($root, $query, $sort, $direction);
     }
 }

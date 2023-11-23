@@ -6,6 +6,7 @@ namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\ExplorerService;
+use Ameos\AmeosFilemanager\Service\FileService;
 use Ameos\AmeosFilemanager\Service\FolderService;
 use Ameos\AmeosFilemanager\Service\TreeService;
 use Psr\Http\Message\ResponseInterface;
@@ -19,16 +20,19 @@ class ExplorerController extends ActionController
     public const ARG_DIR = 'direction';
     public const ARG_SORT = 'sort';
     public const ARG_DISPLAYMODE = 'displaymode';
+    public const ARG_QUERY = 'query';
 
     /**
      * @param ExplorerService $explorerService
      * @param FolderService $folderService
+     * @param FileService $fileService
      * @param TreeService $treeService
      * @param AssetService $assetService
      */
     public function __construct(
         private readonly ExplorerService $explorerService,
         private readonly FolderService $folderService,
+        private readonly FileService $fileService,
         private readonly TreeService $treeService,
         private readonly AssetService $assetService
     ) {
@@ -114,7 +118,6 @@ class ExplorerController extends ActionController
         return $this->htmlResponse();
     }
 
-
     /**
      * Search action
      *
@@ -123,42 +126,29 @@ class ExplorerController extends ActionController
     protected function searchAction(): ResponseInterface
     {
         $this->assetService->addCommonAssets($this->settings);
-        /*
-        TODO V12
-        if (
-            !$this->request->hasArgument(Configuration::QUERY_ARGUMENT_KEY)
-            || $this->request->getArgument(Configuration::QUERY_ARGUMENT_KEY) == ''
-        ) {
-            $this->forward(Configuration::INDEX_ACTION_KEY);
+
+        if (!$this->request->hasArgument(self::ARG_QUERY) || $this->request->getArgument(self::ARG_QUERY) == '') {
+            return $this->redirect('index');
         }
 
-        $configuration = $this->getPluginConfiguration();
+        $contentId = (int)$this->request->getAttribute('currentContentObject')->data['uid'];
 
-        $this->fetchRootAndCurrentFolders();
+        $displayMode = $this->explorerService->getCurrentDisplayMode($this->settings['availableMode'], $contentId);
+        $rootFolder = $this->folderService->getRootFolder($this->settings);
 
-        $this->parseFolderInFe();
-
-        // get current display mode
-        $displayMode = ExplorerUtility::getDisplayMode(
-            $this->settings[Configuration::AVAILABLE_MODE_SETTINGS_KEY],
-            $this->configurationManager->getContentObject()->data['uid']
-        );
-
-        $this->settings['displayFolders'] = 0;
-        $this->settings[Configuration::RECURSION_SETTINGS_KEY]
-            = $this->settings[Configuration::RECURSION_SETTINGS_KEY] == ''
-                ? PHP_INT_MAX
-                : $this->settings[Configuration::RECURSION_SETTINGS_KEY];
+        $tree = $this->treeService->getFoldersTree([$rootFolder]);
+        $sort = $this->request->hasArgument(self::ARG_SORT) ? $this->request->getArgument(self::ARG_SORT) : 'sys_file.name';
+        $direction = $this->request->hasArgument(self::ARG_DIR) ? $this->request->getArgument(self::ARG_DIR) : 'ASC';
+        $files = $this->fileService->search($rootFolder, $this->request->getArgument(self::ARG_QUERY), $sort, $direction);
 
         // assign data to the view
-        $this->view->assign('settings', $this->settings);
-        $this->view->assign('current_query', $this->request->getArgument(Configuration::QUERY_ARGUMENT_KEY));
-        $this->view->assign('root_folder', $this->rootFolder);
-        $this->view->assign('current_folder', $this->currentFolder);
-        $this->view->assign(
-            'has_many_display_mode',
-            (strpos($this->settings[Configuration::AVAILABLE_MODE_SETTINGS_KEY], ',') !== false)
-        );
+        $this->view->assign('current_query', $this->request->getArgument(self::ARG_QUERY));
+        $this->view->assign('files', $files);
+        $this->view->assign('root_folder', $rootFolder);
+        $this->view->assign('current_folder', $rootFolder);
+        $this->view->assign('tree', $tree);
+        $this->view->assign('flat_tree', $this->treeService->flatten($tree));
+        $this->view->assign('has_many_display_mode', (count($this->settings['availableMode']) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
         $this->view->assign(
@@ -169,16 +159,11 @@ class ExplorerController extends ActionController
             'allowed_actions_folders',
             GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
         );
-        $this->view->assign(
-            'files',
-            $this->fileRepository->findBySearchCriterias(
-                ['keyword' => $this->request->getArgument(Configuration::QUERY_ARGUMENT_KEY)],
-                $this->currentFolderidentifier,
-                $configuration['view'][Configuration::PLUGIN_NAMESPACE_KEY],
-                $this->settings[Configuration::RECURSION_SETTINGS_KEY]
-            )
-        );
-*/
+        
+        if ($this->request->hasArgument(self::ARG_DIR)) {
+            $this->view->assign('direction', $this->request->getArgument(self::ARG_DIR));
+        }
+
         return $this->htmlResponse();
     }
 }

@@ -122,22 +122,21 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     * Return all filter by search criterias
-     * @param array $criterias criterias
-     * @param int $rootFolder
-     * @param string $pluginNamespace
-     * @param int $recursiveLimit
+     * Search files in $root folder and subfolder
+     * 
+     * @param Folder $folder
+     * @param string $query
+     * @param string $sort
+     * @param string $direction
+     * @return QueryResult
      */
-    public function findBySearchCriterias(
-        $criterias,
-        $rootFolder = null,
-        $pluginNamespace = 'tx_ameosfilemanager_fe_filemanager',
-        $recursiveLimit = 0
-    ) {
-        if (!is_array($criterias) || empty($criterias)) {
-            return $this->findAll();
-        }
-
+    public function search(
+        Folder $root,
+        string $query,
+        string $sort = 'sys_file.name',
+        string $direction = 'ASC'
+    ): QueryResult {
+        /** @var QueryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('sys_file_metadata');
         $queryBuilder->getRestrictions()->removeAll();
@@ -174,53 +173,30 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             );
         }
 
-        $rootFolder = is_object($rootFolder) ? $rootFolder->getUid() : $rootFolder;
+        $keywordContraints = [];
+        $arrayKeywords = explode(' ', $query);
+        foreach ($arrayKeywords as $keyword) {
+            $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
 
-        if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
-            $arrayKeywords = explode(' ', $criterias['keyword']);
+            $keywordContraints[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
+            $keywordContraints[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
+            $keywordContraints[] = $queryBuilder->expr()->like('sys_file_metadata.keywords', $keyword);
+            $keywordContraints[] = $queryBuilder->expr()->like('sys_file.name', $keyword);
+            $keywordContraints[] = $queryBuilder->expr()->like('sys_category.title', $keyword);
 
-            foreach ($arrayKeywords as $keyword) {
-                $whereClauseKeyword = [];
-                $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
-
-                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
-                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
-                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.keywords', $keyword);
-                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file.name', $keyword);
-                $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_category.title', $keyword);
-
-                if (FilemanagerUtility::fileContentSearchEnabled()) {
-                    $whereClauseKeyword[] = $queryBuilder->expr()->like('filecontent.content', $keyword);
-                }
-
-                $whereClauseKeyword[] = 'sys_file_metadata.fe_user_id IN (
-                    SELECT
-                        uid
-                    FROM
-                        fe_users
-                    WHERE
-                        deleted = 0
-                        AND (
-                            name LIKE ' . $keyword . '
-                            OR first_name LIKE ' . $keyword . '
-                            OR middle_name LIKE ' . $keyword . '
-                            OR last_name LIKE ' . $keyword . '
-                        )
-                    )';
-            }
-            $queryBuilder->orWhere(...$whereClauseKeyword);
-        }
-
-        if ((int)$rootFolder > 0) {
-            $availableFilesIdentifiers = $this->getFilesIdentifiersRecursively($rootFolder, $recursiveLimit);
-            if (empty($availableFilesIdentifiers)) {
-                $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_file.uid', 0));
-            } else {
-                $queryBuilder->andWhere($queryBuilder->expr()->in('sys_file.uid', $availableFilesIdentifiers));
+            if (FilemanagerUtility::fileContentSearchEnabled()) {
+                $keywordContraints[] = $queryBuilder->expr()->like('filecontent.content', $keyword);
             }
         }
+        $queryBuilder->where(
+            $queryBuilder->expr()->or(...$keywordContraints),
+            $queryBuilder->expr()->like(
+                'sys_file.identifier',
+                '\'' . $queryBuilder->escapeLikeWildcards($root->getIdentifier()) . '%\''
+            )
+        );
 
-        return $this->buildQueryWithSorting($queryBuilder, $pluginNamespace)->execute();
+        return $this->buildQueryWithSorting($queryBuilder, $sort, $direction)->execute();
     }
 
     /**

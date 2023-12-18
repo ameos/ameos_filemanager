@@ -47,7 +47,7 @@ class CanWriteViewHelper extends AbstractConditionViewHelper
         if (is_a($arguments['file'], File::class)) {
             $granted = $accessService->canWriteFile($arguments['file']);
         }
-        
+
         return $granted;
     }
 }

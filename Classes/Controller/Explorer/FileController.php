@@ -47,7 +47,7 @@ class FileController extends ActionController
 
     /**
      * Edit file
-     * 
+     *
      * @return ResponseInterface
      */
     protected function editAction(): ResponseInterface
@@ -86,7 +86,7 @@ class FileController extends ActionController
             }
             if (!$hasError) {
                 $file = $this->fileService->update($file, $this->request, $this->settings);
-                
+
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'fileUpdated',
@@ -94,7 +94,7 @@ class FileController extends ActionController
                         [$this->request->getArgument('title')]
                     )
                 );
-    
+
                 return $this->redirect(
                     'index',
                     ExplorerController::CONTROLLER_KEY,

@@ -16,8 +16,7 @@ class AjaxController extends ActionController
     public function __construct(
         private readonly ResourceFactory $resourceFactory,
         private readonly FolderService $folderService
-    )
-    {
+    ) {
     }
 
     /**

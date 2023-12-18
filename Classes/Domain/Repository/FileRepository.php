@@ -121,7 +121,7 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * Search files in $root folder and subfolder
-     * 
+     *
      * @param Folder $folder
      * @param string $query
      * @param string $sort

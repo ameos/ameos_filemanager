@@ -9,7 +9,6 @@ use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent;
 use TYPO3\CMS\Core\Resource\Folder as ResourceFolder;
 
-
 class AfterFolderCopiedEventListener
 {
     /**
@@ -28,7 +27,6 @@ class AfterFolderCopiedEventListener
     public function __invoke(AfterFolderCopiedEvent $event): void
     {
         $this->index($event->getTargetFolder());
-        
     }
 
 

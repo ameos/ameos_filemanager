@@ -70,7 +70,7 @@ class UserService
             return $context->getPropertyFromAspect('frontend.user', 'groupIds');
         }
         return [];
-    }   
+    }
 
     /**
      * Returns available usergroup for current user
@@ -86,7 +86,7 @@ class UserService
                 null
             );
             $currentUserGroups = $this->getUserGroups();
-            
+
             $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_groups');
             $queryBuilder->select('*')->from('fe_groups');
             if ($settings['authorizedGroups']) {
@@ -100,9 +100,9 @@ class UserService
                     )
                 );
             }
-            $results = $queryBuilder->executeQuery()->fetchAllAssociative();            
-            
-            
+            $results = $queryBuilder->executeQuery()->fetchAllAssociative();
+
+
             foreach ($results as $index => $group) {
                 if (in_array($group['uid'], $currentUserGroups)) {
                     $usergroups[(int)$group['uid']] = $group['title'];

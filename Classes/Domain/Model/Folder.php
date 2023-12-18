@@ -260,7 +260,7 @@ class Folder extends ModelFolder
     {
         return $this->feGroupWrite ? $this->feGroupWrite : false;
     }
-    
+
     /**
      * @return array
      */

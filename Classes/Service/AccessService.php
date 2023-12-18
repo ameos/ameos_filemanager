@@ -37,10 +37,10 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($file->getNoReadAccess() && (int)$file->getFeUser() > 0 && (int)$file->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
+        }
+
         $fileGroups = $file->getFeGroupRead() ? array_map('intval', explode(',', $file->getFeGroupRead())) : [];
 
         // access for owner
@@ -50,12 +50,12 @@ class AccessService
             && (int)$file->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($fileGroups)
             || ($isLoggedIn && in_array(-1, $fileGroups))
             || (!$isLoggedIn && in_array(-2, $fileGroups))
             || !empty(array_intersect($fileGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 
@@ -72,10 +72,10 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($file->getNoWriteAccess() && (int)$file->getFeUser() > 0 && (int)$file->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
+        }
+
         $fileGroups = $file->getFeGroupWrite() ? array_map('intval', explode(',', $file->getFeGroupWrite())) : [];
 
         // access for owner
@@ -85,12 +85,12 @@ class AccessService
             && (int)$file->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($fileGroups)
             || ($isLoggedIn && in_array(-1, $fileGroups))
             || (!$isLoggedIn && in_array(-2, $fileGroups))
             || !empty(array_intersect($fileGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 
@@ -107,10 +107,10 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($folder->getNoReadAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
+        }
+
         $folderGroups = $folder->getFeGroupRead() ? array_map('intval', explode(',', $folder->getFeGroupRead())) : [];
 
         // access for owner
@@ -120,12 +120,12 @@ class AccessService
             && (int)$folder->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($folderGroups)
             || ($isLoggedIn && in_array(-1, $folderGroups))
             || (!$isLoggedIn && in_array(-2, $folderGroups))
             || !empty(array_intersect($folderGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 
@@ -142,10 +142,10 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
+        }
+
         $folderGroups = $folder->getFeGroupWrite() ? array_map('intval', explode(',', $folder->getFeGroupWrite())) : [];
 
         // access for owner
@@ -155,12 +155,12 @@ class AccessService
             && (int)$folder->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($folderGroups)
             || ($isLoggedIn && in_array(-1, $folderGroups))
             || (!$isLoggedIn && in_array(-2, $folderGroups))
             || !empty(array_intersect($folderGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 
@@ -177,11 +177,11 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
-        $folderGroups = $folder->getFeGroupAddfolder() 
+        }
+
+        $folderGroups = $folder->getFeGroupAddfolder()
             ? array_map('intval', explode(',', $folder->getFeGroupAddfolder()))
             : [];
 
@@ -192,12 +192,12 @@ class AccessService
             && (int)$folder->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($folderGroups)
             || ($isLoggedIn && in_array(-1, $folderGroups))
             || (!$isLoggedIn && in_array(-2, $folderGroups))
             || !empty(array_intersect($folderGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 
@@ -214,11 +214,11 @@ class AccessService
         $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
         if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
-            // access only for owner            
+            // access only for owner
             return false;
-        } 
-        
-        $folderGroups = $folder->getFeGroupAddfile() 
+        }
+
+        $folderGroups = $folder->getFeGroupAddfile()
             ? array_map('intval', explode(',', $folder->getFeGroupAddfile()))
             : [];
 
@@ -229,12 +229,12 @@ class AccessService
             && (int)$folder->getFeUser() === $userId;
 
         // access for user's group
-        $groupVerdict = 
+        $groupVerdict =
             empty($folderGroups)
             || ($isLoggedIn && in_array(-1, $folderGroups))
             || (!$isLoggedIn && in_array(-2, $folderGroups))
             || !empty(array_intersect($folderGroups, $userGroups));
-        
+
         return $ownerVerdict || $groupVerdict;
     }
 }

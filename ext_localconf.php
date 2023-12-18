@@ -32,4 +32,3 @@ ExtensionUtility::configurePlugin(
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][FileList::class] = ['className' => XClassFileList::class];
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][Category::class] = ['className' => XClassCategory::class];
-

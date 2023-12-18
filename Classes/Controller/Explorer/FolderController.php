@@ -47,7 +47,7 @@ class FolderController extends ActionController
         $this->assetService->addCommonAssets($this->settings);
 
         $isNewFolder = $this->request->getArgument(self::ARG_FOLDER) === 'new';
-        
+
         $fid = $this->request->getArgument(self::ARG_FOLDER) ? (int)$this->request->getArgument(self::ARG_FOLDER) : 0;
         $pid = $this->request->hasArgument(self::ARG_PARENT) ? (int)$this->request->getArgument(self::ARG_PARENT) : 0;
 

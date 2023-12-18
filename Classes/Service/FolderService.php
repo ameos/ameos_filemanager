@@ -65,7 +65,7 @@ class FolderService
     {
         $rootFolder = $this->getRootFolder($settings);
         $currentFolder = $folderIdentifier ? $this->folderRepository->findByUid($folderIdentifier) : $rootFolder;
-        
+
         // check if current folder is a child of root folder
         if (!$currentFolder || !$currentFolder->isChildOf($rootFolder->getUid())) {
             throw new AccessDeniedException(LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY));
@@ -154,7 +154,7 @@ class FolderService
 
     /**
      * create folder from request
-     * 
+     *
      * @param Folder $parent
      * @param RequestInterface $request
      * @param array $settings
@@ -189,7 +189,7 @@ class FolderService
 
     /**
      * update folder from request
-     * 
+     *
      * @param Folder $folder
      * @param RequestInterface $request
      * @param array $settings
@@ -253,7 +253,7 @@ class FolderService
 
     /**
      * reindex children folder after move
-     * 
+     *
      * @param Folder $folder
      * @return void
      */
@@ -315,7 +315,7 @@ class FolderService
         $this->folderRepository->add($folder);
         $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persitenceManager->persistAll();
-        
+
         foreach ($resourceFolder->getSubfolders() as $subFolder) {
             $this->moveResource($subFolder, $folder->getIdentifier());
         }
@@ -404,7 +404,7 @@ class FolderService
 
     /**
      * create physical folder and return title
-     * 
+     *
      * @param ResourceFolder $resourceFolder
      * @param string $title
      * @return string
@@ -422,7 +422,7 @@ class FolderService
 
     /**
      * rename physical folder and return new title
-     * 
+     *
      * @param ResourceFolder $resourceFolder
      * @param string $title
      * @return string
@@ -447,7 +447,7 @@ class FolderService
 
     /**
      * append suffix to folder name
-     * 
+     *
      * @param string $name
      * @return string
      */
@@ -461,7 +461,7 @@ class FolderService
 
     /**
      * populate folder from request
-     * 
+     *
      * @param Folder $folder
      * @param RequestInterface $request
      * @param array $settings

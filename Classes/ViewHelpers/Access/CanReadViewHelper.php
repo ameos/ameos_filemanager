@@ -47,7 +47,7 @@ class CanReadViewHelper extends AbstractConditionViewHelper
         if (is_a($arguments['file'], File::class)) {
             $granted = $accessService->canReadFile($arguments['file']);
         }
-        
+
         return $granted;
     }
 }

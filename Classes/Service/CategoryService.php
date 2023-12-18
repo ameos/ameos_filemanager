@@ -20,7 +20,6 @@ class CategoryService
         private readonly CategoryRepository $categoryRepository,
         private readonly ConnectionPool $connectionPool
     ) {
-        
     }
 
     /**
@@ -81,7 +80,7 @@ class CategoryService
         while ($categoryId = $results->fetchOne()) {
             $categoriesIds[] = $categoryId;
         }
-        return $this->getCategories($categoriesIds);            
+        return $this->getCategories($categoriesIds);
     }
 
     /**

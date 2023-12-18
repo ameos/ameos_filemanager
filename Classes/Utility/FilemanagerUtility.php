@@ -77,7 +77,7 @@ class FilemanagerUtility
 
     /**
      * return true if file content search is enable and tika installed
-     * 
+     *
      * @return bool
      */
     public static function fileContentSearchEnabled(): bool

@@ -15,7 +15,6 @@ class MassActionService
         private readonly FileService $fileService,
         private readonly FolderService $folderService
     ) {
-        
     }
 
     /**

@@ -79,7 +79,7 @@ class ExplorerController extends ActionController
             'allowed_actions_folders',
             GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
         );
-        
+
         if ($this->request->hasArgument(self::ARG_DIR)) {
             $this->view->assign('direction', $this->request->getArgument(self::ARG_DIR));
         }
@@ -98,7 +98,7 @@ class ExplorerController extends ActionController
             $contentId = (int)$this->request->getAttribute('currentContentObject')->data['uid'];
             $this->explorerService->updateDisplayMode($contentId, $this->request->getArgument(self::ARG_DISPLAYMODE));
         }
-        
+
         return $this->redirect(
             'index',
             null,
@@ -159,7 +159,7 @@ class ExplorerController extends ActionController
             'allowed_actions_folders',
             GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
         );
-        
+
         if ($this->request->hasArgument(self::ARG_DIR)) {
             $this->view->assign('direction', $this->request->getArgument(self::ARG_DIR));
         }

@@ -1,8 +1,8 @@
-(function() {
+(function () {
 
-    let FileManagerTree = (function(tree) {
+    let FileManagerTree = (function (tree) {
         if (tree) {
-            var parents = function(element, parentSelector) {
+            var parents = function (element, parentSelector) {
                 if (parentSelector === undefined) {
                     parentSelector = document;
                 }
@@ -21,10 +21,10 @@
                 return parents;
             };
 
-            var loadEventListener = function() {
+            var loadEventListener = function () {
                 var items = tree.querySelectorAll("a[data-action=expand]");
-                items.forEach(function(item, i) {
-                    item.addEventListener("click", function(event) {
+                items.forEach(function (item, i) {
+                    item.addEventListener("click", function (event) {
                         var ulparent = event.target.parentNode.parentNode.querySelector("ul");
                         ulparent.classList.toggle("active");
                         if (ulparent.classList.contains("active")) {
@@ -33,19 +33,18 @@
                         } else {
                             event.target.classList.add("fa-folder");
                             event.target.classList.remove("fa-folder-open");
-                        }                        
+                        }
                         event.preventDefault();
                     });
                 });
             };
 
             if (tree.querySelector(".current")) {
-                parents(tree.querySelector(".current"), tree).forEach(function(item, i, listItems) {
+                parents(tree.querySelector(".current"), tree).forEach(function (item, i, listItems) {
                     item.classList.add("active");
 
                     // listItems.length === 2 : Only one folder open, so it's the first one
-                    if ((item.nodeName === 'UL') && (listItems.length > 2))
-                    {
+                    if ((item.nodeName === 'UL') && (listItems.length > 2)) {
                         item.parentElement.querySelector("a[data-action=expand] i").classList.remove("fa-folder");
                         item.parentElement.querySelector("a[data-action=expand] i").classList.add("fa-folder-open");
                     }
@@ -57,11 +56,11 @@
     var tree = new FileManagerTree(document.querySelector('.tree'));
 
 
-    let FileManagerToolbar = (function(toolbar) {
+    let FileManagerToolbar = (function (toolbar) {
         if (toolbar) {
             var item = toolbar.querySelector("select[data-update-display]");
             if (item) {
-                item.addEventListener("change", function(event) {
+                item.addEventListener("change", function (event) {
                     event.target.parentNode.submit();
                 });
             }
@@ -69,10 +68,10 @@
     });
     var toolbar = new FileManagerToolbar(document.querySelector('.toolbar'));
 
-    let FileManagerMassaction = (function(massaction) {
+    let FileManagerMassaction = (function (massaction) {
         if (massaction) {
             massaction.querySelector("#targetfolder").style.display = "none";
-            massaction.querySelector("#massaction").addEventListener("change", function(event) {
+            massaction.querySelector("#massaction").addEventListener("change", function (event) {
                 if (event.target.value == "copy" || event.target.value == "move") {
                     massaction.querySelector("#targetfolder").style.display = "block";
                 } else {

@@ -256,6 +256,6 @@ return [
             'config'  => [
                 'type' => 'category',
             ],
-        ],        
+        ],
     ],
 ];

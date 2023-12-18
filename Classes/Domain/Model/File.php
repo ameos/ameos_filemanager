@@ -41,7 +41,7 @@ class File extends ModelFile
      */
     public function __construct()
     {
-        $this->categories = new ObjectStorage();   
+        $this->categories = new ObjectStorage();
     }
 
     /**
@@ -247,7 +247,7 @@ class File extends ModelFile
      */
     public function getNoReadAccess()
     {
-        return $this->getMetaData()->offsetGet('no_read_access')?? false;
+        return $this->getMetaData()->offsetGet('no_read_access') ?? false;
     }
 
     /**
@@ -255,7 +255,7 @@ class File extends ModelFile
      */
     public function getNoWriteAccess()
     {
-        return $this->getMetaData()->offsetGet('no_write_access')?? false;
+        return $this->getMetaData()->offsetGet('no_write_access') ?? false;
     }
 
     /**
@@ -309,6 +309,6 @@ class File extends ModelFile
     public function setCategories($categories)
     {
         $this->categories = $categories;
-        return $this;   
+        return $this;
     }
 }

@@ -71,7 +71,7 @@ class ExportController extends ActionController
 
         return $view->renderResponse('Backend/Export/Index');
     }
-    
+
     /**
      * Export action
      *
@@ -99,7 +99,7 @@ class ExportController extends ActionController
         echo '"' . LocalizationUtility::translate('export.extension', Configuration::EXTENSION_KEY) . '"' . "\n";
 
         $body = $request->getParsedBody();
-        
+
         $folders = [];
         $folders[] = (int)$body[self::ARG_FOLDER];
 
@@ -141,7 +141,7 @@ class ExportController extends ActionController
         if (isset($body[self::ARG_ENDTIME]) && preg_match('/\d{2}\.\d{2}\.\d{4}/i', $body[self::ARG_ENDTIME])) {
             $endDate = \DateTime::createFromFormat('d.m.Y H:i:s', $body[self::ARG_ENDTIME] . ' 23:59:59');
         }
-        
+
         while ($row = $statement->fetchAssociative()) {
             $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Configuration::TABLENAME_DOWNLOAD);
             $constraints = [$queryBuilder->expr()->eq(

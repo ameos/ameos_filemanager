@@ -154,7 +154,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * find subfolders
-     * 
+     *
      * @param Folder $folder
      * @param string $sort
      * @param string $direction

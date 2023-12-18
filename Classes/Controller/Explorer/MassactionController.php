@@ -108,7 +108,7 @@ class MassactionController extends ActionController
                 );
             }
         }
-        
+
     }
 
     protected function move()
@@ -145,7 +145,7 @@ class MassactionController extends ActionController
                 }
             }
 
-            
+
         }
     }
 
@@ -183,7 +183,7 @@ class MassactionController extends ActionController
                 }
             }
 
-            
+
         }
     }*/
 }

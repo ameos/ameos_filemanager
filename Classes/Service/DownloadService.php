@@ -38,7 +38,6 @@ class DownloadService
         private readonly StreamFactoryInterface $streamFactory,
         private readonly ResourceFactory $resourceFactory
     ) {
-        
     }
 
     /**
@@ -115,7 +114,7 @@ class DownloadService
             $zip->open($zipPath, \ZipArchive::CREATE);
             $this->addToZip($folder, $folder, $zip);
             $zip->close();
-            
+
             $response = new Response();
             $response = $response->withHeader('Content-Description', 'File Transfer');
             $response = $response->withHeader('Content-Type', mime_content_type($zipPath));
@@ -153,7 +152,7 @@ class DownloadService
         }
 
         $rootPath = $absoluteBasePath . $storage->getFolder($root->getIdentifier())->getReadablePath();
-        
+
         /** @var iterable<File> */
         $files = $this->fileRepository->findFilesForFolder($folder);
         foreach ($files as $file) {

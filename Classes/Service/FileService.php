@@ -56,7 +56,7 @@ class FileService
             foreach ($categories as $category) {
                 $storage->attach($category);
             }
-            
+
             $file->setCategories($storage);
         }
 
@@ -195,11 +195,11 @@ class FileService
             $properties['fe_group_write'] = is_array($groups) ? implode(',', $groups) : $groups;
         }
 
-        $properties['owner_has_read_access'] = 
+        $properties['owner_has_read_access'] =
             isset($settings['newFile']['owner_has_read_access'])
                 ? $settings['newFile']['owner_has_read_access']
                 : 1;
-        
+
         $properties['owner_has_write_access'] =
             isset($settings['newFile']['owner_has_write_access'])
                 ? $settings['newFile']['owner_has_write_access']
@@ -239,7 +239,7 @@ class FileService
 
     /**
      * search files in root folder
-     * 
+     *
      * @param Folder $root
      * @param string $query
      * @param string $sort

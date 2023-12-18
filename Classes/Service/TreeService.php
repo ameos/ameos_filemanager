@@ -34,7 +34,7 @@ class TreeService
             if (isset($treeItem['children']) && !empty($treeItem['children'])) {
                 $flatChildren = $this->flatten($treeItem['children'], $prefix . '--');
                 foreach ($flatChildren as $identifier => $label) {
-                    $flatten[$identifier] = $label;    
+                    $flatten[$identifier] = $label;
                 }
             }
         }
@@ -43,7 +43,7 @@ class TreeService
 
     /**
      * return folder tree (warning, recursive method)
-     * 
+     *
      * @param array<Folder> $folders
      * @return array
      */
@@ -61,13 +61,13 @@ class TreeService
 
             $tree[] = $item;
         }
-        
+
         return $tree;
     }
 
     /**
      * return folder children
-     * 
+     *
      * @param array<Folder> $folders
      * @param string $sort
      * @param string $direction
@@ -86,7 +86,7 @@ class TreeService
                 $this->folderRepository->findSubFolders($folder, $sort, $direction)->toArray()
             );
         }
-        
+
         return $children;
     }
 }

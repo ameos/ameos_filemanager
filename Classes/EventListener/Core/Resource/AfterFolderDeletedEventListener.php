@@ -42,7 +42,7 @@ class AfterFolderDeletedEventListener
             foreach ($folder->getSubfolders() as $subFolder) {
                 $this->unindex($subFolder);
             }
-            
+
             // todo unindex files
         }
     }

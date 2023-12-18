@@ -19,7 +19,7 @@ class FileList extends TYPO3FileList
 {
     protected function createEditDataUriForResource(ResourceInterface $resource): ?string
     {
-        if ($resource instanceof Folder) {            
+        if ($resource instanceof Folder) {
             /** @var QueryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');

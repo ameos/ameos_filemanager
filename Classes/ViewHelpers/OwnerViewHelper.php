@@ -43,7 +43,7 @@ class OwnerViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {       
+    ) {
         $ownerId = $arguments['object']->getFeuser();
         if ($ownerId) {
             $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);

@@ -37,7 +37,8 @@ class PreviewEventListener
             return;
         }
 
-        if ($event->getRecord()['CType'] === 'list'
+        if (
+            $event->getRecord()['CType'] === 'list'
             && $event->getRecord()['list_type'] === 'ameosfilemanager_fefilemanagerexplorer'
         ) {
             $flexform = $this->flexFormService->convertFlexFormContentToArray($event->getRecord()['pi_flexform']);
@@ -57,7 +58,7 @@ class PreviewEventListener
             } catch (\Exception $e) {
                 $folder = '';
             }
-            
+
 
             $view = GeneralUtility::makeInstance(StandaloneView::class);
             $view->setTemplatePathAndFilename(

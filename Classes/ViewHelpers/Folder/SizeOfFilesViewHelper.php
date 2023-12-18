@@ -17,7 +17,6 @@ class SizeOfFilesViewHelper extends AbstractViewHelper
      */
     public function __construct(private readonly FolderService $folderService)
     {
-        
     }
 
     /**

@@ -29,10 +29,11 @@ class UploadService
      *
      * @param Folder $folder
      * @param array<UploadedFile> $fileInfo
+     * @param array $settings
      * @param bool $isNew
      * @return array
      */
-    public function upload(Folder $folder, array $uploadedFiles, bool $isNew = true): array
+    public function upload(Folder $folder, array $uploadedFiles, array $settings, bool $isNew = true): array
     {
         $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
         $resourceFolder = $storage->getFolder($folder->getIdentifier());
@@ -49,6 +50,12 @@ class UploadService
                     $properties['fe_user_id'] = $this->userService->getUserId();
                 }
                 $properties['folder_uid'] = $folder->getUid();
+
+                $properties['owner_has_read_access'] = isset($settings['newFile']['owner_has_read_access'])
+                    ? $settings['newFile']['owner_has_read_access'] : 1;
+
+                $properties['owner_has_write_access'] = isset($settings['newFile']['owner_has_write_access'])
+                    ? $settings['newFile']['owner_has_write_access'] : 1;
 
                 $this->metaDataRepository->update($file->getUid(), $properties);
             }

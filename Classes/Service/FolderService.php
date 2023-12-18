@@ -117,7 +117,7 @@ class FolderService
      */
     public function loadByStorageAndIdentifier(ResourceStorage $storage, string $identifier): ?Folder
     {
-        $data = $this->folderRepository->findRawByStorageAndIdentifier($storage->getUid(), $identifier);
+        $data = $this->folderRepository->findOneRawByStorageAndIdentifier($storage->getUid(), $identifier);
         return $data ? $this->load((int)$data['uid']) : null;
     }
 

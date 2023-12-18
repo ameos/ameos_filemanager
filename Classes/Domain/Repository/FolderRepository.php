@@ -310,7 +310,24 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->from(Configuration::TABLENAME_FOLDER)
             ->where(
                 $queryBuilder->expr()->eq('storage', $queryBuilder->createNamedParameter($storage)),
-                $queryBuilder->expr()->eq('identifier', $queryBuilder->createNamedParameter($identifier))
+                $queryBuilder->expr()->like('identifier', $queryBuilder->createNamedParameter($identifier))
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    public function findOneRawByStorageAndIdentifier($storage, $identifier)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
+
+        $identifier = '/' . trim($identifier, '/') . '/';
+        return $queryBuilder
+            ->select('*')
+            ->from(Configuration::TABLENAME_FOLDER)
+            ->where(
+                $queryBuilder->expr()->eq('storage', $queryBuilder->createNamedParameter($storage)),
+                $queryBuilder->expr()->like('identifier', $queryBuilder->createNamedParameter($identifier))
             )
             ->executeQuery()
             ->fetchAssociative();

@@ -206,7 +206,7 @@ class FolderService
         );
 
         $folder->setTitle($title);
-        $folder->setIdentifier($folder->getIdentifier());
+        $folder->setIdentifier($folder->getParent()->getIdentifier() . $title . '/');
         $this->populateFolderFromRequest($folder, $request, $settings);
 
         $this->folderRepository->add($folder);

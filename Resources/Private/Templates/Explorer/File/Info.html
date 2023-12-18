@@ -39,7 +39,11 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "owner")}</td>
-                <td>{file.ownerUsername} TODO</td>
+                <td>
+                    <filemanager:owner object="{file}">
+                        {owner.username}
+                    </filemanager:owner>
+                </td>
             </tr>
             <tr>
                 <td>{f:translate(key: "createdAt")}</td>
@@ -51,7 +55,7 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "size")}</td>
-                <td>{filemanager:filesize(size: file.originalResource.size)}</td>
+                <td>{filemanager:file.filesize(size: file.originalResource.size)}</td>
             </tr>
             <tr>
                 <td>{f:translate(key: "description")}</td>

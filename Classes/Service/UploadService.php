@@ -50,7 +50,7 @@ class UploadService
                 }
                 $properties['folder_uid'] = $folder->getUid();
 
-                $this->metaDataRepository->update($file->getUid(), ['folder_uid' => $folder->getUid()]);
+                $this->metaDataRepository->update($file->getUid(), $properties);
             }
         }
 

@@ -39,7 +39,7 @@ class UserService
     {
         if ($this->isUserLoggedIn()) {
             $context = GeneralUtility::makeInstance(Context::class);
-            return (int)$context->getPropertyFromAspect('frontend.user', 'uid');
+            return (int)$context->getPropertyFromAspect('frontend.user', 'id');
         }
         return null;
     }

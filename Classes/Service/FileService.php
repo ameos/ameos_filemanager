@@ -246,8 +246,12 @@ class FileService
      * @param string $direction
      * @return QueryResult
      */
-    public function search(Folder $root, string $query, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
-    {
+    public function search(
+        Folder $root,
+        string $query,
+        string $sort = 'sys_file.name',
+        string $direction = 'ASC'
+    ): QueryResult {
         return $this->fileRepository->search($root, $query, $sort, $direction);
     }
 }

@@ -52,7 +52,11 @@ class FileList extends TYPO3FileList
     {
         if ($resourceView->editDataUri) {
             $button = GeneralUtility::makeInstance(LinkButton::class);
-            $button->setTitle($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.editMetadata'));
+            $button->setTitle(
+                $this
+                    ->getLanguageService()
+                    ->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.editMetadata')
+            );
             $button->setHref($resourceView->editDataUri);
             $button->setIcon($this->iconFactory->getIcon('actions-open', Icon::SIZE_SMALL));
 

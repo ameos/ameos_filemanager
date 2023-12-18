@@ -68,7 +68,9 @@ class FolderService
 
         // check if current folder is a child of root folder
         if (!$currentFolder || !$currentFolder->isChildOf($rootFolder->getUid())) {
-            throw new AccessDeniedException(LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY));
+            throw new AccessDeniedException(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY)
+            );
         }
 
         // check recursion TODO V12
@@ -79,7 +81,9 @@ class FolderService
                 $settings[Configuration::SETTINGS_RECURSION]
             )
         ) {
-            throw new TooMuchRecursionException(LocalizationUtility::translate('tooMuchRecursion', Configuration::EXTENSION_KEY));
+            throw new TooMuchRecursionException(LocalizationUtility::translate(
+                'tooMuchRecursion',
+                Configuration::EXTENSION_KEY));
         }*/
 
 

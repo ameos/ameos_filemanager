@@ -30,6 +30,7 @@ class FolderService
      * @param AccessService $accessService
      * @param CategoryService $categoryService
      * @param IndexationService $indexationService
+     * @param UserService $userService
      * @param ResourceFactory $resourceFactory
      */
     public function __construct(
@@ -38,6 +39,7 @@ class FolderService
         private readonly AccessService $accessService,
         private readonly CategoryService $categoryService,
         private readonly IndexationService $indexationService,
+        private readonly UserService $userService,
         private readonly ResourceFactory $resourceFactory
     ) {
     }
@@ -172,6 +174,10 @@ class FolderService
         $folder->setUidParent($parent->getUid());
         $folder->setIdentifier($parent->getIdentifier() . $title . '/');
         $folder->setTitle($title);
+        if ($this->userService->isUserLoggedIn()) {
+            $folder->setFeUser($this->userService->getUserId());
+        }
+
         $this->populateFolderFromRequest($folder, $request, $settings);
 
         $this->folderRepository->add($folder);

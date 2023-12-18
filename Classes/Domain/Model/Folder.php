@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
+use TYPO3\CMS\Extbase\Domain\Model\Folder as ModelFolder;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
+class Folder extends ModelFolder
 {
     /**
      * @var string
@@ -332,14 +333,6 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     public function getOwnerHasWriteAccess()
     {
         return $this->ownerHasWriteAccess;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOwnerUsername()
-    {
-        return $this->getFeUser() ? $this->getFeUser()->getUsername() : '';
     }
 
     /**

@@ -103,7 +103,13 @@ class FileService
     {
         $properties = $this->populatePropertiesFromRequest($request, $settings);
         $this->metaDataRepository->update($file->getUid(), $properties);
-        $this->categoryService->attachToFile(array_map('intval', $request->getArgument('categories')), $file);
+
+        $categories = $request->getArgument('categories');
+        if (!is_array($categories)) {
+            $categories = array_filter(explode(',', $categories));
+        }
+
+        $this->categoryService->attachToFile(array_map('intval', $categories), $file);
 
         $this->indexContent($file);
 
@@ -181,10 +187,12 @@ class FileService
         $properties['description'] = $request->getArgument('description');
         $properties['keywords'] = $request->getArgument('keywords');
         if ($request->hasArgument('fe_group_read')) {
-            $properties['fe_group_read'] = implode(',', $request->getArgument('fe_group_read'));
+            $groups = $request->getArgument('fe_group_read');
+            $properties['fe_group_read'] = is_array($groups) ? implode(',', $groups) : $groups;
         }
         if ($request->hasArgument('fe_group_write')) {
-            $properties['fe_group_write'] = implode(',', $request->getArgument('fe_group_write'));
+            $groups = $request->getArgument('fe_group_write');
+            $properties['fe_group_write'] = is_array($groups) ? implode(',', $groups) : $groups;
         }
 
         $properties['owner_has_read_access'] = 

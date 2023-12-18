@@ -26,7 +26,7 @@ class BeforeFolderMovedEventListener
     public function __invoke(BeforeFolderMovedEvent $event): void
     {
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            $this->folderService->move($event->getFolder(), $event->getTargetParentFolder()->getIdentifier());
+            $this->folderService->moveResource($event->getFolder(), $event->getTargetParentFolder()->getIdentifier());
         }
     }
 }

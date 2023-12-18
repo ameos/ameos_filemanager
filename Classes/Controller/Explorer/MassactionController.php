@@ -4,51 +4,84 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
+use Ameos\AmeosFilemanager\Service\MassActionService;
 use Ameos\AmeosFilemanager\Utility\FileUtility;
 use Ameos\AmeosFilemanager\Utility\FolderUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class MassactionController extends ActionController
 {
+    public const ARG_TARGETFOLDER = 'targetfolder';
+    public const ARG_SELECTEDFILES = 'selectedfiles';
+    public const ARG_SELECTEDFOLDERS = 'selectedfolders';
+    public const ARG_ACTION = 'massaction';
+
+    /**
+     * construct
+     * @param MassActionService $massActionService
+     */
+    public function __construct(private readonly MassActionService $massActionService)
+    {
+    }
+
     /**
      * Index action
+     *
+     * @return ResponseInterface
      */
-    protected function indexAction()
+    protected function indexAction(): ResponseInterface
     {
-        if ($this->request->hasArgument('massaction')) {
-            switch ($this->request->getArgument('massaction')) {
+        $selectedFolders = $selectedFiles = [];
+        if ($this->request->hasArgument(self::ARG_SELECTEDFOLDERS)) {
+            $selectedFolders = $this->request->getArgument(self::ARG_SELECTEDFOLDERS);
+        }
+        if ($this->request->hasArgument(self::ARG_SELECTEDFILES)) {
+            $selectedFiles = $this->request->getArgument(self::ARG_SELECTEDFILES);
+        }
+
+        $targetFolder = null;
+        if ($this->request->hasArgument(self::ARG_TARGETFOLDER)) {
+            $targetFolder = (int)$this->request->getArgument(self::ARG_TARGETFOLDER);
+        }
+
+        if ($this->request->hasArgument(self::ARG_ACTION)) {
+            switch ($this->request->getArgument(self::ARG_ACTION)) {
                 case 'remove':
-                    $this->remove();
+                    $this->massActionService->remove(
+                        empty($selectedFolders) ? [] : $selectedFolders,
+                        empty($selectedFiles) ? [] : $selectedFiles
+                    );
+                    $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', Configuration::EXTENSION_KEY));
                     break;
                 case 'copy':
-                    $this->copy();
+                    $this->massActionService->copy(
+                        empty($selectedFolders) ? [] : $selectedFolders,
+                        empty($selectedFiles) ? [] : $selectedFiles,
+                        $targetFolder
+                    );
+                    $this->addFlashMessage(LocalizationUtility::translate('fileCopied', Configuration::EXTENSION_KEY));
                     break;
                 case 'move':
-                    $this->move();
+                    $this->massActionService->move(
+                        empty($selectedFolders) ? [] : $selectedFolders,
+                        empty($selectedFiles) ? [] : $selectedFiles,
+                        $targetFolder
+                    );
+                    $this->addFlashMessage(LocalizationUtility::translate('fileMoved', Configuration::EXTENSION_KEY));
                     break;
                 default:
                     break;
             }
         }
 
-        $arguments = [];
-        if ($this->request->hasArgument(Configuration::FOLDER_ARGUMENT_KEY)) {
-            $arguments[Configuration::FOLDER_ARGUMENT_KEY]
-                = (int)$this->request->getArgument(Configuration::FOLDER_ARGUMENT_KEY);
-        }
-        $this->redirect(
-            Configuration::INDEX_ACTION_KEY,
-            Configuration::EXPLORER_CONTROLLER_KEY,
-            Configuration::EXTENSION_KEY,
-            $arguments
-        );
+        // TODO : retour sur même dossier
+        return $this->redirect('index', 'Explorer\\Explorer');
     }
 
-    /**
-     * Remove
-     */
+    /*
     protected function remove()
     {
         if (
@@ -75,12 +108,9 @@ class MassactionController extends ActionController
                 );
             }
         }
-        $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', Configuration::EXTENSION_KEY));
+        
     }
 
-    /**
-     * Move
-     */
     protected function move()
     {
         $targetFolder = $this->request->hasArgument(Configuration::TARGETFOLDER_ARGUMENT_KEY)
@@ -115,13 +145,10 @@ class MassactionController extends ActionController
                 }
             }
 
-            $this->addFlashMessage(LocalizationUtility::translate('fileMoved', Configuration::EXTENSION_KEY));
+            
         }
     }
 
-    /**
-     * Copy
-     */
     protected function copy()
     {
         $targetFolder = $this->request->hasArgument(Configuration::TARGETFOLDER_ARGUMENT_KEY)
@@ -156,7 +183,7 @@ class MassactionController extends ActionController
                 }
             }
 
-            $this->addFlashMessage(LocalizationUtility::translate('fileCopied', Configuration::EXTENSION_KEY));
+            
         }
-    }
+    }*/
 }

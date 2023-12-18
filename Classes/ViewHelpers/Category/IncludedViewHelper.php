@@ -30,6 +30,9 @@ class IncludedViewHelper extends AbstractConditionViewHelper
      */
     public static function verdict(array $arguments, RenderingContextInterface $renderingContext)
     {
+        if ($arguments['list'] === null) {
+            return false;
+        }
         return $arguments['list']->contains($arguments['category']);
     }
 }

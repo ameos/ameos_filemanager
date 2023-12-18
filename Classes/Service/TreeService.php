@@ -32,7 +32,10 @@ class TreeService
             $flatten[$folder->getUid()] = ($prefix == '' ? '' : $prefix . ' ') . $folder->getTitle();
 
             if (isset($treeItem['children']) && !empty($treeItem['children'])) {
-                $flatten = array_merge($flatten, $this->flatten($treeItem['children'], $prefix . '--'));
+                $flatChildren = $this->flatten($treeItem['children'], $prefix . '--');
+                foreach ($flatChildren as $identifier => $label) {
+                    $flatten[$identifier] = $label;    
+                }
             }
         }
         return $flatten;

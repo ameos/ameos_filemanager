@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Domain\Model;
 
-use Ameos\AmeosFilemanager\Enum\Configuration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
@@ -94,12 +90,12 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     protected $ownerHasWriteAccess;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\BackendUser
+     * @var int
      */
     protected $cruserId;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @var int
      */
     protected $feUserId;
 
@@ -291,7 +287,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUser
+     * @return int
      */
     public function getCruser()
     {
@@ -299,7 +295,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @return int
      */
     public function getFeUser()
     {
@@ -421,7 +417,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     /**
      * Setter for feUserId
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUserId
+     * @param int $feUserId
      */
     public function setFeUser($feUserId)
     {
@@ -431,7 +427,7 @@ class Folder extends \TYPO3\CMS\Extbase\Domain\Model\Folder
     /**
      * Setter for cruserId
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\BackendUser $cruserId
+     * @param int $cruserId
      */
     public function setCruser($cruserId)
     {

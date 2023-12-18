@@ -29,6 +29,7 @@ class FolderService
      * @param FileRepository $fileRepository
      * @param AccessService $accessService
      * @param CategoryService $categoryService
+     * @param IndexationService $indexationService
      * @param ResourceFactory $resourceFactory
      */
     public function __construct(
@@ -36,6 +37,7 @@ class FolderService
         private readonly FileRepository $fileRepository,
         private readonly AccessService $accessService,
         private readonly CategoryService $categoryService,
+        private readonly IndexationService $indexationService,
         private readonly ResourceFactory $resourceFactory
     ) {
     }
@@ -128,7 +130,7 @@ class FolderService
         $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
 
         if ($folder && $this->accessService->canWriteFolder($GLOBALS['TSFE']->fe_user->user, $folder)) {
-            $storage->deleteFolder($storage->getFolder($folder->getIdentifier()), true);
+            $storage->deleteFolder($this->loadResouceFolder($folder), true);
             $this->folderRepository->remove($folder);
             return true;
         }
@@ -237,20 +239,30 @@ class FolderService
     public function index(ResourceFolder $resourceFolder): Folder
     {
         $parent = $this->loadByResourceFolder($resourceFolder->getParentFolder());
+        $storage = $resourceFolder->getStorage();
+        $folderpath = $this->indexationService->getStorageRootpath($storage) . $parent->getIdentifier();
+        $this->indexationService->indexFolder($storage, $folderpath, $parent->getUid());
+        return $this->loadByResourceFolder($resourceFolder);
+    }
 
-        $title = $resourceFolder->getName();
+    /**
+     * reindex children folder after move
+     * 
+     * @param Folder $folder
+     * @return void
+     */
+    private function reindexChildren(Folder $folder): void
+    {
+        $children = $this->folderRepository->findBy(['uid_parent' => $folder->getUid()]);
+        foreach ($children as $child) {
+            $child->setIdentifier($folder->getIdentifier() . $child->getTitle() . '/');
 
-        $folder = new Folder();
-        $folder->setUidParent($parent->getUid());
-        $folder->setIdentifier($parent->getIdentifier() . $title . '/');
-        $folder->setTitle($title);
-        $folder->setStorage($resourceFolder->getStorage()->getUid());
+            $this->folderRepository->add($child);
+            $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+            $persitenceManager->persistAll();
 
-        $this->folderRepository->add($folder);
-        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-        $persitenceManager->persistAll();
-
-        return $folder;
+            $this->reindexChildren($child);
+        }
     }
 
     /**
@@ -273,20 +285,20 @@ class FolderService
         $persitenceManager->persistAll();
 
         foreach ($resourceFolder->getSubfolders() as $subFolder) {
-            $this->move($subFolder, $folder->getIdentifier());
+            $this->moveResource($subFolder, $folder->getIdentifier());
         }
 
         return $folder;
     }
 
     /**
-     * rename folder
+     * move resource folder
      *
      * @param ResourceFolder $resourceFolder
      * @param string $targetIdentifier
      * @return Folder
      */
-    public function move(ResourceFolder $resourceFolder, string $targetIdentifier): Folder
+    public function moveResource(ResourceFolder $resourceFolder, string $targetIdentifier): Folder
     {
         $target = $this->loadByStorageAndIdentifier($resourceFolder->getStorage(), $targetIdentifier);
         $folder = $this->loadByResourceFolder($resourceFolder);
@@ -299,10 +311,55 @@ class FolderService
         $persitenceManager->persistAll();
         
         foreach ($resourceFolder->getSubfolders() as $subFolder) {
-            $this->move($subFolder, $folder->getIdentifier());
+            $this->moveResource($subFolder, $folder->getIdentifier());
         }
 
         return $folder;
+    }
+
+    /**
+     * move resource folder
+     *
+     * @param Folder $folder
+     * @param Folder $target
+     * @return Folder
+     */
+    public function move(Folder $folder, Folder $target): Folder
+    {
+        $resourceFolder = $this->loadResouceFolder($folder);
+        $resourceTarget = $this->loadResouceFolder($target);
+
+        $folder->setUidParent($target->getUid());
+        $folder->setIdentifier($target->getIdentifier() . $resourceFolder->getName() . '/');
+
+        $this->folderRepository->add($folder);
+        $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persitenceManager->persistAll();
+
+        $storage = $resourceFolder->getStorage();
+        $storage->moveFolder($resourceFolder, $resourceTarget);
+
+        $this->reindexChildren($folder);
+
+        return $folder;
+    }
+
+    /**
+     * copy a folder
+     *
+     * @param Folder $folder
+     * @param Folder $target
+     * @return Folder
+     */
+    public function copy(Folder $folder, Folder $target): Folder
+    {
+        $resourceFolder = $this->loadResouceFolder($folder);
+        $resourceTarget = $this->loadResouceFolder($target);
+
+        $storage = $resourceFolder->getStorage();
+        $copiedFolder = $storage->copyFolder($resourceFolder, $resourceTarget);
+
+        return $this->index($copiedFolder);
     }
 
     /**
@@ -325,6 +382,18 @@ class FolderService
     public function getSizeOfFiles(Folder $folder): int
     {
         return $this->folderRepository->countFilesizeForFolder($folder);
+    }
+
+    /**
+     * load resource folder
+     *
+     * @param Folder $folder
+     * @return ResourceFolder
+     */
+    private function loadResouceFolder(Folder $folder): ResourceFolder
+    {
+        $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
+        return $storage->getFolder($folder->getIdentifier());
     }
 
     /**
@@ -416,10 +485,13 @@ class FolderService
             $folder->setArrayFeGroupAddfolder($request->getArgument('fe_group_addfolder'));
         }
         if ($request->hasArgument('categories')) {
-            $categories = $this->categoryService->getCategories($request->getArgument('categories'));
             $newCategories = new ObjectStorage();
-            foreach ($categories as $category) {
-                $newCategories->attach($category);
+            $categoriesIds = $request->getArgument('categories');
+            if (!empty($categoriesIds)) {
+                $categories = $this->categoryService->getCategories(empty($categoriesIds) ? [] : $categoriesIds);
+                foreach ($categories as $category) {
+                    $newCategories->attach($category);
+                }
             }
             $folder->setCategories($newCategories);
         }

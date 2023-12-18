@@ -9,6 +9,7 @@ use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\File as ResourceFile;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -26,13 +27,15 @@ class FileService
      * @param MetaDataRepository $metaDataRepository
      * @param UserService $userService
      * @param CategoryService $categoryService
+     * @param ConnectionPool $connectionPool
      */
     public function __construct(
         private readonly ResourceFactory $resourceFactory,
         private readonly FileRepository $fileRepository,
         private readonly MetaDataRepository $metaDataRepository,
         private readonly UserService $userService,
-        private readonly CategoryService $categoryService
+        private readonly CategoryService $categoryService,
+        private readonly ConnectionPool $connectionPool
     ) {
     }
 
@@ -108,6 +111,41 @@ class FileService
     }
 
     /**
+     * move file
+     *
+     * @param File $file
+     * @param Folder $targetFolder
+     */
+    public function move(File $file, Folder $targetFolder)
+    {
+        $storage = $file->getOriginalResource()->getStorage();
+        $folder = $storage->getFolder($targetFolder->getIdentifier());
+        $storage->moveFile($file, $folder);
+    }
+
+    /**
+     * copy file
+     *
+     * @param File $file
+     * @param Folder $targetFolder
+     * @return File
+     */
+    public function copy(File $file, Folder $targetFolder): File
+    {
+        $resourceFile = $file->getOriginalResource();
+        $storage = $resourceFile->getStorage();
+        $folder = $storage->getFolder($targetFolder->getIdentifier());
+        /** @var ResourceFile */
+        $newFile = $storage->copyFile($resourceFile, $folder);
+
+        $properties = $this->metaDataRepository->findByFile($resourceFile);
+        $properties['folder_uid'] = $targetFolder->getUid();
+        $this->metaDataRepository->update($newFile->getUid(), $properties);
+
+        return $this->load($file->getUid());
+    }
+
+    /**
      * return true if file is an image
      *
      * @param File $file
@@ -176,8 +214,7 @@ class FileService
                 $originalResource = $this->getOriginalFileResource($file);
                 $textExtractor = $textExtractorRegistry->getTextExtractor($originalResource);
                 if (!is_null($textExtractor)) {
-                    $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                    $connectionPool->getConnectionForTable(Configuration::TABLENAME_CONTENT)
+                    $this->connectionPool->getConnectionForTable(Configuration::TABLENAME_CONTENT)
                         ->insert(
                             Configuration::TABLENAME_CONTENT,
                             [

@@ -79,7 +79,7 @@ class FolderController extends ActionController
                     )
                 );
 
-                $this->redirect(
+                return $this->redirect(
                     'index',
                     ExplorerController::CONTROLLER_KEY,
                     null,

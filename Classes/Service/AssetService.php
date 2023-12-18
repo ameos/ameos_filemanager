@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\Service;
 
-use Ameos\AmeosFilemanager\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Core\Page\AssetCollector;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AssetService
 {

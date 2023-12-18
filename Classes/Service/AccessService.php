@@ -28,8 +28,7 @@ class AccessService
             $file->getNoReadAccess() // read/write only for owner
             && (
                 !isset($user['uid']) // no user authenticated
-                || !is_object($file->getFeUser()) // no owner
-                || $file->getFeUser()->getUid() != $user['uid'] // user is not the owner
+                || (int)$file->getFeUser() !== (int)$user['uid'] // user is not the owner
             )
         ) {
             $can = false;
@@ -37,8 +36,7 @@ class AccessService
             $user
             && $user['uid'] > 0
             && $file->getOwnerHasReadAccess()
-            && is_object($file->getFeUser())
-            && $file->getFeUser()->getUid() == $user['uid']
+            && (int)$file->getFeUser() === (int)$user['uid']
         ) {
             $can = true;
         } else {
@@ -63,8 +61,7 @@ class AccessService
             $file->getNoWriteAccess() // read/write only for owner
             && (
                 !isset($user['uid']) // no user authenticated
-                || !is_object($file->getFeUser()) // no owner
-                || $file->getFeUser()->getUid() != $user['uid'] // user is not the owner
+                || (int)$file->getFeUser() !== (int)$user['uid'] // user is not the owner
             )
         ) {
             $can = false;
@@ -72,8 +69,7 @@ class AccessService
             $user
             && $user['uid'] > 0
             && $file->getOwnerHasWriteAccess()
-            && is_object($file->getFeUser())
-            && $file->getFeUser()->getUid() == $user['uid']
+            && (int)$file->getFeUser() !== (int)$user['uid']
         ) {
             $can = true;
         } else {

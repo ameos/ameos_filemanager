@@ -103,6 +103,9 @@ class CategoryService
      */
     public function getCategories(array $uids): iterable
     {
+        if (empty($uids)) {
+            $uids = [0];
+        }
         $query = $this->categoryRepository->createQuery();
         return $query
             ->matching($query->in('uid', $uids))

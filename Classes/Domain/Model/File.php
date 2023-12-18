@@ -203,17 +203,11 @@ class File extends ModelFile
     }
 
     /**
-     * @return Tx_Extbase_Domain_Model_BackendUser
+     * @return int
      */
     public function getCruser()
     {
-        if ($this->cruser === false) {
-            $beUserRepository = GeneralUtility::makeInstance(
-                \TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository::class
-            );
-            $this->cruser = $beUserRepository->findByUid($this->getMetaData()->offsetGet('cruser_id'));
-        }
-        return $this->cruser;
+        return $this->getMetaData()->offsetGet('cruser_id');
     }
 
     /**
@@ -225,18 +219,11 @@ class File extends ModelFile
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @return int
      */
     public function getFeUser()
     {
-        return null;
-        /**
-         * TODO V12
-        if ($this->feuser === false) {
-            $this->feuser = $this->frontendUserRepository->findByUid($this->getMetaData()->offsetGet('fe_user_id'));
-        }
-        return $this->feuser;
-        */
+        return $this->getMetaData()->offsetGet('fe_user_id');
     }
 
     /**
@@ -293,14 +280,6 @@ class File extends ModelFile
     public function getOwnerReadOnly()
     {
         return $this->getMetaData()->offsetGet('owner_read_only') ?? false;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOwnerUsername()
-    {
-        return $this->getFeUser() ? $this->getFeUser()->getUsername() : '';
     }
 
     /**

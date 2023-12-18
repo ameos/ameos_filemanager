@@ -61,7 +61,7 @@ class IndexationService
      * @param int $uidParent his parent's uid
      * @return void
      */
-    protected function indexFolder(ResourceStorage $storage, string $folder, int $uidParent = 0): void
+    public function indexFolder(ResourceStorage $storage, string $folder, int $uidParent = 0): void
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
         $queryBuilder->getRestrictions()->removeAll();
@@ -247,7 +247,7 @@ class IndexationService
      * @param ResourceStorage $storage
      * @return string
      */
-    protected function getStorageRootpath(ResourceStorage $storage): string
+    public function getStorageRootpath(ResourceStorage $storage): string
     {
         if ($storage->getConfiguration()['pathType'] == 'relative') {
             return Environment::getPublicPath() . '/' . $storage->getConfiguration()['basePath'];

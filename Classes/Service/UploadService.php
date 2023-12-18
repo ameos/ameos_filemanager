@@ -15,11 +15,13 @@ class UploadService
     /**
      * @param ResourceFactory $resourceFactory
      * @param UserService $userService
+     * @param FileService $fileService
      * @param MetaDataRepository $metaDataRepository
      */
     public function __construct(
         private readonly ResourceFactory $resourceFactory,
         private readonly UserService $userService,
+        private readonly FileService $fileService,
         private readonly MetaDataRepository $metaDataRepository
     ) {
     }
@@ -39,11 +41,14 @@ class UploadService
         $resourceFolder = $storage->getFolder($folder->getIdentifier());
         foreach ($uploadedFiles as $uploadedFile) {
             /** @var File */
-            $file = $storage->addFile(
+            $resourceFile = $storage->addFile(
                 $uploadedFile->getTemporaryFileName(),
                 $resourceFolder,
                 $uploadedFile->getClientFilename()
             );
+
+            $file = $this->fileService->load((int)$resourceFile->getUid());
+            $this->fileService->indexContent($file);
 
             if ($isNew) {
                 if ($this->userService->isUserLoggedIn()) {

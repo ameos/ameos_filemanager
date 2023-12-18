@@ -57,7 +57,7 @@ class UploadService
         if (isset($file) && $file) {
             return [
                 'success' => true,
-                'file' => $file->getIdentifier()
+                'file' => $file->getUid()
             ];
         } else {
             return [

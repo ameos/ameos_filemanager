@@ -188,11 +188,12 @@ class FileController extends ActionController
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            throw new PropagateResponseException(
-                new JsonResponse(
-                    $this->uploadService->upload($folder, $GLOBALS['TYPO3_REQUEST']->getUploadedFiles(), true)
-                )
-            );
+            $data = $this->uploadService->upload($folder, $GLOBALS['TYPO3_REQUEST']->getUploadedFiles(), true);
+            if ($data['success']) {
+                $data['editUri'] = $this->uriBuilder->reset()->uriFor('edit', [self::ARG_FILE => $data['file']]);
+                $data['infoUri'] = $this->uriBuilder->reset()->uriFor('info', [self::ARG_FILE => $data['file']]);
+            }
+            throw new PropagateResponseException(new JsonResponse($data));
         }
 
         $this->view->assign('folder', $folder);

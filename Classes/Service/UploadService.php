@@ -57,6 +57,9 @@ class UploadService
                 $properties['owner_has_write_access'] = isset($settings['newFile']['owner_has_write_access'])
                     ? $settings['newFile']['owner_has_write_access'] : 1;
 
+                $properties['fe_group_read'] = $folder->getFeGroupRead();
+                $properties['fe_group_write'] = $folder->getFeGroupWrite();
+
                 $this->metaDataRepository->update($file->getUid(), $properties);
             }
         }

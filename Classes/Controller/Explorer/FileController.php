@@ -165,6 +165,8 @@ class FileController extends ActionController
             );
         }
 
+        $this->view->assign('folder', $folder);
+
         return $this->htmlResponse();
     }
 

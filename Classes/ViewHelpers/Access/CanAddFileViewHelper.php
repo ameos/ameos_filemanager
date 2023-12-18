@@ -30,6 +30,6 @@ class CanAddFileViewHelper extends AbstractConditionViewHelper
     public static function verdict(array $arguments, RenderingContextInterface $renderingContext)
     {
         $accessService = GeneralUtility::makeInstance(AccessService::class);
-        return $accessService->canAddFile($GLOBALS['TSFE']->fe_user->user, $arguments['folder']);
+        return $accessService->canAddFile($arguments['folder']);
     }
 }

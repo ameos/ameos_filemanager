@@ -6,216 +6,235 @@ namespace Ameos\AmeosFilemanager\Service;
 
 use Ameos\AmeosFilemanager\Domain\Model\File;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
-use Ameos\AmeosFilemanager\Domain\Repository\FileRepository;
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
-use Ameos\AmeosFilemanager\Enum\Access;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AccessService
 {
     /**
+     * @var Context
+     */
+    private Context $context;
+
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->context = GeneralUtility::makeInstance(Context::class);
+    }
+
+    /**
      * return true if $user can read $file
-     * @param ?array $user
+     *
      * @param File $file
      * @return bool
      */
-    public function canReadFile(?array $user, File $file): bool
+    public function canReadFile(File $file): bool
     {
-        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $file->getNoReadAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || (int)$file->getFeUser() !== (int)$user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $file->getOwnerHasReadAccess()
-            && (int)$file->getFeUser() === (int)$user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $fileRepository->findByUid($file->getUid()) ? true : false;
-        }
+        if ($file->getNoReadAccess() && (int)$file->getFeUser() > 0 && (int)$file->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $fileGroups = $file->getFeGroupRead() ? array_map('intval', explode(',', $file->getFeGroupRead())) : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $file->getOwnerHasReadAccess()
+            && (int)$file->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$file->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($fileGroups)
+            || ($isLoggedIn && in_array(-1, $fileGroups))
+            || (!$isLoggedIn && in_array(-2, $fileGroups))
+            || !empty(array_intersect($fileGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 
     /**
      * return true if $user can write $file
-     * @param ?array $user
+     *
      * @param File $file
      * @return bool
      */
-    public function canWriteFile(?array $user, File $file): bool
+    public function canWriteFile(File $file): bool
     {
-        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $file->getNoWriteAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || (int)$file->getFeUser() !== (int)$user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $file->getOwnerHasWriteAccess()
-            && (int)$file->getFeUser() !== (int)$user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $fileRepository->findByUid($file->getUid(), Access::ACCESS_WRITE) ? true : false;
-        }
+        if ($file->getNoWriteAccess() && (int)$file->getFeUser() > 0 && (int)$file->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $fileGroups = $file->getFeGroupWrite() ? array_map('intval', explode(',', $file->getFeGroupWrite())) : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $file->getOwnerHasWriteAccess()
+            && (int)$file->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$file->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($fileGroups)
+            || ($isLoggedIn && in_array(-1, $fileGroups))
+            || (!$isLoggedIn && in_array(-2, $fileGroups))
+            || !empty(array_intersect($fileGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 
     /**
      * return true if $user can read $folder
-     * @param ?array $user
+     *
      * @param Folder $folder
      * @return bool
      */
-    public function canReadFolder(?array $user, Folder $folder): bool
+    public function canReadFolder(Folder $folder): bool
     {
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $folder->getNoReadAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || !is_object($folder->getFeUser()) // no owner
-                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $folder->getOwnerHasReadAccess()
-            && is_object($folder->getFeUser())
-            && $folder->getFeUser()->getUid() == $user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $folderRepository->findByUid($folder->getUid()) ? true : false;
-        }
+        if ($folder->getNoReadAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $folderGroups = $folder->getFeGroupRead() ? array_map('intval', explode(',', $folder->getFeGroupRead())) : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $folder->getOwnerHasReadAccess()
+            && (int)$folder->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$folder->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($folderGroups)
+            || ($isLoggedIn && in_array(-1, $folderGroups))
+            || (!$isLoggedIn && in_array(-2, $folderGroups))
+            || !empty(array_intersect($folderGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 
     /**
      * return true if $user can write $folder
-     * @param ?array $user
+     *
      * @param Folder $folder
      * @return bool
      */
-    public function canWriteFolder(?array $user, Folder $folder): bool
+    public function canWriteFolder(Folder $folder): bool
     {
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $folder->getNoWriteAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || !is_object($folder->getFeUser()) // no owner
-                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $folder->getOwnerHasWriteAccess()
-            && is_object($folder->getFeUser())
-            && $folder->getFeUser()->getUid() == $user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $folderRepository->findByUid($folder->getUid(), Access::ACCESS_WRITE) ? true : false;
-        }
+        if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $folderGroups = $folder->getFeGroupWrite() ? array_map('intval', explode(',', $folder->getFeGroupWrite())) : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $folder->getOwnerHasWriteAccess()
+            && (int)$folder->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$folder->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($folderGroups)
+            || ($isLoggedIn && in_array(-1, $folderGroups))
+            || (!$isLoggedIn && in_array(-2, $folderGroups))
+            || !empty(array_intersect($folderGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 
     /**
      * return true if $user can add folder in $folder
-     * @param ?array $user
+     *
      * @param Folder $folder
      * @return bool
      */
-    public function canAddFolder(?array $user, Folder $folder): bool
+    public function canAddFolder(Folder $folder): bool
     {
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $folder->getNoWriteAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || !is_object($folder->getFeUser()) // no owner
-                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $folder->getOwnerHasWriteAccess()
-            && is_object($folder->getFeUser())
-            && $folder->getFeUser()->getUid() == $user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $folderRepository->findByUid($folder->getUid(), Access::ACCESS_ADDFOLDER) ? true : false;
-        }
+        if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $folderGroups = $folder->getFeGroupAddfolder() 
+            ? array_map('intval', explode(',', $folder->getFeGroupAddfolder()))
+            : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $folder->getOwnerHasWriteAccess()
+            && (int)$folder->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$folder->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($folderGroups)
+            || ($isLoggedIn && in_array(-1, $folderGroups))
+            || (!$isLoggedIn && in_array(-2, $folderGroups))
+            || !empty(array_intersect($folderGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 
     /**
      * return true if $user can add file in $folder
-     * @param ?array $user
+     *
      * @param Folder $folder
      * @return bool
      */
-    public function canAddFile(?array $user, Folder $folder): bool
+    public function canAddFile(Folder $folder): bool
     {
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        $can = false;
+        $isLoggedIn = $this->context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userGroups = $this->context->getPropertyFromAspect('frontend.user', 'groupIds');
+        $userId = (int)$this->context->getPropertyFromAspect('frontend.user', 'id');
 
-        if (
-            $folder->getNoWriteAccess() // read/write only for owner
-            && (
-                !isset($user['uid']) // no user authenticated
-                || !is_object($folder->getFeUser()) // no owner
-                || $folder->getFeUser()->getUid() != $user['uid'] // user is not the owner
-            )
-        ) {
-            $can = false;
-        } elseif (
-            $user
-            && $user['uid'] > 0
-            && $folder->getOwnerHasWriteAccess()
-            && is_object($folder->getFeUser())
-            && $folder->getFeUser()->getUid() == $user['uid']
-        ) {
-            $can = true;
-        } else {
-            $can = $folderRepository->findByUid($folder->getUid(), Access::ACCESS_ADDFILE) ? true : false;
-        }
+        if ($folder->getNoWriteAccess() && (int)$folder->getFeUser() > 0 && (int)$folder->getFeUser() === $userId) {
+            // access only for owner            
+            return false;
+        } 
+        
+        $folderGroups = $folder->getFeGroupAddfile() 
+            ? array_map('intval', explode(',', $folder->getFeGroupAddfile()))
+            : [];
 
-        return $can;
+        // access for owner
+        $ownerVerdict = $folder->getOwnerHasWriteAccess()
+            && (int)$folder->getFeUser() > 0
+            && $isLoggedIn
+            && (int)$folder->getFeUser() === $userId;
+
+        // access for user's group
+        $groupVerdict = 
+            empty($folderGroups)
+            || ($isLoggedIn && in_array(-1, $folderGroups))
+            || (!$isLoggedIn && in_array(-2, $folderGroups))
+            || !empty(array_intersect($folderGroups, $userGroups));
+        
+        return $ownerVerdict || $groupVerdict;
     }
 }

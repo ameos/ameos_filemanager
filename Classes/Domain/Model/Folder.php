@@ -232,6 +232,14 @@ class Folder extends ModelFolder
     }
 
     /**
+     * @return string
+     */
+    public function getFeGroupRead()
+    {
+        return $this->feGroupRead ? $this->feGroupRead : false;
+    }
+
+    /**
      * @return array
      */
     public function getArrayFeGroupRead()
@@ -245,6 +253,14 @@ class Folder extends ModelFolder
         return $res;
     }
 
+    /**
+     * @return string
+     */
+    public function getFeGroupWrite()
+    {
+        return $this->feGroupWrite ? $this->feGroupWrite : false;
+    }
+    
     /**
      * @return array
      */
@@ -260,6 +276,14 @@ class Folder extends ModelFolder
     }
 
     /**
+     * @return string
+     */
+    public function getFeGroupAddfolder()
+    {
+        return $this->feGroupAddfolder ? $this->feGroupAddfolder : false;
+    }
+
+    /**
      * @return array
      */
     public function getArrayFeGroupAddfolder()
@@ -271,6 +295,15 @@ class Folder extends ModelFolder
             }
         }
         return $res;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getFeGroupAddfile()
+    {
+        return $this->feGroupAddfile ? $this->feGroupAddfile : false;
     }
 
     /**

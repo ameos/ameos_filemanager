@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
-use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -256,47 +255,6 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $where = ' AND (' . $ownerOnlyField . ' = 0 ' . $enableFieldsWithFeGroup . ')';
         }
         return $where;
-    }
-
-    public function findByUid($folderUid, $accessMode = Access::ACCESS_READ): Folder
-    {
-        if (empty($folderUid)) {
-            return 0;
-        }
-        // if write mode is set, we change the fegroup enablecolumns value to match the write column in the bdd
-        switch ($accessMode) {
-            case 'read':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_read';
-                break;
-            case 'write':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_write';
-                break;
-            case 'addfile':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_addfile';
-                break;
-            case 'addfolder':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_addfolder';
-                break;
-            default:
-                break;
-        }
-
-        $writeMode = $accessMode == 'read' ? false : true;
-        /** @var Query */
-        $query = $this->createQuery();
-        $where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
-        $where .= $this->getModifiedEnabledFields($writeMode);
-        $query->statement('SELECT * FROM tx_ameosfilemanager_domain_model_folder WHERE ' . $where, []);
-
-        // Don't forget to change back to read right once the deed is done
-        $GLOBALS['TCA'][Configuration::TABLENAME_FOLDER]['ctrl']['enablecolumns']['fe_group']
-            = 'fe_group_read';
-
-        return $query->execute()->getFirst();
     }
 
     public function findRawByStorageAndIdentifier($storage, $identifier)

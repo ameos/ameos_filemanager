@@ -30,6 +30,6 @@ class CanAddFolderViewHelper extends AbstractConditionViewHelper
     public static function verdict(array $arguments, RenderingContextInterface $renderingContext)
     {
         $accessService = GeneralUtility::makeInstance(AccessService::class);
-        return $accessService->canAddFolder($GLOBALS['TSFE']->fe_user->user, $arguments['folder']);
+        return $accessService->canAddFolder($arguments['folder']);
     }
 }

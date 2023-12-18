@@ -42,10 +42,10 @@ class CanReadViewHelper extends AbstractConditionViewHelper
 
         $granted = false;
         if (is_a($arguments['folder'], Folder::class)) {
-            $granted = $accessService->canReadFolder($GLOBALS['TSFE']->fe_user->user, $arguments['folder']);
+            $granted = $accessService->canReadFolder($arguments['folder']);
         }
         if (is_a($arguments['file'], File::class)) {
-            $granted = $accessService->canReadFile($GLOBALS['TSFE']->fe_user->user, $arguments['file']);
+            $granted = $accessService->canReadFile($arguments['file']);
         }
         
         return $granted;

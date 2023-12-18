@@ -20,6 +20,20 @@ class UserService
     }
 
     /**
+     * return user by uid
+     *
+     * @param int $id
+     * @return array|false
+     */
+    public function retrieveUser(int $id): array|false
+    {
+        return $this->connectionPool
+            ->getConnectionForTable('fe_users')
+            ->select(['*'], 'fe_users', ['uid' => $id])
+            ->fetchAssociative();
+    }
+
+    /**
      * Check if user is logged in
      *
      * @return bool

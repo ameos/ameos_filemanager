@@ -6,9 +6,7 @@ namespace Ameos\AmeosFilemanager\Domain\Repository;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
-use Ameos\AmeosFilemanager\Enum\Access;
 use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -86,9 +84,9 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->select('file')
             ->from('sys_file_metadata')
             ->where($queryBuilder->expr()->in('folder_uid', $folders))
-            ->execute();
+            ->executeQuery();
 
-        while ($file = $statement->fetch()) {
+        while ($file = $statement->fetchAssociative()) {
             $files[] = $file['file'];
         }
 
@@ -101,10 +99,10 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 ->select('uid')
                 ->from(Configuration::TABLENAME_FOLDER)
                 ->where($queryBuilder->expr()->in('uid_parent', $folders))
-                ->execute();
+                ->executeQuery();
 
             $childs = [];
-            while ($folder = $statement->fetch()) {
+            while ($folder = $statement->fetchAssociative()) {
                 $childs[] = $folder['uid'];
             }
             if (!empty($childs)) {
@@ -197,70 +195,6 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $this->buildQueryWithSorting($queryBuilder, $sort, $direction)->execute();
-    }
-
-    /**
-     * return file by uid
-     * @param int $fileUid file uid
-     * @param string $access
-     */
-    public function findByUid($fileUid, $access = Access::ACCESS_READ)
-    {
-        if (empty($fileUid)) {
-            return 0;
-        }
-
-        $context = GeneralUtility::makeInstance(Context::class);
-
-        // filter by uid
-        $where = 'sys_file.uid = ' . (int)$fileUid;
-
-        // check group access
-        $column = $access === Access::ACCESS_WRITE ? 'fe_group_write' : 'fe_group_read';
-        $userGroups = $context->getPropertyFromAspect('frontend.user', 'groupIds');
-        $where .= ' AND (
-            ( 
-                sys_file_metadata.' . $column . ' = \'\' 
-                OR sys_file_metadata.' . $column . ' IS NULL 
-                OR sys_file_metadata.' . $column . ' = 0';
-
-        foreach ($userGroups as $userGroup) {
-            $where .= ' OR FIND_IN_SET(' . $userGroup . ', sys_file_metadata.' . $column . ')';
-        }
-        $where .= ')';
-
-        // check owner access
-        if ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
-            $ownerAccessField = $access === Access::ACCESS_WRITE ? 'owner_has_write_access' : 'owner_has_read_access';
-            $where .= ' OR (
-                sys_file_metadata.fe_user_id = ' . (int)$GLOBALS['TSFE']->fe_user->user['uid'] . '
-                AND sys_file_metadata.' . $ownerAccessField . ' = 1
-            )';
-        }
-
-        // clause access right
-        $where .= ')';
-
-        /** @var Query */
-        $query = $this->createQuery();
-        $query->statement(
-            '
-            SELECT
-                distinct sys_file.uid,
-                sys_file_metadata.folder_uid,
-                sys_file_metadata.uid as metadatauid
-            FROM
-                sys_file_metadata
-                INNER JOIN sys_file ON sys_file_metadata.file=sys_file.uid
-            WHERE
-                ' . $where . '
-            ORDER BY
-                metadatauid DESC 
-            ',
-            []
-        );
-
-        return $query->execute()->getFirst();
     }
 
     /**

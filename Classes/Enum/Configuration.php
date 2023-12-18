@@ -16,4 +16,5 @@ class Configuration
     public const TABLENAME_CONTENT = 'tx_ameosfilemanager_domain_model_filecontent';
     public const TABLENAME_DOWNLOAD = 'tx_ameosfilemanager_domain_model_filedownload';
     public const TABLENAME_FILEMETADATA = 'sys_file_metadata';
+    public const TABLENAME_FILE = 'sys_file';
 }

@@ -1,8 +1,8 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
+defined('TYPO3') or die('Access denied');
 
 $ll = 'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_db.xlf:tx_ameosfilemanager_domain_model_file';
 $corell = 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf';
@@ -118,15 +118,16 @@ $additionalColumnsMetadata = [
 ];
 
 $GLOBALS['TCA']['sys_file_metadata']['palettes']['owner'] = [
-    'showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,no_read_access,owner_has_write_access,no_write_access',
+    'showitem' => 'fe_user_id,--linebreak--,owner_has_read_access,
+        no_read_access,owner_has_write_access,no_write_access',
 ];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $additionalColumnsMetadata);
+ExtensionManagementUtility::addToAllTCAtypes(
     'sys_file_metadata',
     '--div--;' . $ll . '.accessright,--palette--;;owner,fe_group_read,fe_group_write'
 );
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+ExtensionManagementUtility::addToAllTCAtypes(
     'sys_file_metadata',
     'keywords',
     '',

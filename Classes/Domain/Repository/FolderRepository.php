@@ -1,28 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Domain\Repository;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     protected $defaultOrderings = [
-        'crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
+        'crdate' => QueryInterface::ORDER_DESCENDING,
     ];
 
     /**
@@ -43,8 +36,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function requestUpdate($uid, $field_values)
     {
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(Configuration::FOLDER_TABLENAME)
-            ->update(Configuration::FOLDER_TABLENAME, $field_values, ['uid' => $uid]);
+            ->getConnectionForTable(Configuration::TABLENAME_FOLDER)
+            ->update(Configuration::TABLENAME_FOLDER, $field_values, ['uid' => $uid]);
     }
 
     /**
@@ -61,9 +54,9 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             );
 
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(Configuration::FOLDER_TABLENAME)
+            ->getConnectionForTable(Configuration::TABLENAME_FOLDER)
             ->delete(
-                Configuration::FOLDER_TABLENAME,
+                Configuration::TABLENAME_FOLDER,
                 ['uid' => (int)$uid]
             );
     }
@@ -75,16 +68,16 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function requestInsert($insertArray)
     {
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(Configuration::FOLDER_TABLENAME)
-            ->insert(Configuration::FOLDER_TABLENAME, $insertArray);
+            ->getConnectionForTable(Configuration::TABLENAME_FOLDER)
+            ->insert(Configuration::TABLENAME_FOLDER, $insertArray);
     }
 
     /**
      * count total files size for a folder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param Folder $folder
      * @return int
      */
-    public function countFilesizeForFolder($folder)
+    public function countFilesizeForFolder(Folder $folder): int
     {
         if (!$folder) {
             return 0;
@@ -92,11 +85,11 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('sys_file');
-        return $queryBuilder
+        return (int)$queryBuilder
             ->addSelectLiteral($queryBuilder->expr()->sum('file.size', 'total_size'))
             ->from('sys_file', 'file')
             ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
-            ->join('metadata', Configuration::FOLDER_TABLENAME, 'folder', 'metadata.folder_uid = folder.uid')
+            ->join('metadata', Configuration::TABLENAME_FOLDER, 'folder', 'metadata.folder_uid = folder.uid')
             ->where(
                 $queryBuilder->expr()->eq('file.storage', $folder->getStorage()),
                 $queryBuilder->expr()->like(
@@ -104,16 +97,16 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->createNamedParameter($folder->getIdentifier() . '%')
                 )
             )
-            ->execute()
-            ->fetchColumn(0);
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
      * count file for a folder
-     * @param \Ameos\AmeosFilemanager\Domain\Model\Folder $folder
+     * @param Folder $folder
      * @return int
      */
-    public function countFilesForFolder($folder)
+    public function countFilesForFolder(Folder $folder): int
     {
         if (!$folder) {
             return 0;
@@ -121,11 +114,11 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('sys_file');
-        return $queryBuilder
+        return (int)$queryBuilder
             ->count('file.uid')
             ->from('sys_file', 'file')
             ->join('file', 'sys_file_metadata', 'metadata', 'metadata.file = file.uid')
-            ->join('metadata', Configuration::FOLDER_TABLENAME, 'folder', 'metadata.folder_uid = folder.uid')
+            ->join('metadata', Configuration::TABLENAME_FOLDER, 'folder', 'metadata.folder_uid = folder.uid')
             ->where(
                 $queryBuilder->expr()->eq('file.storage', $folder->getStorage()),
                 $queryBuilder->expr()->like(
@@ -133,8 +126,8 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->createNamedParameter($folder->getIdentifier() . '%')
                 )
             )
-            ->execute()
-            ->fetchColumn(0);
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
@@ -149,58 +142,51 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             return 0;
         }
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(Configuration::FOLDER_TABLENAME);
+            ->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
 
         return $queryBuilder
             ->count('folder.*')
-            ->from(Configuration::FOLDER_TABLENAME, 'folder')
+            ->from(Configuration::TABLENAME_FOLDER, 'folder')
             ->where($queryBuilder->expr()->eq('uid_parent', (int)$folderUid))
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchOne();
     }
 
-    public function getSubFolderFromFolder($folderUid)
+    /**
+     * find subfolders
+     *
+     * @param Folder $folder
+     * @param string $sort
+     * @param string $direction
+     * @return QueryResult
+     */
+    public function findSubFolders(Folder $folder, string $sort = 'sys_file.name', string $direction = 'ASC'): QueryResult
     {
-        if (empty($folderUid)) {
-            return 0;
-        }
+        /** @var Query */
         $query = $this->createQuery();
-        $where = 'tx_ameosfilemanager_domain_model_folder.uid_parent = ' . (int)$folderUid;
+        $where = 'tx_ameosfilemanager_domain_model_folder.uid_parent = ' . (int)$folder->getUid();
         $where .= $this->getModifiedEnabledFields();
 
-        // Sort folders
-        if (
-            isset($GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-            && is_array($GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-            && array_key_exists('pluginNamespace', $GLOBALS['TSFE']->register['tx_ameosfilemanager'])
-        ) {
-            $get = GeneralUtility::_GET($GLOBALS['TSFE']->register['tx_ameosfilemanager']['pluginNamespace']);
-            if (isset($get['sort'])) {
-                $availableSorting = [
-                    'sys_file.name' => 'title',
-                    'sys_file.creation_date' => 'crdate',
-                    'sys_file.modification_date' => 'tstamp',
-                    'sys_file.tstamp' => 'tstamp',
-                    'sys_file.crdate' => 'crdate',
-                    'sys_file_metadata.tstamp' => 'tstamp',
-                    'sys_file_metadata.crdate' => 'crdate',
-                    'sys_file_metadata.description' => 'description',
-                    'sys_file_metadata.title' => 'title',
-                    'sys_file_metadata.categories' => 'categories',
-                    'sys_file_metadata.keywords' => 'keywords',
-                    'fe_users.name' => 'fe_users.name',
-                    'fe_users.username' => 'fe_users.username',
-                    'fe_users.company' => 'fe_users.company',
-                ];
-                if (array_key_exists($get['sort'], $availableSorting)) {
-                    $sorting = $availableSorting[$get['sort']];
-                }
-                if (
-                    isset($get[Configuration::DIRECTION_ARGUMENT_KEY])
-                    && in_array($get[Configuration::DIRECTION_ARGUMENT_KEY], ['ASC', 'DESC'])
-                ) {
-                    $direction = $get[Configuration::DIRECTION_ARGUMENT_KEY];
-                }
+        $sorting = null;
+        if ($sort) {
+            $availableSorting = [
+                'sys_file.name' => 'title',
+                'sys_file.creation_date' => 'crdate',
+                'sys_file.modification_date' => 'tstamp',
+                'sys_file.tstamp' => 'tstamp',
+                'sys_file.crdate' => 'crdate',
+                'sys_file_metadata.tstamp' => 'tstamp',
+                'sys_file_metadata.crdate' => 'crdate',
+                'sys_file_metadata.description' => 'description',
+                'sys_file_metadata.title' => 'title',
+                'sys_file_metadata.categories' => 'categories',
+                'sys_file_metadata.keywords' => 'keywords',
+                'fe_users.name' => 'fe_users.name',
+                'fe_users.username' => 'fe_users.username',
+                'fe_users.company' => 'fe_users.company',
+            ];
+            if (array_key_exists($sort, $availableSorting)) {
+                $sorting = $availableSorting[$sort];
             }
         }
 
@@ -223,9 +209,9 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     {
         $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Domain\Repository\PageRepository::class);
         $enableFieldsWithFeGroup = $pageRepository
-            ->enableFields(Configuration::FOLDER_TABLENAME, 0, ['disabled' => 1]);
+            ->enableFields(Configuration::TABLENAME_FOLDER, 0, ['disabled' => 1]);
         $enableFieldsWithoutFeGroup = $pageRepository
-            ->enableFields(Configuration::FOLDER_TABLENAME, 0, ['fe_group' => 1]);
+            ->enableFields(Configuration::TABLENAME_FOLDER, 0, ['fe_group' => 1]);
 
         $ownerOnlyField = $writeMode ? 'no_write_access' : 'no_read_access';
         $ownerAccessField = $writeMode ? 'owner_has_write_access' : 'owner_has_read_access';
@@ -271,61 +257,38 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $where;
     }
 
-    public function findByUid($folderUid, $accessMode = 'read')
-    {
-        if (empty($folderUid)) {
-            return 0;
-        }
-        // if write mode is set, we change the fegroup enablecolumns value to match the write column in the bdd
-        switch ($accessMode) {
-            case 'read':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_read';
-                break;
-            case 'write':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_write';
-                break;
-            case 'addfile':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_addfile';
-                break;
-            case 'addfolder':
-                $GLOBALS['TCA']['tx_ameosfilemanager_domain_model_folder']['ctrl']['enablecolumns']['fe_group']
-                    = 'fe_group_addfolder';
-                break;
-            default:
-                break;
-        }
-
-        $writeMode = $accessMode == 'read' ? false : true;
-        $query = $this->createQuery();
-        $where = 'tx_ameosfilemanager_domain_model_folder.uid = ' . (int)$folderUid;
-        $where .= $this->getModifiedEnabledFields($writeMode);
-        $query->statement('SELECT * FROM tx_ameosfilemanager_domain_model_folder WHERE ' . $where, []);
-
-        // Don't forget to change back to read right once the deed is done
-        $GLOBALS['TCA'][Configuration::FOLDER_TABLENAME]['ctrl']['enablecolumns']['fe_group']
-            = 'fe_group_read';
-
-        return $query->execute()->getFirst();
-    }
-
     public function findRawByStorageAndIdentifier($storage, $identifier)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(Configuration::FOLDER_TABLENAME);
+            ->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
 
         $identifier = '/' . trim($identifier, '/') . '/';
         return $queryBuilder
             ->select('*')
-            ->from(Configuration::FOLDER_TABLENAME)
+            ->from(Configuration::TABLENAME_FOLDER)
             ->where(
                 $queryBuilder->expr()->eq('storage', $queryBuilder->createNamedParameter($storage)),
-                $queryBuilder->expr()->eq('identifier', $queryBuilder->createNamedParameter($identifier))
+                $queryBuilder->expr()->like('identifier', $queryBuilder->createNamedParameter($identifier))
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    public function findOneRawByStorageAndIdentifier($storage, $identifier)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Configuration::TABLENAME_FOLDER);
+
+        $identifier = '/' . trim($identifier, '/') . '/';
+        return $queryBuilder
+            ->select('*')
+            ->from(Configuration::TABLENAME_FOLDER)
+            ->where(
+                $queryBuilder->expr()->eq('storage', $queryBuilder->createNamedParameter($storage)),
+                $queryBuilder->expr()->like('identifier', $queryBuilder->createNamedParameter($identifier))
+            )
+            ->executeQuery()
+            ->fetchAssociative();
     }
 
     private function buildSubfolderStatement($where, $sorting, $direction)

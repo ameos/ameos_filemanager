@@ -1,39 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\ContextMenu\ItemProviders;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
+use TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider as TYPO3FileProvider;
 
-class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider
+class FileProvider extends TYPO3FileProvider
 {
     private const EDIT_FOLDER_KEY = 'editFolder';
 
     /**
      * Extends constructor
-     *
-     * @param string $table      TableName
-     * @param string $identifier Identifier
-     * @param string $context    Context
      */
-    public function __construct(string $table, string $identifier, string $context = '')
+    public function __construct()
     {
         $this->itemsConfiguration[self::EDIT_FOLDER_KEY] = [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.edit',
             'iconIdentifier' => 'actions-page-open',
             'callbackAction' => self::EDIT_FOLDER_KEY,
         ];
-        parent::__construct($table, $identifier, $context);
+        parent::__construct();
     }
 
     /**
@@ -63,7 +50,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     protected function getAdditionalAttributes(string $itemName): array
     {
         if ($itemName === self::EDIT_FOLDER_KEY) {
-            return ['data-callback-module' => 'TYPO3/CMS/AmeosFilemanager/ContextMenuActions'];
+            return ['data-callback-module' => '@ameos_filemanager/FilemanagerContextMenuActions'];
         }
         return parent::getAdditionalAttributes($itemName);
     }

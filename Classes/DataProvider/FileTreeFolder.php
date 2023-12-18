@@ -1,27 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\DataProvider;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Tree\TableConfiguration\DatabaseTreeDataProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
 class FileTreeFolder extends DatabaseTreeDataProvider
 {
@@ -32,23 +21,23 @@ class FileTreeFolder extends DatabaseTreeDataProvider
      * @param int $queryId the uid to search for
      * @return int[] all uids found
      */
-    protected function listFieldQuery($fieldName, $queryId)
+    protected function listFieldQuery(string $fieldName, int $queryId): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $content = $queryBuilder
             ->select('pi_flexform')
             ->from('tt_content')
-            ->where($queryBuilder->expr()->eq('uid', (int)GeneralUtility::_GET('uid')))
-            ->execute()
-            ->fetch();
+            ->where($queryBuilder->expr()->eq('uid', (int)$_GET['uid']))
+            ->executeQuery()
+            ->fetchAssociative();
 
         $storage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage()->getUid();
         if ($content) {
             /** @var FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $flexformConfiguration = $flexFormService->convertFlexFormContentToArray($content['pi_flexform']);
-            if ($flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY]) {
-                $storage = $flexformConfiguration['settings'][Configuration::STORAGE_SETTINGS_KEY];
+            if ($flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE]) {
+                $storage = $flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE];
             }
         }
 
@@ -74,7 +63,7 @@ class FileTreeFolder extends DatabaseTreeDataProvider
             );
         }
 
-        $records = $queryBuilder->execute()->fetchAll();
+        $records = $queryBuilder->executeQuery()->fetchAllAssociative();
         return is_array($records) ? array_column($records, 'uid') : [];
     }
 }

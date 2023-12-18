@@ -2,18 +2,18 @@
 <ul>
     <f:for each="{categories}" as="category">
         <li>
-            <custom:IsInList uid="{category.uid}" list="{objet.categoriesUids}">
+            <custom:category.included category="{category}" list="{objet.categories}">
                 <f:then>
                     <f:form.checkbox checked="1" name="categories[]" value="{category.uid}" />{category.title}
                 </f:then>
                 <f:else>
                     <f:form.checkbox name="categories[]" value="{category.uid}" />{category.title}
                 </f:else>
-            </custom:IsInList>
+            </custom:category.included>
 
-            <f:if condition="{category.subCategories}">
-                <f:render partial="Form/CategoriesList" arguments="{categories: category.subCategories, objet: objet}" />
-            </f:if>
+            <custom:category.subcategories category="{category}" as="subCategories">
+                <f:render partial="Form/CategoriesList" arguments="{categories: subCategories, objet: objet}" />
+            </custom:category.subcategories>
         </li>
     </f:for>
 </ul>

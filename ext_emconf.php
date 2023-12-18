@@ -10,7 +10,7 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = [
+$EM_CONF['ameos_filemanager'] = [
     'title'            => 'File manager',
     'description'      => 'This will allow you to fully handle file upload in FE context',
     'category'         => 'plugin',
@@ -18,12 +18,11 @@ $EM_CONF[$_EXTKEY] = [
     'author_company'   => 'Ameos',
     'author_email'     => 'typo3dev@ameos.com',
     'state'            => 'beta',
-    'version'          => '2.0.4',
-    'autoload'         => ['psr-4' => ['Ameos\\AmeosFilemanager\\' => 'Classes']],
+    'version'          => 'dev',
     'constraints'      => [
         'depends' => [
-            'typo3' => '10.4.0-11.5.99',
-            'php'   => '7.1.0-7.4.99',
+            'typo3' => '12.4.0-12.4.99',
+            'php'   => '8.0.0-8.2.99',
         ],
         'conflicts' => [],
         'suggests'  => [],

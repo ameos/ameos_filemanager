@@ -1,497 +1,282 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
-use Ameos\AmeosFilemanager\Configuration\Configuration;
-use Ameos\AmeosFilemanager\Domain\Model\File;
-use Ameos\AmeosFilemanager\Domain\Repository\FiledownloadRepository;
-use Ameos\AmeosFilemanager\Utility\DownloadUtility;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
-use Ameos\AmeosFilemanager\Utility\FileUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
-use TYPO3\CMS\Core\Resource\File as ResourceFile;
-use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
-use TYPO3\CMS\Core\Resource\TextExtraction\TextExtractorRegistry;
+use Ameos\AmeosFilemanager\Enum\Configuration;
+use Ameos\AmeosFilemanager\Service\AccessService;
+use Ameos\AmeosFilemanager\Service\AssetService;
+use Ameos\AmeosFilemanager\Service\CategoryService;
+use Ameos\AmeosFilemanager\Service\DownloadService;
+use Ameos\AmeosFilemanager\Service\FileService;
+use Ameos\AmeosFilemanager\Service\FolderService;
+use Ameos\AmeosFilemanager\Service\UploadService;
+use Ameos\AmeosFilemanager\Service\UserService;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-class FileController extends AbstractController
+class FileController extends ActionController
 {
-    /**
-     * MetaDataRepository object
-     *
-     * @var MetaDataRepository
-     * @Inject
-     */
-    protected $metaDataRepository;
+    public const ARG_FILE = 'file';
+    public const ARG_FOLDER = 'folder';
 
     /**
-     * Inject MetaDataRepository
-     *
-     * @param MetaDataRepository $metaDataRepository MetadataRepository object
+     * @param DownloadService $downloadService
+     * @param FileService $fileService
+     * @param FolderService $folderService
+     * @param AssetService $assetService
+     * @param AccessService $accessService
+     * @param UploadService $uploadService
+     * @param UserService $userService
+     * @param CategoryService $categoryService
      */
-    public function injectMetaDataRepository(MetaDataRepository $metaDataRepository)
-    {
-        $this->metaDataRepository = $metaDataRepository;
-    }
-
-    /**
-     * FiledownloadRepository object
-     *
-     * @var FiledownloadRepository
-     * @Inject
-     */
-    protected $filedownloadRepository;
-
-    /**
-     * Inject FiledownloadRepository
-     *
-     * @param FiledownloadRepository $filedownloadRepository FiledownloadRepository object
-     */
-    public function injectFiledownloadRepository(
-        FiledownloadRepository $filedownloadRepository
+    public function __construct(
+        private readonly DownloadService $downloadService,
+        private readonly FileService $fileService,
+        private readonly FolderService $folderService,
+        private readonly AssetService $assetService,
+        private readonly AccessService $accessService,
+        private readonly UploadService $uploadService,
+        private readonly UserService $userService,
+        private readonly CategoryService $categoryService
     ) {
-        $this->filedownloadRepository = $filedownloadRepository;
     }
-
-    /**
-     * Errors array
-     *
-     * @var array
-     */
-    protected $errors = [];
 
     /**
      * Edit file
+     *
+     * @return ResponseInterface
      */
-    protected function editAction()
+    protected function editAction(): ResponseInterface
     {
-        $isNewFile = $this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) == 'new';
+        $this->assetService->addCommonAssets($this->settings);
 
-        if ($isNewFile) {
-            $folder = $this->folderRepository
-                ->findByUid($this->request->getArgument(Configuration::FOLDER_ARGUMENT_KEY));
-        } else {
-            $file = $this->fileRepository->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
-            $folder = $file->getParentFolder();
-            $this->view->assign(Configuration::FILE_ARGUMENT_KEY, $file);
+        $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+
+        if (!$this->accessService->canWriteFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
-        if ($this->request->getMethod() == 'POST') {
-            $storage = $this->resourceFactory->getStorageObject($this->settings[Configuration::STORAGE_SETTINGS_KEY]);
-            $arguments = $this->request->getArguments();
-
-            $this->checkUploadedFileExistence($isNewFile, $arguments, Configuration::UPLOAD_ARGUMENT_KEY);
-            $this->checkAllowedFileType($arguments, Configuration::UPLOAD_ARGUMENT_KEY);
-
-            $newFilePath = $storage->getConfiguration()['basePath']
-                . $folder->getGedPath()
-                . '/'
-                . $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name'];
-
-            $this->checkFileAlreadyExists($arguments, Configuration::UPLOAD_ARGUMENT_KEY, $newFilePath);
-
-            $newFileAdded = $this->uploadNewFile($arguments, Configuration::UPLOAD_ARGUMENT_KEY, $newFilePath);
-
-            if (empty($this->errors)) {
-                // create or update file
-                $fileIdentifier = $folder->getGedPath() . '/' . $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name'];
-                if ($isNewFile) {
-                    $newfile = $storage->getFile($fileIdentifier);
-                } elseif ($arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']) {
-                    $originalResource = $this->getOriginalFileResource($file);
-                    $storage->replaceFile($originalResource, $newFilePath);
-                    $storage->renameFile(
-                        $originalResource,
-                        $arguments[Configuration::UPLOAD_ARGUMENT_KEY]['name']
-                    );
-                }
-
-                $this->persistenceManager->persistAll();
-                if ($isNewFile) {
-                    $file = $this->fileRepository->findByUid($newfile->getUid());
-                }
-
-                // update file's properties
-                $properties = array_merge([], $this->getFileProperties($isNewFile, $folder));
-                $properties = array_merge($properties, $this->getFilePropertiesFromArguments($arguments));
-                $properties = array_merge($properties, $this->getFilePropertiesFromSettings());
-
-                $this->metaDataRepository->update($file->getUid(), $properties);
-                $file->setCategories($arguments['categories']);
-
-                $this->indexFileContent($newFileAdded, $file);
-
-                $this->redirect(
-                    Configuration::INDEX_ACTION_KEY,
-                    Configuration::EXPLORER_CONTROLLER_KEY,
-                    null,
-                    [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()]
+        if ($this->request->getMethod() === 'POST') {
+            $hasError = false;
+            if (
+                !$this->request->hasArgument('title')
+                || $this->request->getArgument('title') == ''
+            ) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate('titleRequired', Configuration::EXTENSION_KEY),
+                    '',
+                    ContextualFeedbackSeverity::ERROR
                 );
-            } else {
-                $this->queueErrorFlashMessages();
+                $hasError = true;
+            }
+            $fileArg = $this->request->hasArgument('file') ? $this->request->getArgument('file') : [];
+            $allowedExtensions = explode(',', $this->settings['allowedFileExtension']);
+            if (
+                !empty($fileArg)
+                && isset($fileArg['name'])
+                && $fileArg['name'] !== ''
+                && !in_array(strtolower(pathinfo($fileArg['name'], PATHINFO_EXTENSION)), $allowedExtensions)
+            ) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate('titleRequired', Configuration::EXTENSION_KEY),
+                    '',
+                    ContextualFeedbackSeverity::ERROR
+                );
+                $hasError = true;
+            }
+            if (!$hasError) {
+                $file = $this->fileService->update($file, $this->request, $this->settings);
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'fileUpdated',
+                        Configuration::EXTENSION_KEY,
+                        [$this->request->getArgument('title')]
+                    )
+                );
+
+                return $this->redirect(
+                    'index',
+                    ExplorerController::CONTROLLER_KEY,
+                    null,
+                    [ExplorerController::ARG_FOLDER => $file->getFolder()]
+                );
             }
         }
 
-        $this->view->assign(Configuration::FOLDER_ARGUMENT_KEY, $folder->getUid());
-        $this->view->assign('usergroups', $this->getAvailableUsergroups());
-        $this->view->assign('categories', $this->getAvailableCategories());
-        $this->view->assign('isUserLoggedIn', $this->isUserLoggedIn());
+        $this->view->assign('file', $file);
+        $this->view->assign('usergroups', $this->userService->getAvailableUsergroups($this->settings));
+        $this->view->assign('categories', $this->categoryService->getAvailableCategories($this->settings));
+        $this->view->assign('isUserLoggedIn', $this->userService->isUserLoggedIn());
+
+        return $this->htmlResponse();
     }
 
     /**
      * Info file
+     *
+     * @return ResponseInterface
      */
-    protected function infoAction()
+    protected function infoAction(): ResponseInterface
     {
+        $this->assetService->addCommonAssets($this->settings);
+
         if (
-            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
-            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+            !$this->request->hasArgument(self::ARG_FILE)
+            || (int)$this->request->getArgument(self::ARG_FILE) === 0
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
                 '',
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
-            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
-        $file = $this->fileRepository
-            ->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
-        $this->view->assign(Configuration::FILE_ARGUMENT_KEY, $file);
-        $this->view->assign(
-            'file_isimage',
-            $this->getOriginalFileResource($file)->getType() == ResourceFile::FILETYPE_IMAGE
-        );
+        $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+
+        if (!$this->accessService->canReadFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
+        $this->view->assign('file', $file);
+        $this->view->assign('file_isimage', $this->fileService->isImage($file));
         $this->view->assign('filemetadata_isloaded', ExtensionManagementUtility::isLoaded('filemetadata'));
+
+        return $this->htmlResponse();
     }
 
     /**
      * Upload files
+     *
+     * @return ResponseInterface
      */
-    protected function uploadAction()
+    protected function uploadAction(): ResponseInterface
     {
-        $this->checkFolderArgumentExistence();
+        $fid = $this->request->getArgument(self::ARG_FOLDER) ? (int)$this->request->getArgument(self::ARG_FOLDER) : 0;
+        $folder = $this->folderService->load($fid);
+        $uploadUri = $this->uriBuilder->reset()->uriFor('upload', [self::ARG_FOLDER => $folder->getUid()]);
 
-        // get folder
-        $folder = $this->folderRepository->findByUid($this->request->getArgument(Configuration::FOLDER_ARGUMENT_KEY));
+        if (!$this->accessService->canAddFile($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
+        $this->assetService->addCommonAssets($this->settings);
+        $this->assetService->addDropzone($uploadUri);
 
         // upload if POST
         if ($this->request->getMethod() === 'POST') {
-            $storage = $this->resourceFactory->getStorageObject($this->settings[Configuration::STORAGE_SETTINGS_KEY]);
-
-            $this->checkUploadedFileExistence(true, $_FILES, Configuration::FILE_ARGUMENT_KEY);
-            $this->checkAllowedFileType($_FILES, Configuration::FILE_ARGUMENT_KEY);
-
-            $newFilePath = $storage->getConfiguration()['basePath']
-                . $folder->getGedPath()
-                . '/'
-                . $_FILES[Configuration::FILE_ARGUMENT_KEY]['name'];
-            $this->checkFileAlreadyExists($_FILES, Configuration::FILE_ARGUMENT_KEY, $newFilePath);
-
-            if (
-                empty($this->errors)
-                && $this->uploadNewFile($_FILES, Configuration::FILE_ARGUMENT_KEY, $newFilePath)
-            ) {
-                try {
-                    // create or update file
-                    $fileIdentifier = $folder->getGedPath() . '/' . $_FILES[Configuration::FILE_ARGUMENT_KEY]['name'];
-                    $file = $storage->getFile($fileIdentifier);
-
-                    $this->persistenceManager->persistAll();
-
-                    $driver = GeneralUtility::makeInstance(LocalDriver::class);
-                    $title = $driver->sanitizeFileName(
-                        pathinfo($_FILES[Configuration::FILE_ARGUMENT_KEY]['name'], PATHINFO_FILENAME)
-                    );
-                    // update file's properties
-                    $properties = array_merge([], $this->getFileProperties(true, $folder));
-                    $properties = array_merge($properties, $this->getFilePropertiesFromSettings());
-                    $properties['title'] = $title;
-
-                    $this->metaDataRepository->update($file->getUid(), $properties);
-                    $this->persistenceManager->persistAll();
-
-                    $this->indexFileContent(true, $file);
-
-                    $editUri = $this->uriBuilder->reset()
-                        ->uriFor('edit', [Configuration::FILE_ARGUMENT_KEY => $file->getUid()]);
-                    $infoUri = $this->uriBuilder->reset()
-                        ->uriFor('info', [Configuration::FILE_ARGUMENT_KEY => $file->getUid()]);
-
-                    header('Content-Type: text/json');
-                    echo json_encode(
-                        [
-                            'success' => true,
-                            Configuration::FILE_ARGUMENT_KEY => $file->getUid(),
-                            'editUri' => $editUri,
-                            'infoUri' => $infoUri,
-                        ],
-                        true
-                    );
-                    exit;
-                } catch (\Exception $e) {
-                    $errors[] = 'Error during file creation';
-                }
-            } else {
-                header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-                echo implode("\n", $this->errors);
-                exit;
-            }
-            header('Content-Type: text/json');
-            echo json_encode(
-                [
-                    'success' => false,
-                    'errors' => $errors,
-                    'debug' => $_FILES,
-                ],
-                true
+            $data = $this->uploadService->upload(
+                $folder,
+                $GLOBALS['TYPO3_REQUEST']->getUploadedFiles(),
+                $this->settings
             );
-            exit;
+            if ($data['success']) {
+                $data['editUri'] = $this->uriBuilder->reset()->uriFor('edit', [self::ARG_FILE => $data['file']]);
+                $data['infoUri'] = $this->uriBuilder->reset()->uriFor('info', [self::ARG_FILE => $data['file']]);
+            }
+            throw new PropagateResponseException(new JsonResponse($data));
         }
 
-        // assign to view
-        $this->view->assign(Configuration::FOLDER_ARGUMENT_KEY, $folder);
-        $this->view->assign('includeDropzone', true);
-        $this->view->assign(
-            'upload_uri',
-            $this->uriBuilder->reset()
-                ->uriFor(Configuration::UPLOAD_ARGUMENT_KEY, [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()])
-        );
-        $this->view->assign(
-            'upload_label_edit',
-            LocalizationUtility::translate('edit', Configuration::EXTENSION_KEY)
-        );
-        $this->view->assign(
-            'upload_label_detail',
-            LocalizationUtility::translate('detail', Configuration::EXTENSION_KEY)
-        );
+        $this->view->assign('folder', $folder);
+
+        return $this->htmlResponse();
     }
 
     /**
      * Download file
+     *
+     * @return ResponseInterface
      */
-    protected function downloadAction()
+    protected function downloadAction(): ResponseInterface
     {
         if (
-            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
-            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+            !$this->request->hasArgument(self::ARG_FILE)
+            || (int)$this->request->getArgument(self::ARG_FILE) === 0
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
                 '',
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
-            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
-        DownloadUtility::downloadFile(
-            (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY),
-            $this->settings[Configuration::START_FOLDER_SETTINGS_KEY]
-        );
+        $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+
+        if (!$this->accessService->canReadFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
+        return $this->downloadService->downloadFile($file);
     }
 
     /**
      * Remove the file
+     *
+     * @return ResponseInterface
      */
-    protected function removeAction()
+    protected function removeAction(): ResponseInterface
     {
         if (
-            !$this->request->hasArgument(Configuration::FILE_ARGUMENT_KEY)
-            || (int)$this->request->getArgument(Configuration::FILE_ARGUMENT_KEY) === 0
+            !$this->request->hasArgument(self::ARG_FILE)
+            || (int)$this->request->getArgument(self::ARG_FILE) === 0
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate('missingFileArgument', Configuration::EXTENSION_KEY),
                 '',
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
-            $this->forward(Configuration::ERROR_ACTION_KEY, Configuration::EXPLORER_CONTROLLER_KEY);
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
         }
 
-        $file = $this->fileRepository->findByUid($this->request->getArgument(Configuration::FILE_ARGUMENT_KEY));
-        $folder = $file->getParentFolder();
+        $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+        $folder = $this->folderService->load($file->getFolder());
 
-        FileUtility::remove(
-            $this->request->getArgument(Configuration::FILE_ARGUMENT_KEY),
-            $this->settings[Configuration::STORAGE_SETTINGS_KEY],
-            $this->settings[Configuration::START_FOLDER_SETTINGS_KEY]
-        );
+        if (!$this->accessService->canWriteFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
+        $this->fileService->remove($file);
 
         $this->addFlashMessage(LocalizationUtility::translate('fileRemoved', Configuration::EXTENSION_KEY));
-        $this->redirect(
-            Configuration::INDEX_ACTION_KEY,
-            Configuration::EXPLORER_CONTROLLER_KEY,
+        return $this->redirect(
+            'index',
+            ExplorerController::CONTROLLER_KEY,
             null,
-            [Configuration::FOLDER_ARGUMENT_KEY => $folder->getUid()]
+            $folder ? [ExplorerController::ARG_FOLDER => $folder->getUid()] : null
         );
-    }
-
-    private function checkUploadedFileExistence($isNewFile, $arguments, $argumentKey)
-    {
-        if ($isNewFile && $arguments[$argumentKey]['tmp_name'] == '') {
-            $this->errors[] = LocalizationUtility::translate('fileMissing', Configuration::EXTENSION_KEY);
-        }
-    }
-
-    private function checkAllowedFileType($arguments, $argumentKey)
-    {
-        $allowedFileExtension = explode(',', $this->settings['allowedFileExtension']);
-        if (
-            $arguments[$argumentKey]['name'] != ''
-            && !in_array(
-                strtolower(
-                    pathinfo(
-                        $arguments[$argumentKey]['name'],
-                        PATHINFO_EXTENSION
-                    )
-                ),
-                $allowedFileExtension
-            )
-        ) {
-            $this->errors[] = LocalizationUtility::translate('notAllowedFileType', Configuration::EXTENSION_KEY);
-        }
-    }
-
-    private function checkFileAlreadyExists($arguments, $argumentKey, $newFilePath)
-    {
-        if ($arguments[$argumentKey]['name'] != '' && file_exists($newFilePath)) {
-            $this->errors[] = LocalizationUtility::translate('fileAlreadyExist', Configuration::EXTENSION_KEY);
-        }
-    }
-
-    private function uploadNewFile($arguments, $argumentKey, $newFilePath)
-    {
-        if (empty($this->errors)) {
-            if ($arguments[$argumentKey]['name'] != '') {
-                if (move_uploaded_file($arguments[$argumentKey]['tmp_name'], $newFilePath)) {
-                    return true;
-                }
-                $this->errors[] = LocalizationUtility::translate('fileUploadError', Configuration::EXTENSION_KEY);
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    private function getFileProperties($isNewFile, $folder)
-    {
-        $properties = [];
-        if ($isNewFile) {
-            if ($this->isUserLoggedIn()) {
-                $properties['fe_user_id'] = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
-            }
-            $properties['folder_uid'] = $folder->getUid();
-        }
-        return $properties;
-    }
-
-    private function getFilePropertiesFromArguments($arguments)
-    {
-        $properties = [];
-
-        if ($arguments[Configuration::TITLE_ARGUMENT_KEY]) {
-            $driver = GeneralUtility::makeInstance(LocalDriver::class);
-            $properties['title'] = $driver->sanitizeFileName($arguments[Configuration::TITLE_ARGUMENT_KEY]);
-        }
-        if (isset($arguments[Configuration::DESCRIPTION_ARGUMENT_KEY])) {
-            $properties['description'] = $arguments[Configuration::DESCRIPTION_ARGUMENT_KEY];
-        }
-        if (isset($arguments[Configuration::KEYWORDS_ARGUMENT_KEY])) {
-            $properties['keywords'] = $arguments[Configuration::KEYWORDS_ARGUMENT_KEY];
-        }
-        if (isset($arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY])) {
-            if (is_array($arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY])) {
-                $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY]
-                    = implode(',', $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY]);
-            }
-            $properties[Configuration::FE_GROUP_READ_ARGUMENT_KEY]
-                = $arguments[Configuration::FE_GROUP_READ_ARGUMENT_KEY];
-        }
-        if (isset($arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY])) {
-            if (is_array($arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY])) {
-                $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]
-                    = implode(',', $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]);
-            }
-            $properties[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY]
-                = $arguments[Configuration::FE_GROUP_WRITE_ARGUMENT_KEY];
-        }
-
-        $properties['no_read_access'] = $arguments['no_read_access'] ? 1 : 0;
-        $properties['no_write_access'] = $arguments['no_write_access'] ? 1 : 0;
-
-        return $properties;
-    }
-
-    private function getFilePropertiesFromSettings()
-    {
-        $properties = [];
-        $properties[Configuration::OWNER_HAS_READ_ACCESS_KEY]
-            = isset($this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_READ_ACCESS_KEY])
-                ? $this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_READ_ACCESS_KEY]
-                : 1;
-        $properties[Configuration::OWNER_HAS_WRITE_ACCESS_KEY]
-            = isset($this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_WRITE_ACCESS_KEY])
-                ? $this->settings[Configuration::NEW_FILE_SETTINGS_KEY][Configuration::OWNER_HAS_WRITE_ACCESS_KEY]
-                : 1;
-        return $properties;
-    }
-
-    private function indexFileContent($newFileAdded, $file)
-    {
-        if ($newFileAdded && FilemanagerUtility::fileContentSearchEnabled()) {
-            $textExtractorRegistry = TextExtractorRegistry::getInstance();
-            try {
-                $originalResource = $this->getOriginalFileResource($file);
-                $textExtractor = $textExtractorRegistry->getTextExtractor($originalResource);
-                if (!is_null($textExtractor)) {
-                    $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                    $connectionPool->getConnectionForTable(Configuration::FILECONTENT_TABLENAME)
-                        ->insert(
-                            Configuration::FILECONTENT_TABLENAME,
-                            [
-                                Configuration::FILE_ARGUMENT_KEY => $file->getUid(),
-                                'content' => $textExtractor
-                                    ->extractText($originalResource),
-                            ]
-                        );
-                }
-            } catch (\Exception $e) {
-                //
-            }
-        }
-    }
-
-    private function queueErrorFlashMessages()
-    {
-        foreach ($this->errors as $error) {
-            $this->addFlashMessage(
-                $error,
-                '',
-                FlashMessage::ERROR
-            );
-        }
-    }
-
-    private function getOriginalFileResource($file)
-    {
-        return $this->resourceFactory->getFileObject($file->getUid());
     }
 }

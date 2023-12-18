@@ -7,11 +7,11 @@
 <f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid}">
     <i class="fa fa-download" aria-hidden="true"></i>&nbsp;{f:translate(key:"download")}
 </f:link.action>
-<filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+<filemanager:access.canWrite folder="{folder}">
     <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: folder.uid}">
         <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
     </f:link.action>
-</filemanager:checkAccess>
+</filemanager:access.canWrite>
 </p>
 
 <div class="row">
@@ -41,13 +41,12 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "numberoffiles")}</td>
-                <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
+                <td><filemanager:folder.numberOfFiles folder="{folder}" /> <f:translate key="folderFiles"/></td>
             </tr>
             <tr>
                 <td>{f:translate(key: "size")}</td>
-                <td>{filemanager:filesize(size: folder.filesSize)}</td>
+                <td><filemanager:folder.sizeOfFiles folder="{folder}" /></td>
             </tr>
         </table>
     </div>
 </div>
-<f:render partial="Explorer/IncludeAssets" arguments="{_all}" />

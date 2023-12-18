@@ -1,140 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ameos\AmeosFilemanager\XClass;
 
-use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
-use Ameos\AmeosFilemanager\Utility\FilemanagerUtility;
-use Ameos\AmeosFilemanager\Utility\FileUtility;
-use Ameos\AmeosFilemanager\Utility\FolderUtility;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\Components\Buttons\ButtonInterface;
+use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Filelist\Dto\ResourceView;
+use TYPO3\CMS\Filelist\FileList as TYPO3FileList;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-// XClassed to add an edit button for the folder in filelist
-class FileList extends \TYPO3\CMS\FileList\FileList
+class FileList extends TYPO3FileList
 {
-    /** @var UriBuilder */
-    protected $uriBuilder;
-
-    /** @param UriBuilder $uriBuilder */
-    public function injectUriBuilder(UriBuilder $uriBuilder)
+    protected function createEditDataUriForResource(ResourceInterface $resource): ?string
     {
-        $this->uriBuilder = $uriBuilder;
-    }
+        if ($resource instanceof Folder) {
+            /** @var QueryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_ameosfilemanager_domain_model_folder');
 
-    /**
-     * indexFileOrFolder
-     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-     */
-    protected function indexFileOrFolder($fileOrFolderObject)
-    {
-        if (
-            is_a($fileOrFolderObject, File::class)
-            && $fileOrFolderObject->isIndexed()
-            && $fileOrFolderObject->checkActionPermission('write')
-        ) {
-            $metaData = $fileOrFolderObject->getMetaData()->get();
-            if ($metaData['folder_uid'] == 0) {
-                $folder = $fileOrFolderObject
-                    ->getStorage()
-                    ->getFolder(
-                        $fileOrFolderObject
-                            ->getStorage()
-                            ->getFolderIdentifierFromFileIdentifier($fileOrFolderObject->getIdentifier())
-                    );
-                if ($folder != null) {
-                    FileUtility::add($fileOrFolderObject, $folder);
-                }
-            }
-        }
+            $folder = $queryBuilder
+                ->select('*')
+                ->from('tx_ameosfilemanager_domain_model_folder')
+                ->where(
+                    $queryBuilder->expr()->like(
+                        'identifier',
+                        $queryBuilder->createNamedParameter($resource->getIdentifier())
+                    )
+                )
+                ->executeQuery()
+                ->fetchAssociative();
 
-        if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
-            $folderRecord = GeneralUtility::makeInstance(FolderRepository::class)->findRawByStorageAndIdentifier(
-                $fileOrFolderObject->getStorage()->getUid(),
-                $fileOrFolderObject->getIdentifier()
-            );
-            if (!$folderRecord) {
-                FolderUtility::add($fileOrFolderObject);
-            }
-        }
-    }
-
-    /**
-     * additionnal cells
-     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-     */
-    protected function addAdditionalCells($fileOrFolderObject)
-    {
-        $cells = [];
-        if (
-            is_a($fileOrFolderObject, File::class)
-            && $fileOrFolderObject->isIndexed()
-            && $fileOrFolderObject->checkActionPermission('write')
-        ) {
-            $metaData = $fileOrFolderObject->getMetaData()->get();
-            $data = [
-                'edit' => [
-                    'sys_file_metadata' => [
-                        (int)$metaData['uid'] => 'edit',
-                    ],
-                ],
-                'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
-            ];
-            $editLink = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $data);
-            $cells['editmetadata'] = '<a href="' . $editLink . '" class="btn btn-default" title="Edit Metadata of this file">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';
-        }
-
-        if (is_a($fileOrFolderObject, Folder::class)  && $fileOrFolderObject->checkActionPermission('write')) {
-            $row = GeneralUtility::makeInstance(FolderRepository::class)->findRawByStorageAndIdentifier(
-                $fileOrFolderObject->getStorage()->getUid(),
-                $fileOrFolderObject->getIdentifier()
-            );
-            if (
-                $row
-                && FilemanagerUtility::getFolderPathFromUid($row['uid']) . '/' == $fileOrFolderObject->getIdentifier()
-            ) {
-                $data = [
-                    'edit' => [
-                        'tx_ameosfilemanager_domain_model_folder' => [
-                            (int)$row['uid'] => 'edit',
-                        ],
-                    ],
-                    'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
+            if ($folder) {
+                $parameter = [
+                    'edit' => ['tx_ameosfilemanager_domain_model_folder' => [$folder['uid'] => 'edit']],
+                    'returnUrl' => $this->createModuleUri(),
                 ];
-                $editLink = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $data);
-                $cells['editmetadata'] = '<a href="' . $editLink . '" class="btn btn-default" title="Edit Metadata of this folder">' . $this->iconFactory->getIcon('actions-page-open', Icon::SIZE_SMALL)->render() . '</a>';
+                return (string)$this->uriBuilder->buildUriFromRoute('record_edit', $parameter);
             }
         }
-        return $cells;
+
+        return parent::createEditDataUriForResource($resource);
     }
 
-    /**
-     * Creates the edit control section
-     *
-     * @param \TYPO3\CMS\Core\Resource\File|\TYPO3\CMS\Core\Resource\Folder $fileOrFolderObject Array with information about the file/directory for which to make the edit control section for the listing.
-     * @return string HTML-table
-     * @todo Define visibility
-     */
-    public function makeEdit($fileOrFolderObject)
+    protected function createControlEditMetaData(ResourceView $resourceView): ?ButtonInterface
     {
-        $this->indexFileOrFolder($fileOrFolderObject);
-        $output = parent::makeEdit($fileOrFolderObject);
-        $additionnalCells = $this->addAdditionalCells($fileOrFolderObject);
-        return preg_replace('/(.*)<\/div>$/', '$1' . implode('', $additionnalCells) . '</div>', $output);
+        if ($resourceView->editDataUri) {
+            $button = GeneralUtility::makeInstance(LinkButton::class);
+            $button->setTitle(
+                $this
+                    ->getLanguageService()
+                    ->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:cm.editMetadata')
+            );
+            $button->setHref($resourceView->editDataUri);
+            $button->setIcon($this->iconFactory->getIcon('actions-open', Icon::SIZE_SMALL));
+
+            return $button;
+        }
+        return parent::createControlEditMetaData($resourceView);
     }
 }

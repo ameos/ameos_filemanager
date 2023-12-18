@@ -16,11 +16,11 @@
         </f:link.action>
     </f:else>
 </f:if>
-<filemanager:checkAccess file="{file}" right="w" arguments="{folderRoot:settings.startFolder}">
+<filemanager:access.canWrite file="{file}">
     <f:link.action action="edit" controller="Explorer\File" arguments="{file: file.uid}">
         <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{f:translate(key:"edit")}
     </f:link.action>
-</filemanager:checkAccess>
+</filemanager:access.canWrite>
 </p>
 
 <div class="row">
@@ -39,7 +39,11 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "owner")}</td>
-                <td>{file.ownerUsername}</td>
+                <td>
+                    <filemanager:owner object="{file}">
+                        {owner.username}
+                    </filemanager:owner>
+                </td>
             </tr>
             <tr>
                 <td>{f:translate(key: "createdAt")}</td>
@@ -51,7 +55,7 @@
             </tr>
             <tr>
                 <td>{f:translate(key: "size")}</td>
-                <td>{filemanager:filesize(size: file.originalResource.size)}</td>
+                <td>{filemanager:file.filesize(size: file.originalResource.size)}</td>
             </tr>
             <tr>
                 <td>{f:translate(key: "description")}</td>
@@ -92,4 +96,3 @@
         </table>
     </div>
 </div>
-<f:render partial="Explorer/IncludeAssets" arguments="{_all}" />

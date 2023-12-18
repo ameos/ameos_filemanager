@@ -37,7 +37,7 @@
             <td>{folder.ownerUsername}</td>
         </f:if>
         <f:if condition="{column} == 'size'">
-            <td>{folder.fileNumber} <f:translate key="folderFiles"/></td>
+            <td><filemanager:folder.numberOfFiles folder="{folder}" /> <f:translate key="folderFiles"/></td>
         </f:if>
         <f:if condition="{column} == 'keywords'">
             <td>{folder.keywords}</td>
@@ -46,51 +46,51 @@
             <td>
                 <f:for each="{allowed_actions_folders}" as="action">
                     <f:if condition="{action} == 'edit'">
-                        <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canWrite folder="{folder}">
                             <f:link.action action="edit" controller="Explorer\Folder" arguments="{parentfolder: current_folder.uid, folder: folder.uid}" title="{f:translate(key:'edit')}">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:checkAccess>
+                        </filemanager:access.canWrite>
                     </f:if>
 
                     <f:if condition="{action} == 'upload'">
-                        <filemanager:canAddFile folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canAddFile folder="{folder}">
                             <f:link.action action="upload" controller="Explorer\File" arguments="{folder: folder.uid}" title="{f:translate(key:'upload')}">
                                 <i class="fa fa-upload" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:canAddFile>
+                        </filemanager:access.canAddFile>
                     </f:if>
 
                     <f:if condition="{action} == 'addsubfolder'">
-                        <filemanager:canAddFolder folder="{folder}" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canAddFolder folder="{folder}">
                             <f:link.action action="edit" controller="Explorer\Folder" arguments="{folder: 'new', parentfolder: folder.uid}" title="{f:translate(key:'createFolder')}">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:canAddFolder>
+                        </filemanager:access.canAddFolder>
                     </f:if>
                     
                     <f:if condition="{action} == 'download'">
-                        <filemanager:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canRead folder="{folder}">
                             <f:link.action action="download" controller="Explorer\Folder" arguments="{folder: folder.uid, returnfolder: folder.uid}" title="{f:translate(key:'download')}">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:checkAccess>
+                        </filemanager:access.canRead>
                     </f:if>
                     
                     <f:if condition="{action} == 'detail'">
-                        <filemanager:checkAccess folder="{folder}" right="r" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canRead folder="{folder}">
                             <f:link.action action="info" controller="Explorer\Folder" arguments="{folder: folder.uid, returnfolder: folder.uid}" title="{f:translate(key:'detail')}">
                                 <i class="fa fa-info" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:checkAccess>
+                        </filemanager:access.canRead>
                     </f:if>
 
                     <f:if condition="{action} == 'delete'">
-                        <filemanager:checkAccess folder="{folder}" right="w" arguments="{folderRoot:settings.startFolder}">
+                        <filemanager:access.canWrite folder="{folder}">
                             <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\Folder" arguments="{folder: folder.uid}"  title="{f:translate(key:'delete')}">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </f:link.action>
-                        </filemanager:checkAccess>
+                        </filemanager:access.canWrite>
                     </f:if>
                 </f:for>
             </td>

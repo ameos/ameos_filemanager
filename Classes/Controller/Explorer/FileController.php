@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
+use Ameos\AmeosFilemanager\Service\AccessService;
 use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\CategoryService;
 use Ameos\AmeosFilemanager\Service\DownloadService;
@@ -30,6 +31,7 @@ class FileController extends ActionController
      * @param FileService $fileService
      * @param FolderService $folderService
      * @param AssetService $assetService
+     * @param AccessService $accessService
      * @param UploadService $uploadService
      * @param UserService $userService
      * @param CategoryService $categoryService
@@ -39,6 +41,7 @@ class FileController extends ActionController
         private readonly FileService $fileService,
         private readonly FolderService $folderService,
         private readonly AssetService $assetService,
+        private readonly AccessService $accessService,
         private readonly UploadService $uploadService,
         private readonly UserService $userService,
         private readonly CategoryService $categoryService
@@ -55,6 +58,15 @@ class FileController extends ActionController
         $this->assetService->addCommonAssets($this->settings);
 
         $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+
+        if (!$this->accessService->canWriteFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
 
         if ($this->request->getMethod() === 'POST') {
             $hasError = false;
@@ -135,6 +147,15 @@ class FileController extends ActionController
 
         $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
 
+        if (!$this->accessService->canReadFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
         $this->view->assign('file', $file);
         $this->view->assign('file_isimage', $this->fileService->isImage($file));
         $this->view->assign('filemetadata_isloaded', ExtensionManagementUtility::isLoaded('filemetadata'));
@@ -152,6 +173,15 @@ class FileController extends ActionController
         $fid = $this->request->getArgument(self::ARG_FOLDER) ? (int)$this->request->getArgument(self::ARG_FOLDER) : 0;
         $folder = $this->folderService->load($fid);
         $uploadUri = $this->uriBuilder->reset()->uriFor('upload', [self::ARG_FOLDER => $folder->getUid()]);
+
+        if (!$this->accessService->canAddFile($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
 
         $this->assetService->addCommonAssets($this->settings);
         $this->assetService->addDropzone($uploadUri);
@@ -190,6 +220,16 @@ class FileController extends ActionController
         }
 
         $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
+
+        if (!$this->accessService->canReadFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
         return $this->downloadService->downloadFile($file);
     }
 
@@ -214,6 +254,15 @@ class FileController extends ActionController
 
         $file = $this->fileService->load((int)$this->request->getArgument(self::ARG_FILE));
         $folder = $this->folderService->load($file->getFolder());
+
+        if (!$this->accessService->canWriteFile($file)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
 
         $this->fileService->remove($file);
 

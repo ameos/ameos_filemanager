@@ -6,6 +6,7 @@ namespace Ameos\AmeosFilemanager\Controller\Explorer;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Service\AccessService;
 use Ameos\AmeosFilemanager\Service\AssetService;
 use Ameos\AmeosFilemanager\Service\CategoryService;
 use Ameos\AmeosFilemanager\Service\DownloadService;
@@ -26,6 +27,7 @@ class FolderController extends ActionController
      * @param CategoryService $categoryService
      * @param UserService $userService
      * @param AssetService $assetService
+     * @param AccessService $accessService
      * @param DownloadService $downloadService
      */
     public function __construct(
@@ -33,6 +35,7 @@ class FolderController extends ActionController
         private readonly CategoryService $categoryService,
         private readonly UserService $userService,
         private readonly AssetService $assetService,
+        private readonly AccessService $accessService,
         private readonly DownloadService $downloadService
     ) {
     }
@@ -53,6 +56,23 @@ class FolderController extends ActionController
 
         $parent = $isNewFolder ? $this->folderService->load($pid) : null;
         $folder = $isNewFolder ? (new Folder()) : $this->folderService->load($fid);
+
+        if ($isNewFolder && !$this->accessService->canAddFolder($parent)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+        if (!$isNewFolder && !$this->accessService->canWriteFolder($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
 
         if ($this->request->getMethod() === 'POST') {
             if (
@@ -105,6 +125,16 @@ class FolderController extends ActionController
     protected function downloadAction(): ResponseInterface
     {
         $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));
+
+        if (!$this->accessService->canReadFolder($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
         return $this->downloadService->downloadFolder($folder);
     }
 
@@ -129,6 +159,15 @@ class FolderController extends ActionController
 
         $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));
         $parentFolder = $folder->getParent();
+
+        if (!$this->accessService->canWriteFolder($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
 
         $this->folderService->remove($folder);
 
@@ -163,6 +202,16 @@ class FolderController extends ActionController
         }
 
         $folder = $this->folderService->load((int)$this->request->getArgument(self::ARG_FOLDER));
+
+        if (!$this->accessService->canReadFolder($folder)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate('accessDenied', Configuration::EXTENSION_KEY),
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('errors', ExplorerController::CONTROLLER_KEY);
+        }
+
         $this->view->assign('folder', $folder);
 
         return $this->htmlResponse();

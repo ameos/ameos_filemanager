@@ -9,7 +9,7 @@ defined('TYPO3') or die('Access denied');
 ExtensionUtility::registerPlugin(
     'AmeosFilemanager',
     'FeFilemanagerExplorer',
-    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.FeFilemanagerExplorer.title'
+    'LLL:EXT:ameos_filemanager/Resources/Private/Language/locallang_be.xlf:plugin.fe_filemanager.title'
 );
 
 // flexforms

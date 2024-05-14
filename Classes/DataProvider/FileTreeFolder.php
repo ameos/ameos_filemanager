@@ -36,7 +36,9 @@ class FileTreeFolder extends DatabaseTreeDataProvider
             /** @var FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $flexformConfiguration = $flexFormService->convertFlexFormContentToArray($content['pi_flexform']);
-            if ($flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE]) {
+            if (isset($flexformConfiguration['settings'])
+                && isset($flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE])
+            ) {
                 $storage = $flexformConfiguration['settings'][Configuration::SETTINGS_STORAGE];
             }
         }

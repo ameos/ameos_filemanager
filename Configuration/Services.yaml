@@ -37,11 +37,11 @@ services:
         identifier: "ameosFilemanager_AfterFolderCopiedEventListener"
         event: TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent
 
-  Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFolderDeletedEventListener:
+  Ameos\AmeosFilemanager\EventListener\Core\Resource\BeforeFolderDeletedEventListener:
     tags:
       - name: event.listener
-        identifier: "ameosFilemanager_AfterFolderDeletedEventListener"
-        event: TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent
+        identifier: "ameosFilemanager_BeforeFolderDeletedEventListener"
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderDeletedEvent
 
   Ameos\AmeosFilemanager\EventListener\Core\Resource\AfterFileAddedEventListener:
     tags:

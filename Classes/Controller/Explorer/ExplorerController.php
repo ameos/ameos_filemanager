@@ -54,7 +54,10 @@ class ExplorerController extends ActionController
             $folderIdentifier = (int)$this->request->getArgument(self::ARG_FOLDER);
         }
 
-        $displayMode = $this->explorerService->getCurrentDisplayMode($this->settings['availableMode'], $contentId);
+        $displayMode = $this->explorerService->getCurrentDisplayMode(
+            explode(',', $this->settings['availableMode']),
+            $contentId
+        );
         $rootFolder = $this->folderService->getRootFolder($this->settings);
         $currentFolder = $this->folderService->getCurrentFolder($folderIdentifier, $this->settings);
         $tree = $this->treeService->getFoldersTree([$rootFolder]);
@@ -68,7 +71,7 @@ class ExplorerController extends ActionController
         $this->view->assign('flat_tree', $this->treeService->flatten($tree));
         $this->view->assign('current_folder_children', $this->treeService->getFoldersChildren([$currentFolder], $sort, $direction));
         $this->view->assign('files', $this->folderService->findFiles($currentFolder, $sort, $direction));
-        $this->view->assign('has_many_display_mode', (count($this->settings['availableMode']) > 1));
+        $this->view->assign('has_many_display_mode', (count(explode(',', $this->settings['availableMode'])) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
         $this->view->assign(
@@ -133,7 +136,10 @@ class ExplorerController extends ActionController
 
         $contentId = (int)$this->request->getAttribute('currentContentObject')->data['uid'];
 
-        $displayMode = $this->explorerService->getCurrentDisplayMode($this->settings['availableMode'], $contentId);
+        $displayMode = $this->explorerService->getCurrentDisplayMode(
+            explode(',', $this->settings['availableMode']),
+            $contentId
+        );
         $rootFolder = $this->folderService->getRootFolder($this->settings);
 
         $tree = $this->treeService->getFoldersTree([$rootFolder]);
@@ -148,7 +154,7 @@ class ExplorerController extends ActionController
         $this->view->assign('current_folder', $rootFolder);
         $this->view->assign('tree', $tree);
         $this->view->assign('flat_tree', $this->treeService->flatten($tree));
-        $this->view->assign('has_many_display_mode', (count($this->settings['availableMode']) > 1));
+        $this->view->assign('has_many_display_mode', (count(explode(',', $this->settings['availableMode'])) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
         $this->view->assign(

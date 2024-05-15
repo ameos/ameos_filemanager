@@ -6,10 +6,10 @@ namespace Ameos\AmeosFilemanager\EventListener\Core\Resource;
 
 use Ameos\AmeosFilemanager\Service\FolderService;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent;
+use TYPO3\CMS\Core\Resource\Event\BeforeFolderDeletedEvent;
 use TYPO3\CMS\Core\Resource\Folder as ResourceFolder;
 
-class AfterFolderDeletedEventListener
+class BeforeFolderDeletedEventListener
 {
     /**
      * @param FolderService $folderService
@@ -21,10 +21,10 @@ class AfterFolderDeletedEventListener
     /**
      * invoke event
      *
-     * @param AfterFolderDeletedEvent $event
+     * @param BeforeFolderDeletedEvent $event
      * @return void
      */
-    public function __invoke(AfterFolderDeletedEvent $event): void
+    public function __invoke(BeforeFolderDeletedEvent $event): void
     {
         $this->unindex($event->getFolder());
     }
@@ -39,11 +39,6 @@ class AfterFolderDeletedEventListener
     {
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $this->folderService->unindex($folder);
-            foreach ($folder->getSubfolders() as $subFolder) {
-                $this->unindex($subFolder);
-            }
-
-            // todo unindex files
         }
     }
 }

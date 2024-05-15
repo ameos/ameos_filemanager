@@ -228,15 +228,15 @@ class FolderService
      */
     public function unindex(ResourceFolder $resourceFolder): void
     {
+        foreach ($resourceFolder->getSubfolders() as $subFolder) {
+            $this->unindex($subFolder);
+        }
+
         $folder = $this->loadByResourceFolder($resourceFolder);
         if ($folder) {
             $this->folderRepository->remove($folder);
             $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
             $persitenceManager->persistAll();
-        }
-
-        foreach ($resourceFolder->getSubfolders() as $subFolder) {
-            $this->unindex($subFolder);
         }
     }
 
@@ -250,8 +250,13 @@ class FolderService
     {
         $parent = $this->loadByResourceFolder($resourceFolder->getParentFolder());
         $storage = $resourceFolder->getStorage();
-        $folderpath = $this->indexationService->getStorageRootpath($storage) . $parent->getIdentifier();
-        $this->indexationService->indexFolder($storage, $folderpath, $parent->getUid());
+        $folderpath = $this->indexationService->getStorageRootpath($storage);
+        $parentUid = 0;
+        if (!is_null($parent)) {
+            $folderpath .= $parent->getIdentifier();
+            $parentUid = $parent->getUid();
+        }
+        $this->indexationService->indexFolder($storage, $folderpath, $parentUid);
         return $this->loadByResourceFolder($resourceFolder);
     }
 

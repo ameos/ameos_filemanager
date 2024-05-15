@@ -15,11 +15,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class DownloadService
@@ -50,8 +48,10 @@ class DownloadService
         $user = ($GLOBALS['TSFE']->fe_user->user);
 
         // We check if the user has access to the file.
-        if ($file && $this->accessService->canReadFile($user, $file)) {
-            $filename = preg_replace('/^\//i', '', urldecode($file->getPublicUrl()));
+        if ($file && $this->accessService->canReadFile($file)) {
+            $filename = Environment::getPublicPath()
+                . '/'
+                . preg_replace('/^\//i', '', urldecode($file->getPublicUrl()));
 
             if (
                 ExtensionManagementUtility::isLoaded('fal_securedownload')
@@ -75,15 +75,15 @@ class DownloadService
                 $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
                 $persitenceManager->persistAll();
 
-                $response = new Response();
-                $response = $response->withHeader('Content-Description', 'File Transfer');
-                $response = $response->withHeader('Content-Type', mime_content_type($filename));
-                $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($filename) . '"');
-                $response = $response->withHeader('Expires', '0');
-                $response = $response->withHeader('Cache-Control', 'must-revalidate');
-                $response = $response->withHeader('Pragma', 'public');
-                $response = $response->withBody($this->streamFactory->createStream(file_get_contents($filename)));
-                return $response;
+                ob_clean();
+                header('Content-Description: FileTransfer');
+                header('Content-Type: ' . mime_content_type($filename));
+                header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-relavidate');
+                header('Pragma: public');
+                echo readfile($filename);
+                exit;
             }
         } else {
             throw new AccessDeniedException('Access denied');
@@ -104,26 +104,30 @@ class DownloadService
             );
         }
 
-        $user = ($GLOBALS['TSFE']->fe_user->user);
-
         // We check if the user has access to the folder.
-        if ($folder && $this->accessService->canReadFolder($user, $folder)) {
-            $zipPath  = Environment::getVarPath() . $folder->getTitle() . '_' . date('dmY_His') . '.zip';
+        if ($folder && $this->accessService->canReadFolder($folder)) {
+            $zipPath  = Environment::getVarPath()
+                . '/'
+                . preg_replace('/^\//i', '', $folder->getTitle())
+                . '_'
+                . date('dmY_His')
+                . '.zip';
 
             $zip = new \ZipArchive();
             $zip->open($zipPath, \ZipArchive::CREATE);
             $this->addToZip($folder, $folder, $zip);
             $zip->close();
 
-            $response = new Response();
-            $response = $response->withHeader('Content-Description', 'File Transfer');
-            $response = $response->withHeader('Content-Type', mime_content_type($zipPath));
-            $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($zipPath) . '"');
-            $response = $response->withHeader('Expires', '0');
-            $response = $response->withHeader('Cache-Control', 'must-revalidate');
-            $response = $response->withHeader('Pragma', 'public');
-            $response = $response->withBody($this->streamFactory->createStream(file_get_contents($zipPath)));
-            return $response;
+            ob_clean();
+            header('Content-Description: FileTransfer');
+            header('Content-Type: ' . mime_content_type($zipPath));
+            header('Content-Disposition: attachment; filename="' . basename($zipPath) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-relavidate');
+            header('Pragma: public');
+            echo readfile($zipPath);
+            unlink($zipPath);
+            exit;
         } else {
             throw new AccessDeniedException('Access denied');
         }
@@ -139,8 +143,6 @@ class DownloadService
      */
     private function addToZip(Folder $root, Folder $folder, \ZipArchive $zip): void
     {
-        $user = ($GLOBALS['TSFE']->fe_user->user);
-
         $storage = $this->resourceFactory->getStorageObject($folder->getStorage());
         $configuration = $storage->getConfiguration();
 
@@ -156,7 +158,7 @@ class DownloadService
         /** @var iterable<File> */
         $files = $this->fileRepository->findFilesForFolder($folder);
         foreach ($files as $file) {
-            if (!$file->isRemote() && $this->accessService->canReadFile($user, $file)) {
+            if (!$file->isRemote() && $this->accessService->canReadFile($file)) {
                 $realFilepath = $absoluteBasePath . $file->getOriginalResource()->getIdentifier();
                 $zipFilepath = str_replace($rootPath, '', $realFilepath);
 
@@ -165,7 +167,7 @@ class DownloadService
         }
 
         foreach ($folder->getFolders() as $subFolder) {
-            if ($this->accessService->canAddFolder($user, $subFolder)) {
+            if ($this->accessService->canAddFolder($subFolder)) {
                 $this->addToZip($root, $subFolder, $zip);
             }
         }

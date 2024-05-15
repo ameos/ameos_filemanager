@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -79,7 +80,12 @@ class BreadcrumbViewHelper extends AbstractViewHelper
         $uri = $uriBuilder->reset()
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString(['id'])
-            ->uriFor('index', ['folder' => $folder->getUid()]);
+            ->uriFor(
+                'index',
+                ['folder' => $folder->getUid()],
+                $renderingContext->getControllerName(),
+                Configuration::EXTENSION_KEY
+            );
 
         $templateVariableContainer = $renderingContext->getVariableProvider();
         $templateVariableContainer->add('item', [

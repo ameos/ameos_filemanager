@@ -40,24 +40,24 @@ return [
         ],
         'crdate' => [
             'exclude' => 1,
-            'label'   => $corell . ':LGL.crdate',
+            'label'   => $corell . ':LGL.creationDate',
             'config'  => ['type' => 'input'],
         ],
         'tstamp' => [
             'exclude' => 1,
-            'label'   => $corell . ':LGL.tstamp',
+            'label'   => $corell . ':LGL.timestamp',
             'config'  => ['type' => 'input'],
         ],
         'cruser_id' => [
             'exclude' => 1,
-            'label'   => $corell . ':LGL.be_user',
+            'label'   => $corell . ':LGL.creationUserId',
             'config'  => [
                 'type'                => 'select',
                 'renderType'          => 'selectSingleBox',
                 'size'                => 5,
                 'maxitems'            => 1,
-                'foreign_table'       => 'be_user',
-                'foreign_table_where' => 'ORDER BY be_user.uid',
+                'foreign_table'       => 'be_users',
+                'foreign_table_where' => 'ORDER BY be_users.uid',
             ],
         ],
         'fe_user_id' => [
@@ -134,7 +134,7 @@ return [
         ],
         'storage' => [
             'exclude' => 1,
-            'label'   => $corell . ':sys_file.storage',
+            'label'   => $corell . ':LGL.baseStorage',
             'config'  => [
                 'type' => 'input',
             ],

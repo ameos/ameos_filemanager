@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Ameos\AmeosFilemanager\ViewHelpers;
 
+use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 class SortlinkViewHelper extends AbstractTagBasedViewHelper
 {
@@ -55,15 +57,17 @@ class SortlinkViewHelper extends AbstractTagBasedViewHelper
         if ($currentColumn == $this->arguments['column'] && $currentDirection == 'ASC') {
             $direction = 'DESC';
         }
-
         $uri = $uriBuilder->reset()->uriFor(
             null,
             [
                 'folder' => $this->arguments['folder'],
                 'sort' => $this->arguments['column'],
                 'direction' => $direction,
-            ]
+            ],
+            $renderingContext->getControllerName(),
+            Configuration::EXTENSION_KEY
         );
+
         $this->tag->addAttribute('href', $uri);
         $this->tag->setContent($this->renderChildren());
         $this->tag->forceClosingTag(true);

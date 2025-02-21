@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ameos\AmeosFilemanager\Service;
 
 use Ameos\AmeosFilemanager\Enum\Configuration;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
@@ -79,7 +80,7 @@ class IndexationService
                             ->where(
                                 $qb->expr()->eq(
                                     'storage',
-                                    $qb->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                                    $qb->createNamedParameter((int)$storage->getUid(), ParameterType::INTEGER)
                                 ),
                                 $qb->expr()->like('identifier', $qb->createNamedParameter($identifier))
                             )
@@ -108,7 +109,7 @@ class IndexationService
             $currentFolderRecord = $qb->select('uid')
                 ->from(Configuration::TABLENAME_FOLDER)
                 ->where(
-                    $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)),
+                    $qb->expr()->eq('storage', $qb->createNamedParameter((int)$storage->getUid(), ParameterType::INTEGER)),
                     $qb->expr()->like('identifier', $qb->createNamedParameter($currentFolderIdentifier))
                 )
                 ->executeQuery()
@@ -183,7 +184,7 @@ class IndexationService
                 ->where(
                     $queryBuilder->expr()->eq(
                         'uid',
-                        $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter((int)$uid, ParameterType::INTEGER)
                     )
                 )
                 ->set('deleted', 0)
@@ -210,11 +211,11 @@ class IndexationService
             ->where(
                 $qbfile->expr()->eq(
                     'meta.folder_uid',
-                    $qbfile->createNamedParameter((int)$currentFolderRecord['uid'], \PDO::PARAM_INT)
+                    $qbfile->createNamedParameter((int)$currentFolderRecord['uid'], ParameterType::INTEGER)
                 ),
                 $qbfile->expr()->eq(
                     'file.storage',
-                    $qbfile->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                    $qbfile->createNamedParameter((int)$storage->getUid(), ParameterType::INTEGER)
                 )
             )
             ->executeQuery()
@@ -226,7 +227,7 @@ class IndexationService
                 ->delete('sys_file')
                 ->where($qbDelete->expr()->eq(
                     'uid',
-                    $qbDelete->createNamedParameter((int)$file['file'], \PDO::PARAM_INT)
+                    $qbDelete->createNamedParameter((int)$file['file'], ParameterType::INTEGER)
                 ))
                 ->executeStatement();
 
@@ -236,7 +237,7 @@ class IndexationService
                 ->delete('sys_file_metadata')
                 ->where($qbDelete->expr()->eq(
                     'uid',
-                    $qbDelete->createNamedParameter((int)$file['uid'], \PDO::PARAM_INT)
+                    $qbDelete->createNamedParameter((int)$file['uid'], ParameterType::INTEGER)
                 ))
                 ->executeStatement();
         }

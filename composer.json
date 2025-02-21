@@ -4,9 +4,9 @@
     "type": "typo3-cms-extension",
     "homepage": "https://github.com/ameos/ameos_filemanager",
     "require": {
-        "typo3/cms-core": "^12",
-        "typo3/cms-fluid": "^12",
-        "typo3/cms-extbase": "^12",
+        "typo3/cms-core": "^13",
+        "typo3/cms-fluid": "^13",
+        "typo3/cms-extbase": "^13",
         "php": ">=8.0.0"
     },
     "keywords": [

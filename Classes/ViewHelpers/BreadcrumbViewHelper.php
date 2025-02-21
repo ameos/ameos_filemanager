@@ -7,15 +7,12 @@ namespace Ameos\AmeosFilemanager\ViewHelpers;
 use Ameos\AmeosFilemanager\Domain\Model\Folder;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder as ExtbaseUriBuilder;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 class BreadcrumbViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @var bool
      */
@@ -40,20 +37,17 @@ class BreadcrumbViewHelper extends AbstractViewHelper
      *
      * @return string
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        if ($arguments['folder'] != null) {
+    public function render()
+    {
+        if ($this->arguments['folder'] != null) {
             $breadcrumb = [];
-            return static::getBreadcrumb(
+            return $this->getBreadcrumb(
                 $breadcrumb,
-                $arguments['folder'],
-                $arguments['folder'],
-                $arguments['startFolder'],
-                $renderingContext,
-                $renderChildrenClosure
+                $this->arguments['folder'],
+                $this->arguments['folder'],
+                $this->arguments['startFolder'],
+                $this->renderingContext,
+                $this->buildRenderChildrenClosure()
             );
         }
         return '';
@@ -68,7 +62,7 @@ class BreadcrumbViewHelper extends AbstractViewHelper
      * @param Closure $renderChildrenClosure
      * @return string
      */
-    protected static function getBreadcrumb(
+    protected function getBreadcrumb(
         $breadcrumb,
         $folder,
         $activeFolder,
@@ -76,20 +70,9 @@ class BreadcrumbViewHelper extends AbstractViewHelper
         $renderingContext,
         $renderChildrenClosure
     ) {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uri = $uriBuilder->reset()
-            ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString(['id'])
-            ->uriFor(
-                'index',
-                ['folder' => $folder->getUid()],
-                $renderingContext->getControllerName(),
-                Configuration::EXTENSION_KEY
-            );
-
         $templateVariableContainer = $renderingContext->getVariableProvider();
         $templateVariableContainer->add('item', [
-            'uri'       => $uri,
+            'uid'       => $folder->getUid(),
             'title'     => $folder->getTitle(),
             'is_active' => $folder->getUid() == $activeFolder->getUid(),
         ]);
@@ -97,7 +80,7 @@ class BreadcrumbViewHelper extends AbstractViewHelper
         $templateVariableContainer->remove('item');
 
         if ($folder->getParent() && $folder->getUid() != $startFolder) {
-            $parentOutput = static::getBreadcrumb(
+            $parentOutput = $this->getBreadcrumb(
                 $breadcrumb,
                 $folder->getParent(),
                 $activeFolder,

@@ -4,7 +4,7 @@
         <filemanager:breadcrumb folder="{current_folder}" startFolder="{root_folder.uid}">
             <f:if condition="{item.is_active}">
                 <f:then><li class="breadcrumb-item active">{item.title}</li></f:then>
-                <f:else><li class="breadcrumb-item"><a href="{item.uri}">{item.title}</a></li></f:else>
+                <f:else><li class="breadcrumb-item"><f:link.action action="index" arguments="{folder: item.uid}">{item.title}</f:link.action></li></f:else>
             </f:if>
         </filemanager:breadcrumb>
     </ol>

@@ -20,8 +20,14 @@ $additionalColumnsMetadata = [
             'foreign_table'       => 'fe_groups',
             'foreign_table_where' => 'ORDER BY fe_groups.title',
             'items'               => [
-                [$corell . ':LGL.any_login',  -2],
-                [$corell . ':LGL.usergroups', '--div--'],
+                [
+                    'label' => $corell . ':LGL.any_login',
+                    'value' => -2
+                ],
+                [
+                    'label' => $corell . ':LGL.usergroups',
+                    'value' => '--div--'
+                ],
             ],
         ],
     ],
@@ -47,8 +53,14 @@ $additionalColumnsMetadata = [
             'foreign_table'       => 'fe_groups',
             'foreign_table_where' => 'ORDER BY fe_groups.title',
             'items'               => [
-                [$corell . ':LGL.any_login',  -2],
-                [$corell . ':LGL.usergroups', '--div--'],
+                [
+                    'label' => $corell . ':LGL.any_login',
+                    'value' => -2
+                ],
+                [
+                    'label' => $corell . ':LGL.usergroups',
+                    'value' => '--div--'
+                ],
             ],
         ],
     ],
@@ -97,7 +109,6 @@ $additionalColumnsMetadata = [
         'label'   => $ll . '.fe_user_id',
         'config'  => [
             'type'          => 'group',
-            'internal_type' => 'db',
             'allowed'       => 'fe_users',
             'maxitems'      => 1,
             'size'          => 1,
@@ -110,7 +121,7 @@ $additionalColumnsMetadata = [
             'type'          => 'select',
             'renderType'    => 'selectSingle',
             'maxitems'      => 1,
-            'items'         => [['', 0]],
+            'items'         => [['label' => '', 'value' => 0]],
             'size'          => 1,
             'foreign_table' => 'tx_ameosfilemanager_domain_model_folder',
         ],

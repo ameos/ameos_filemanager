@@ -82,4 +82,12 @@
     });
     var massaction = new FileManagerMassaction(document.querySelector('.massaction-toolbar'));
 
+    document.querySelectorAll("[data-filemanager-confirm]").forEach(function (item, i) {
+        item.addEventListener("click", function (event) {
+            if (!confirm(item.getAttribute("data-filemanager-confirm"))) {
+                event.preventDefault();
+            }
+        });
+    });
+
 }).call(this);

@@ -6,28 +6,60 @@
         <th></th>
     </f:if>
     <f:if condition="{column} == 'title'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file.name">{f:translate(key: "fileName")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file.name'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file.name', direction: new_direction}">{f:translate(key: "fileName")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'createdAt'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.crdate">{f:translate(key: "createdAt")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file_metadata.crdate'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file_metadata.crdate', direction: new_direction}">{f:translate(key: "createdAt")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'updatedAt'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.tstamp">{f:translate(key: "updatedAt")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file_metadata.tstamp'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file_metadata.tstamp', direction: new_direction}">{f:translate(key: "updatedAt")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'categories'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.categories">{f:translate(key: "categories")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file_metadata.categories'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file_metadata.categories', direction: new_direction}">{f:translate(key: "categories")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'description'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.description">{f:translate(key: "description")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file_metadata.description'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file_metadata.description', direction: new_direction}">{f:translate(key: "description")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'owner'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="fe_users.username">{f:translate(key: "owner")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'fe_users.username'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'fe_users.username', direction: new_direction}">{f:translate(key: "owner")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'size'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file.size">{f:translate(key: "size")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file.size'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file.size', direction: new_direction}">{f:translate(key: "size")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'keywords'">
-        <th><filemanager:sortlink folder="{current_folder.uid}" column="sys_file_metadata.keywords">{f:translate(key: "keywords")}</filemanager:sortlink></th>
+        <f:variable name="new_direction" value="ASC" />   
+        <f:if condition="{direction} === 'ASC' && {sort} === 'sys_file_metadata.keywords'">
+            <f:variable name="new_direction" value="DESC" />   
+        </f:if>
+        <th><f:link.action arguments="{folder: current_folder.uid, sort: 'sys_file_metadata.keywords', direction: new_direction}">{f:translate(key: "keywords")}</f:link.action></th>
     </f:if>
     <f:if condition="{column} == 'actions'">
         <th>{f:translate(key: "actions")}</th>

@@ -21,8 +21,8 @@ $EM_CONF['ameos_filemanager'] = [
     'version'          => '3.0.4',
     'constraints'      => [
         'depends' => [
-            'typo3' => '12.4.0-12.4.99',
-            'php'   => '8.0.0-8.2.99',
+            'typo3' => '13.4.0-13.4.99',
+            'php'   => '8.0.0-8.3.99',
         ],
         'conflicts' => [],
         'suggests'  => [],

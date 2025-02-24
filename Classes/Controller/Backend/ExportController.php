@@ -7,6 +7,7 @@ namespace Ameos\AmeosFilemanager\Controller\Backend;
 use Ameos\AmeosFilemanager\Domain\Repository\FolderRepository;
 use Ameos\AmeosFilemanager\Enum\Configuration;
 use Ameos\AmeosFilemanager\Service\FolderService;
+use Doctrine\DBAL\ParameterType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\Controller;
@@ -146,18 +147,18 @@ class ExportController extends ActionController
             $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Configuration::TABLENAME_DOWNLOAD);
             $constraints = [$queryBuilder->expr()->eq(
                 'file',
-                $queryBuilder->createNamedParameter((int)$row['file'], \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter((int)$row['file'], ParameterType::INTEGER)
             )];
             if ($startDate) {
                 $constraints[] = $queryBuilder->expr()->gte(
                     'crdate',
-                    $queryBuilder->createNamedParameter((int)$startDate->getTimestamp(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$startDate->getTimestamp(), ParameterType::INTEGER)
                 );
             }
             if ($endDate) {
                 $constraints[] = $queryBuilder->expr()->lte(
                     'crdate',
-                    $queryBuilder->createNamedParameter((int)$endDate->getTimestamp(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$endDate->getTimestamp(), ParameterType::INTEGER)
                 );
             }
             $downloaded = $queryBuilder

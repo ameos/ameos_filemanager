@@ -71,6 +71,8 @@ class ExplorerController extends ActionController
         $this->view->assign('flat_tree', $this->treeService->flatten($tree));
         $this->view->assign('current_folder_children', $this->treeService->getFoldersChildren([$currentFolder], $sort, $direction));
         $this->view->assign('files', $this->folderService->findFiles($currentFolder, $sort, $direction));
+        $this->view->assign('sort', $sort);
+        $this->view->assign('direction', $direction);
         $this->view->assign('has_many_display_mode', (count(explode(',', $this->settings['availableMode'])) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
@@ -82,10 +84,6 @@ class ExplorerController extends ActionController
             'allowed_actions_folders',
             GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
         );
-
-        if ($this->request->hasArgument(self::ARG_DIR)) {
-            $this->view->assign('direction', $this->request->getArgument(self::ARG_DIR));
-        }
 
         return $this->htmlResponse();
     }

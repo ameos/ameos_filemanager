@@ -11,15 +11,14 @@ return [
         'label'          => 'title',
         'tstamp'         => 'tstamp',
         'crdate'         => 'crdate',
-        'cruser_id'      => 'cruser_id',
         'delete'         => 'deleted',
         'enablecolumns'  => ['disabled' => 'hidden', 'fe_group' => 'fe_group_read'],
         'hideTable'      => true,
         'default_sortby' => 'ORDER BY crdate',
         'iconfile'       => 'EXT:ameos_filemanager/Resources/Public/IconsBackend/folder.svg',
         'searchFields'   => 'title, description, keywords',
-        'rootLevel'      => 1,
-        'security'       => ['ignoreRootLevelRestriction' => 1, 'ignoreWebMountRestriction' => 1],
+        'rootLevel'      => true,
+        'security'       => ['ignoreRootLevelRestriction' => true, 'ignoreWebMountRestriction' => true],
     ],
     'palettes' => [
         'owner' => [
@@ -65,7 +64,6 @@ return [
             'label'   => $ll . '.fe_user_id',
             'config'  => [
                 'type'          => 'group',
-                'internal_type' => 'db',
                 'allowed'       => 'fe_users',
                 'maxitems'      => 1,
                 'size'          => 1,
@@ -158,8 +156,14 @@ return [
                 'size'       => 5,
                 'maxitems'   => 20,
                 'items'      => [
-                    [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--'],
+                    [
+                        'label' => $corell . ':LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => $corell . ':LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -175,8 +179,14 @@ return [
                 'size' => 5,
                 'maxitems' => 20,
                 'items'      => [
-                    [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--'],
+                    [
+                        'label' => $corell . ':LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => $corell . ':LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -192,8 +202,14 @@ return [
                 'size'       => 5,
                 'maxitems'   => 20,
                 'items'      => [
-                    [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--'],
+                    [
+                        'label' => $corell . ':LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => $corell . ':LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -209,8 +225,14 @@ return [
                 'size'       => 5,
                 'maxitems'   => 20,
                 'items'      => [
-                    [$corell . ':LGL.any_login',  -2],
-                    [$corell . ':LGL.usergroups', '--div--'],
+                    [
+                        'label' => $corell . ':LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => $corell . ':LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',

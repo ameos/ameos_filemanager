@@ -218,7 +218,7 @@ class FolderRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
         if ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
-            $feUserUid = $GLOBALS['TSFE']->fe_user->user['uid'];
+            $feUserUid = $context->getPropertyFromAspect('frontend.user', 'id');
             $where = ' AND (';
             $where .= '(1 ' . $enableFieldsWithoutFeGroup . ')'; // classic enable fields
 

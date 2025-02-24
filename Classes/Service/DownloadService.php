@@ -45,7 +45,8 @@ class DownloadService
      */
     public function downloadFile(File $file): ResponseInterface
     {
-        $user = ($GLOBALS['TSFE']->fe_user->user);
+        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+        $feUserUid = $context->getPropertyFromAspect('frontend.user', 'id');
 
         // We check if the user has access to the file.
         if ($file && $this->accessService->canReadFile($file)) {
@@ -59,7 +60,7 @@ class DownloadService
             ) {
                 $filedownload = GeneralUtility::makeInstance(Filedownload::class);
                 $filedownload->setFile($file);
-                $filedownload->setUserDownload($user['uid']);
+                $filedownload->setUserDownload($feUserUid);
                 $this->filedownloadRepository->add($filedownload);
                 $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
                 $persitenceManager->persistAll();
@@ -70,7 +71,7 @@ class DownloadService
                 // We register who downloaded the file and when
                 $filedownload = GeneralUtility::makeInstance(Filedownload::class);
                 $filedownload->setFile($file);
-                $filedownload->setUserDownload($user['uid'] ?? 0);
+                $filedownload->setUserDownload($feUserUid ?? 0);
                 $this->filedownloadRepository->add($filedownload);
                 $persitenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
                 $persitenceManager->persistAll();

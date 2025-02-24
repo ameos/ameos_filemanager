@@ -60,7 +60,7 @@
 
         <f:if condition="{action} == 'delete'">
             <filemanager:access.canWrite file="{file}">
-                <f:link.action onclick="return confirm('Are you sure?')" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
+                <f:link.action data-filemanager-confirm="Are you sure?" action="remove" controller="Explorer\File" arguments="{file: file.uid}" title="{f:translate(key:'delete')}">
                     <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;
                 </f:link.action>
             </filemanager:access.canWrite>

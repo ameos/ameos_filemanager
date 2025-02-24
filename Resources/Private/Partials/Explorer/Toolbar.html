@@ -28,7 +28,7 @@
 
             <f:if condition="{action} == 'delete'">
                 <filemanager:access.canWrite folder="{current_folder}">
-                    <f:link.action class="toolbar-item" action="remove" onclick="return confirm('Are you sure?')" controller="Explorer\Folder" arguments="{folder: current_folder.uid}" title="{f:translate(key:'delete')}">
+                    <f:link.action class="toolbar-item" action="remove" data-filemanager-confirm="Are you sure?" controller="Explorer\Folder" arguments="{folder: current_folder.uid}" title="{f:translate(key:'delete')}">
                         <i class="fa fa-2x fa-trash-o" aria-hidden="true"></i><br>{f:translate(key:'delete')}
                     </f:link.action>
                 </filemanager:access.canWrite>

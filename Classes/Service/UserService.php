@@ -111,4 +111,22 @@ class UserService
         }
         return $usergroups;
     }
+
+    /**
+     * Check if user is in authorized group
+     *
+     * @return bool
+     */
+    public function editingAllowed($settings): bool
+    {
+        if (!isset($settings['authorizedGroups']) || $settings['authorizedGroups'] == '') {
+            return true;
+        } else {
+            $authorizedGroups = GeneralUtility::trimExplode(',', $settings['authorizedGroups']);
+            $usergroups = $this->getUserGroups();
+            $availableUsergroups = array_intersect($authorizedGroups, $usergroups);
+            return count($availableUsergroups) > 0;
+        }
+        return false;
+    }
 }

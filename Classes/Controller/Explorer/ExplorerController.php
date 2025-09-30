@@ -12,6 +12,8 @@ use Ameos\AmeosFilemanager\Service\TreeService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Ameos\AmeosFilemanager\Service\UserService;
+
 
 class ExplorerController extends ActionController
 {
@@ -21,6 +23,7 @@ class ExplorerController extends ActionController
     public const ARG_SORT = 'sort';
     public const ARG_DISPLAYMODE = 'displaymode';
     public const ARG_QUERY = 'query';
+    public const EDITING_ACTIONS = ['edit', 'delete', 'addsubfolder'];
 
     /**
      * @param ExplorerService $explorerService
@@ -34,7 +37,8 @@ class ExplorerController extends ActionController
         private readonly FolderService $folderService,
         private readonly FileService $fileService,
         private readonly TreeService $treeService,
-        private readonly AssetService $assetService
+        private readonly AssetService $assetService,
+        private readonly UserService $userService,
     ) {
     }
 
@@ -64,6 +68,13 @@ class ExplorerController extends ActionController
         $sort = $this->request->hasArgument(self::ARG_SORT) ? $this->request->getArgument(self::ARG_SORT) : 'sys_file.name';
         $direction = $this->request->hasArgument(self::ARG_DIR) ? $this->request->getArgument(self::ARG_DIR) : 'ASC';
 
+        $allowedActionsOnFiles = GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFiles']);
+        $allowedActionsOnFolders = GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders']);
+        if (!$this->userService->editingAllowed($this->settings)) {
+            $allowedActionsOnFiles = array_diff($allowedActionsOnFiles, self::EDITING_ACTIONS);
+            $allowedActionsOnFolders = array_diff($allowedActionsOnFolders, self::EDITING_ACTIONS);
+        }
+
         // assign data to the view
         $this->view->assign('root_folder', $rootFolder);
         $this->view->assign('current_folder', $currentFolder);
@@ -76,14 +87,8 @@ class ExplorerController extends ActionController
         $this->view->assign('has_many_display_mode', (count(explode(',', $this->settings['availableMode'])) > 1));
         $this->view->assign('display_mode', $displayMode);
         $this->view->assign('columns_table', GeneralUtility::trimExplode(',', $this->settings['columnsTable']));
-        $this->view->assign(
-            'allowed_actions_files',
-            GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFiles'])
-        );
-        $this->view->assign(
-            'allowed_actions_folders',
-            GeneralUtility::trimExplode(',', $this->settings['allowedActionsOnFolders'])
-        );
+        $this->view->assign('allowed_actions_files', $allowedActionsOnFiles);
+        $this->view->assign('allowed_actions_folders', $allowedActionsOnFolders);
 
         return $this->htmlResponse();
     }

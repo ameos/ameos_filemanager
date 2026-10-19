@@ -133,7 +133,9 @@ class ExplorerController extends ActionController
     {
         $this->assetService->addCommonAssets($this->settings);
 
-        if (!$this->request->hasArgument(self::ARG_QUERY) || $this->request->getArgument(self::ARG_QUERY) == '') {
+        if (!$this->request->hasArgument(self::ARG_QUERY)
+            || trim((string)$this->request->getArgument(self::ARG_QUERY)) === ''
+        ) {
             return $this->redirect('index');
         }
 

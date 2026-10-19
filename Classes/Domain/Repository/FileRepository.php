@@ -172,9 +172,9 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         $keywordContraints = [];
-        $arrayKeywords = explode(' ', $query);
+        $arrayKeywords = GeneralUtility::trimExplode(' ', $query, true);
         foreach ($arrayKeywords as $keyword) {
-            $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
+            $keyword = $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($keyword) . '%');
 
             $keywordContraints[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
             $keywordContraints[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
@@ -187,10 +187,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             }
         }
         $queryBuilder->where(
-            $queryBuilder->expr()->or(...$keywordContraints),
+            // no usable keyword -> no result instead of all files
+            $keywordContraints !== [] ? $queryBuilder->expr()->or(...$keywordContraints) : '1 = 0',
             $queryBuilder->expr()->like(
                 'sys_file.identifier',
-                '\'' . $queryBuilder->escapeLikeWildcards($root->getIdentifier()) . '%\''
+                $queryBuilder->quote($queryBuilder->escapeLikeWildcards($root->getIdentifier()) . '%')
             )
         );
 

@@ -118,7 +118,7 @@ class ExplorerController extends AbstractController
     {
         if (
             !$this->request->hasArgument(Configuration::QUERY_ARGUMENT_KEY)
-            || $this->request->getArgument(Configuration::QUERY_ARGUMENT_KEY) == ''
+            || trim((string)$this->request->getArgument(Configuration::QUERY_ARGUMENT_KEY)) === ''
         ) {
             $this->forward(Configuration::INDEX_ACTION_KEY);
         }

@@ -185,11 +185,11 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $rootFolder = is_object($rootFolder) ? $rootFolder->getUid() : $rootFolder;
 
         if (isset($criterias['keyword']) && $criterias['keyword'] !== '') {
-            $arrayKeywords = explode(' ', $criterias['keyword']);
+            $arrayKeywords = GeneralUtility::trimExplode(' ', $criterias['keyword'], true);
+            $whereClauseKeyword = [];
 
             foreach ($arrayKeywords as $keyword) {
-                $whereClauseKeyword = [];
-                $keyword = '\'%' . $queryBuilder->escapeLikeWildcards($keyword) . '%\'';
+                $keyword = $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($keyword) . '%');
 
                 $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.title', $keyword);
                 $whereClauseKeyword[] = $queryBuilder->expr()->like('sys_file_metadata.description', $keyword);
@@ -216,7 +216,12 @@ class FileRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         )
                     )';
             }
-            $queryBuilder->orWhere(...$whereClauseKeyword);
+
+            if ($whereClauseKeyword !== []) {
+                $queryBuilder->orWhere(...$whereClauseKeyword);
+            } else {
+                $queryBuilder->andWhere('1 = 0');
+            }
         }
 
         if ((int)$rootFolder > 0) {
